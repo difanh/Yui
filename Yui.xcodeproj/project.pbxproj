@@ -1,0 +1,211 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B5C6888C15BEEC1400EE9E8F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C6888B15BEEC1400EE9E8F /* main.cpp */; };
+		B5C6888E15BEEC1400EE9E8F /* Yui.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5C6888D15BEEC1400EE9E8F /* Yui.1 */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B5C6888515BEEC1400EE9E8F /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				B5C6888E15BEEC1400EE9E8F /* Yui.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		B5C6888715BEEC1400EE9E8F /* Yui */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Yui; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5C6888B15BEEC1400EE9E8F /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		B5C6888D15BEEC1400EE9E8F /* Yui.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Yui.1; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B5C6888415BEEC1400EE9E8F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B5C6887C15BEEC1100EE9E8F = {
+			isa = PBXGroup;
+			children = (
+				B5C6888A15BEEC1400EE9E8F /* Yui */,
+				B5C6888815BEEC1400EE9E8F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B5C6888815BEEC1400EE9E8F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B5C6888715BEEC1400EE9E8F /* Yui */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B5C6888A15BEEC1400EE9E8F /* Yui */ = {
+			isa = PBXGroup;
+			children = (
+				B5C6888B15BEEC1400EE9E8F /* main.cpp */,
+				B5C6888D15BEEC1400EE9E8F /* Yui.1 */,
+			);
+			path = Yui;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B5C6888615BEEC1400EE9E8F /* Yui */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B5C6889115BEEC1400EE9E8F /* Build configuration list for PBXNativeTarget "Yui" */;
+			buildPhases = (
+				B5C6888315BEEC1400EE9E8F /* Sources */,
+				B5C6888415BEEC1400EE9E8F /* Frameworks */,
+				B5C6888515BEEC1400EE9E8F /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Yui;
+			productName = Yui;
+			productReference = B5C6888715BEEC1400EE9E8F /* Yui */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B5C6887E15BEEC1100EE9E8F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = "Carnegie Mellon University";
+			};
+			buildConfigurationList = B5C6888115BEEC1100EE9E8F /* Build configuration list for PBXProject "Yui" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = B5C6887C15BEEC1100EE9E8F;
+			productRefGroup = B5C6888815BEEC1400EE9E8F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B5C6888615BEEC1400EE9E8F /* Yui */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B5C6888315BEEC1400EE9E8F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B5C6888C15BEEC1400EE9E8F /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		B5C6888F15BEEC1400EE9E8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		B5C6889015BEEC1400EE9E8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		B5C6889215BEEC1400EE9E8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		B5C6889315BEEC1400EE9E8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B5C6888115BEEC1100EE9E8F /* Build configuration list for PBXProject "Yui" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B5C6888F15BEEC1400EE9E8F /* Debug */,
+				B5C6889015BEEC1400EE9E8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B5C6889115BEEC1400EE9E8F /* Build configuration list for PBXNativeTarget "Yui" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B5C6889215BEEC1400EE9E8F /* Debug */,
+				B5C6889315BEEC1400EE9E8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B5C6887E15BEEC1100EE9E8F /* Project object */;
+}

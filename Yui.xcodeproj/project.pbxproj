@@ -9,6 +9,21 @@
 /* Begin PBXBuildFile section */
 		B5C6888C15BEEC1400EE9E8F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C6888B15BEEC1400EE9E8F /* main.cpp */; };
 		B5C6888E15BEEC1400EE9E8F /* Yui.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5C6888D15BEEC1400EE9E8F /* Yui.1 */; };
+		B5C6889515BEEC2F00EE9E8F /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C6889415BEEC2F00EE9E8F /* GLUT.framework */; };
+		B5C6889715BEEC3600EE9E8F /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C6889615BEEC3600EE9E8F /* OpenGL.framework */; };
+		B5C688B415BEEF3100EE9E8F /* Subdivision.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C6889815BEEF3100EE9E8F /* Subdivision.cpp */; };
+		B5C688B515BEEF3100EE9E8F /* BSpline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C6889A15BEEF3100EE9E8F /* BSpline.cpp */; };
+		B5C688B615BEEF3100EE9E8F /* Point3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C6889C15BEEF3100EE9E8F /* Point3d.cpp */; };
+		B5C688B715BEEF3100EE9E8F /* BubblePacking.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C688A015BEEF3100EE9E8F /* BubblePacking.cpp */; };
+		B5C688B815BEEF3100EE9E8F /* BubbleGeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C688A115BEEF3100EE9E8F /* BubbleGeometry.cpp */; };
+		B5C688B915BEEF3100EE9E8F /* Spline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C688A215BEEF3100EE9E8F /* Spline.cpp */; };
+		B5C688BA15BEEF3100EE9E8F /* Euler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C688A615BEEF3100EE9E8F /* Euler.cpp */; };
+		B5C688BB15BEEF3100EE9E8F /* RungeKutta.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C688A715BEEF3100EE9E8F /* RungeKutta.cpp */; };
+		B5C688BC15BEEF3100EE9E8F /* Point2d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C688AC15BEEF3100EE9E8F /* Point2d.cpp */; };
+		B5C688BD15BEEF3100EE9E8F /* Vector3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C688AD15BEEF3100EE9E8F /* Vector3D.cpp */; };
+		B5C688BE15BEEF3100EE9E8F /* Vector2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C688AF15BEEF3100EE9E8F /* Vector2D.cpp */; };
+		B5C688BF15BEEF3100EE9E8F /* SurfaceGeometry.c in Sources */ = {isa = PBXBuildFile; fileRef = B5C688B015BEEF3100EE9E8F /* SurfaceGeometry.c */; };
+		B5C688C015BEEF3100EE9E8F /* trackball.c in Sources */ = {isa = PBXBuildFile; fileRef = B5C688B215BEEF3100EE9E8F /* trackball.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +43,36 @@
 		B5C6888715BEEC1400EE9E8F /* Yui */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Yui; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C6888B15BEEC1400EE9E8F /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		B5C6888D15BEEC1400EE9E8F /* Yui.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Yui.1; sourceTree = "<group>"; };
+		B5C6889415BEEC2F00EE9E8F /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		B5C6889615BEEC3600EE9E8F /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		B5C6889815BEEF3100EE9E8F /* Subdivision.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Subdivision.cpp; sourceTree = "<group>"; };
+		B5C6889915BEEF3100EE9E8F /* Subdivision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Subdivision.h; sourceTree = "<group>"; };
+		B5C6889A15BEEF3100EE9E8F /* BSpline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BSpline.cpp; sourceTree = "<group>"; };
+		B5C6889B15BEEF3100EE9E8F /* BSpline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSpline.h; sourceTree = "<group>"; };
+		B5C6889C15BEEF3100EE9E8F /* Point3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Point3d.cpp; sourceTree = "<group>"; };
+		B5C6889D15BEEF3100EE9E8F /* Point3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Point3d.h; sourceTree = "<group>"; };
+		B5C6889E15BEEF3100EE9E8F /* BubbleGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BubbleGeometry.h; sourceTree = "<group>"; };
+		B5C6889F15BEEF3100EE9E8F /* BubblePacking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BubblePacking.h; sourceTree = "<group>"; };
+		B5C688A015BEEF3100EE9E8F /* BubblePacking.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BubblePacking.cpp; sourceTree = "<group>"; };
+		B5C688A115BEEF3100EE9E8F /* BubbleGeometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BubbleGeometry.cpp; sourceTree = "<group>"; };
+		B5C688A215BEEF3100EE9E8F /* Spline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Spline.cpp; sourceTree = "<group>"; };
+		B5C688A315BEEF3100EE9E8F /* Spline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Spline.h; sourceTree = "<group>"; };
+		B5C688A415BEEF3100EE9E8F /* AllColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllColor.h; sourceTree = "<group>"; };
+		B5C688A515BEEF3100EE9E8F /* Vector2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector2D.h; sourceTree = "<group>"; };
+		B5C688A615BEEF3100EE9E8F /* Euler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Euler.cpp; sourceTree = "<group>"; };
+		B5C688A715BEEF3100EE9E8F /* RungeKutta.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RungeKutta.cpp; sourceTree = "<group>"; };
+		B5C688A815BEEF3100EE9E8F /* BubbleDSt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BubbleDSt.h; sourceTree = "<group>"; };
+		B5C688A915BEEF3100EE9E8F /* RungeKutta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RungeKutta.h; sourceTree = "<group>"; };
+		B5C688AA15BEEF3100EE9E8F /* Euler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Euler.h; sourceTree = "<group>"; };
+		B5C688AB15BEEF3100EE9E8F /* Point2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Point2d.h; sourceTree = "<group>"; };
+		B5C688AC15BEEF3100EE9E8F /* Point2d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Point2d.cpp; sourceTree = "<group>"; };
+		B5C688AD15BEEF3100EE9E8F /* Vector3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector3D.cpp; sourceTree = "<group>"; };
+		B5C688AE15BEEF3100EE9E8F /* Vector3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector3D.h; sourceTree = "<group>"; };
+		B5C688AF15BEEF3100EE9E8F /* Vector2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector2D.cpp; sourceTree = "<group>"; };
+		B5C688B015BEEF3100EE9E8F /* SurfaceGeometry.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SurfaceGeometry.c; sourceTree = "<group>"; };
+		B5C688B115BEEF3100EE9E8F /* SurfaceGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SurfaceGeometry.h; sourceTree = "<group>"; };
+		B5C688B215BEEF3100EE9E8F /* trackball.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = trackball.c; sourceTree = "<group>"; };
+		B5C688B315BEEF3100EE9E8F /* trackball.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackball.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +80,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5C6889715BEEC3600EE9E8F /* OpenGL.framework in Frameworks */,
+				B5C6889515BEEC2F00EE9E8F /* GLUT.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +91,8 @@
 		B5C6887C15BEEC1100EE9E8F = {
 			isa = PBXGroup;
 			children = (
+				B5C6889615BEEC3600EE9E8F /* OpenGL.framework */,
+				B5C6889415BEEC2F00EE9E8F /* GLUT.framework */,
 				B5C6888A15BEEC1400EE9E8F /* Yui */,
 				B5C6888815BEEC1400EE9E8F /* Products */,
 			);
@@ -60,6 +109,34 @@
 		B5C6888A15BEEC1400EE9E8F /* Yui */ = {
 			isa = PBXGroup;
 			children = (
+				B5C6889815BEEF3100EE9E8F /* Subdivision.cpp */,
+				B5C6889915BEEF3100EE9E8F /* Subdivision.h */,
+				B5C6889A15BEEF3100EE9E8F /* BSpline.cpp */,
+				B5C6889B15BEEF3100EE9E8F /* BSpline.h */,
+				B5C6889C15BEEF3100EE9E8F /* Point3d.cpp */,
+				B5C6889D15BEEF3100EE9E8F /* Point3d.h */,
+				B5C6889E15BEEF3100EE9E8F /* BubbleGeometry.h */,
+				B5C6889F15BEEF3100EE9E8F /* BubblePacking.h */,
+				B5C688A015BEEF3100EE9E8F /* BubblePacking.cpp */,
+				B5C688A115BEEF3100EE9E8F /* BubbleGeometry.cpp */,
+				B5C688A215BEEF3100EE9E8F /* Spline.cpp */,
+				B5C688A315BEEF3100EE9E8F /* Spline.h */,
+				B5C688A415BEEF3100EE9E8F /* AllColor.h */,
+				B5C688A515BEEF3100EE9E8F /* Vector2D.h */,
+				B5C688A615BEEF3100EE9E8F /* Euler.cpp */,
+				B5C688A715BEEF3100EE9E8F /* RungeKutta.cpp */,
+				B5C688A815BEEF3100EE9E8F /* BubbleDSt.h */,
+				B5C688A915BEEF3100EE9E8F /* RungeKutta.h */,
+				B5C688AA15BEEF3100EE9E8F /* Euler.h */,
+				B5C688AB15BEEF3100EE9E8F /* Point2d.h */,
+				B5C688AC15BEEF3100EE9E8F /* Point2d.cpp */,
+				B5C688AD15BEEF3100EE9E8F /* Vector3D.cpp */,
+				B5C688AE15BEEF3100EE9E8F /* Vector3D.h */,
+				B5C688AF15BEEF3100EE9E8F /* Vector2D.cpp */,
+				B5C688B015BEEF3100EE9E8F /* SurfaceGeometry.c */,
+				B5C688B115BEEF3100EE9E8F /* SurfaceGeometry.h */,
+				B5C688B215BEEF3100EE9E8F /* trackball.c */,
+				B5C688B315BEEF3100EE9E8F /* trackball.h */,
 				B5C6888B15BEEC1400EE9E8F /* main.cpp */,
 				B5C6888D15BEEC1400EE9E8F /* Yui.1 */,
 			);
@@ -118,6 +195,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5C6888C15BEEC1400EE9E8F /* main.cpp in Sources */,
+				B5C688B415BEEF3100EE9E8F /* Subdivision.cpp in Sources */,
+				B5C688B515BEEF3100EE9E8F /* BSpline.cpp in Sources */,
+				B5C688B615BEEF3100EE9E8F /* Point3d.cpp in Sources */,
+				B5C688B715BEEF3100EE9E8F /* BubblePacking.cpp in Sources */,
+				B5C688B815BEEF3100EE9E8F /* BubbleGeometry.cpp in Sources */,
+				B5C688B915BEEF3100EE9E8F /* Spline.cpp in Sources */,
+				B5C688BA15BEEF3100EE9E8F /* Euler.cpp in Sources */,
+				B5C688BB15BEEF3100EE9E8F /* RungeKutta.cpp in Sources */,
+				B5C688BC15BEEF3100EE9E8F /* Point2d.cpp in Sources */,
+				B5C688BD15BEEF3100EE9E8F /* Vector3D.cpp in Sources */,
+				B5C688BE15BEEF3100EE9E8F /* Vector2D.cpp in Sources */,
+				B5C688BF15BEEF3100EE9E8F /* SurfaceGeometry.c in Sources */,
+				B5C688C015BEEF3100EE9E8F /* trackball.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

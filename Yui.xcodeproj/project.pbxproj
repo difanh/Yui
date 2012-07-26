@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B55CA48915C1B33900097BEB /* BubblePacking2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B55CA48815C1B33900097BEB /* BubblePacking2D.cpp */; };
 		B5C6888C15BEEC1400EE9E8F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C6888B15BEEC1400EE9E8F /* main.cpp */; };
 		B5C6888E15BEEC1400EE9E8F /* Yui.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5C6888D15BEEC1400EE9E8F /* Yui.1 */; };
 		B5C6889515BEEC2F00EE9E8F /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C6889415BEEC2F00EE9E8F /* GLUT.framework */; };
@@ -40,6 +41,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B55CA48615C1B32400097BEB /* BubblePacking2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BubblePacking2D.h; sourceTree = "<group>"; };
+		B55CA48815C1B33900097BEB /* BubblePacking2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BubblePacking2D.cpp; sourceTree = "<group>"; };
 		B5C6888715BEEC1400EE9E8F /* Yui */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Yui; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C6888B15BEEC1400EE9E8F /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		B5C6888D15BEEC1400EE9E8F /* Yui.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Yui.1; sourceTree = "<group>"; };
@@ -138,6 +141,8 @@
 				B5C688B215BEEF3100EE9E8F /* trackball.c */,
 				B5C688B315BEEF3100EE9E8F /* trackball.h */,
 				B5C6888B15BEEC1400EE9E8F /* main.cpp */,
+				B55CA48615C1B32400097BEB /* BubblePacking2D.h */,
+				B55CA48815C1B33900097BEB /* BubblePacking2D.cpp */,
 				B5C6888D15BEEC1400EE9E8F /* Yui.1 */,
 			);
 			path = Yui;
@@ -208,6 +213,7 @@
 				B5C688BE15BEEF3100EE9E8F /* Vector2D.cpp in Sources */,
 				B5C688BF15BEEF3100EE9E8F /* SurfaceGeometry.c in Sources */,
 				B5C688C015BEEF3100EE9E8F /* trackball.c in Sources */,
+				B55CA48915C1B33900097BEB /* BubblePacking2D.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,6 +300,7 @@
 				B5C6889315BEEC1400EE9E8F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

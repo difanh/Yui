@@ -67,7 +67,13 @@ public:
     int indexCounter; //keeps track of the indeces
     
     BubbleDSalfa cluster[9]; //Initial cluster
-    BubbleDSalfa BubbleSD[15];
+    BubbleDSalfa BubbleSD[81];
+    
+    BubbleDSalfa BubbleSDa[100];
+    
+    BubbleDSalfa **pointInitial;
+    
+    int nPointInitial;
     
     
     void bubbleCreateInitialLocation (int numberOfBubbles);
@@ -77,8 +83,27 @@ public:
     float distanceBetweenBubbles (PointUV P1, PointUV P2);
     
     void fillDataStructure(int i, int level, float u, float v);
+
+    float distanceBetweenBubblesParam (PointUV P1, PointUV P2, float radiusOne, float radiusTwo);
     
-       
+    PointUV crearCenter (PointUV P1, PointUV P2);
+    
+    void quadrant (BubbleDSalfa * initialClusterPoint, int level,  
+                            BubbleDSalfa* Qd0,
+                            BubbleDSalfa* Qd1,
+                            BubbleDSalfa* Qd2,
+                            BubbleDSalfa* Qd3); //9 points see algorithm
+    
+    void createrCenterKnot (PointUV P1, PointUV P2, int currentIndex, int level, int state);
+    
+    void createWSENinQuadrant ( BubbleDSalfa * Qd0, int currentIndex);
+    
+    void createBubbleInsertion (BubbleDSalfa * Qd0,int i, int currentIndex);
+    
+    void subdivisionHardCode(int numberOfPoints, float** U, float** V, BubbleDSalfa* P);
+    
+
+    
 };
 
 

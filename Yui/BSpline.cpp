@@ -76,10 +76,11 @@ void BSPline::InitializeControlPoints()
     
     
      controlPointsArray[0][0].x = -1.0;  controlPointsArray[0][0].y = -1.0;  controlPointsArray[0][0].z = 4.0;
-     controlPointsArray[0][1].x = -1.0;  controlPointsArray[0][1].y = -1.0;  controlPointsArray[0][1].z = 3.0;
-     controlPointsArray[0][2].x = -1.0;  controlPointsArray[0][2].y = 1.0;  controlPointsArray[0][2].z = 2.0;
-     controlPointsArray[0][3].x = -1.0;  controlPointsArray[0][3].y = 1.0;  controlPointsArray[0][3].z = 1.0;
-     controlPointsArray[0][4].x = -1.0;  controlPointsArray[0][4].y = 2.0;  controlPointsArray[0][4].z = 0.0;
+     controlPointsArray[0][1].x = -1.5;  controlPointsArray[0][1].y = -1.0;  controlPointsArray[0][1].z = 3.0;
+     controlPointsArray[0][2].x = -1.5;  controlPointsArray[0][2].y = 1.0;  controlPointsArray[0][2].z = 2.0;
+     controlPointsArray[0][3].x = -2.0;  controlPointsArray[0][3].y = 1.0;  controlPointsArray[0][3].z = 1.0;
+     controlPointsArray[0][4].x = -1.5;  controlPointsArray[0][4].y = 2.0;  controlPointsArray[0][4].z = 0.0;
+     controlPointsArray[0][5].x = -2.0;  controlPointsArray[0][5].y = 2.0;  controlPointsArray[0][5].z = -1.0;
      
      
      controlPointsArray[1][0].x = 0.0;  controlPointsArray[1][0].y = -1.0;  controlPointsArray[1][0].z = 4.0;
@@ -87,7 +88,7 @@ void BSPline::InitializeControlPoints()
      controlPointsArray[1][2].x = 0.0;  controlPointsArray[1][2].y = 1.0;  controlPointsArray[1][2].z = 2.0;
      controlPointsArray[1][3].x = 0.0;  controlPointsArray[1][3].y = 1.0;  controlPointsArray[1][3].z = 1.0;
      controlPointsArray[1][4].x = 0.0;  controlPointsArray[1][4].y = 2.0;  controlPointsArray[1][4].z = 0.0;
-
+     controlPointsArray[1][5].x = 0.0;  controlPointsArray[1][5].y = 2.0;  controlPointsArray[1][5].z = -1.0;
      
      
      controlPointsArray[2][0].x = 1.0;  controlPointsArray[2][0].y = -1.0;  controlPointsArray[2][0].z = 4.0;
@@ -95,6 +96,7 @@ void BSPline::InitializeControlPoints()
      controlPointsArray[2][2].x = 1.0;  controlPointsArray[2][2].y = 0.0;  controlPointsArray[2][2].z = 2.0;
      controlPointsArray[2][3].x = 1.0;  controlPointsArray[2][3].y = 1.0;  controlPointsArray[2][3].z = 1.0;
      controlPointsArray[2][4].x = 1.0;  controlPointsArray[2][4].y = 1.0;  controlPointsArray[2][4].z = 0.0;
+     controlPointsArray[2][5].x = 1.0;  controlPointsArray[2][5].y = 1.0;  controlPointsArray[2][5].z = -1.0;
  
      
      controlPointsArray[3][0].x = 2.0;  controlPointsArray[3][0].y = -1.0;  controlPointsArray[3][0].z = 4.0;
@@ -102,6 +104,7 @@ void BSPline::InitializeControlPoints()
      controlPointsArray[3][2].x = 2.0;  controlPointsArray[3][2].y = 0.0;  controlPointsArray[3][2].z = 2.0;
      controlPointsArray[3][3].x = 2.0;  controlPointsArray[3][3].y = 1.0;  controlPointsArray[3][3].z = 1.0;
      controlPointsArray[3][4].x = 2.0;  controlPointsArray[3][4].y = 1.0;  controlPointsArray[3][4].z = 0.0;
+     controlPointsArray[3][5].x = 2.0;  controlPointsArray[3][5].y = 1.0;  controlPointsArray[3][5].z = -1.0;
  
      
      controlPointsArray[4][0].x = 3.0;  controlPointsArray[4][0].y = -1.0;  controlPointsArray[4][0].z = 4.0;
@@ -109,16 +112,17 @@ void BSPline::InitializeControlPoints()
      controlPointsArray[4][2].x = 3.0;  controlPointsArray[4][2].y = 0.0;  controlPointsArray[4][2].z = 2.0;
      controlPointsArray[4][3].x = 3.0;  controlPointsArray[4][3].y = 1.0;  controlPointsArray[4][3].z = 1.0;
      controlPointsArray[4][4].x = 3.0;  controlPointsArray[4][4].y = 1.0;  controlPointsArray[4][4].z = 0.0;
+     controlPointsArray[4][5].x = 3.0;  controlPointsArray[4][5].y = 1.0;  controlPointsArray[4][5].z = 1.0;
     
     
    
 
     
-    controlPointsWeightsArray = new float * [5];
-    for(int i=0;i<5;i++)
+    controlPointsWeightsArray = new float * [15];
+    for(int i=0;i<15;i++)
     {
-        controlPointsWeightsArray[i] = new float [5];
-        for(int j=0;j<5;j++)
+        controlPointsWeightsArray[i] = new float [15];
+        for(int j=0;j<15;j++)
         {
             controlPointsWeightsArray[i][j] = 1.0;
         }
@@ -427,7 +431,7 @@ void BSPline::basis_value(int left, float u, int order, float *knot, float *basi
             saved = delta_l[j-i]*term ;
         }
         basis[j] = saved ;
-        cout << "\t basis["<<j<<"] : " << basis[j] << endl;   
+       // cout << "\t basis["<<j<<"] : " << basis[j] << endl;   
     } /* the non-zero basis function is stored in basis[0~order-1] */ 
     
     

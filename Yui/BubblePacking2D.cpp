@@ -7,6 +7,7 @@
 //
 
 #include <iostream>
+#include <math.h>
 #include "BubblePacking2D.h"
 
 
@@ -16,13 +17,27 @@ BubblePacking2D::BubblePacking2D()
     _mass = 1.0; // Mass of a bubble for phisical simulation    
     _damping_force = 0.7*sqrt( _spring_rate*_mass); //Damping force for phisical simulation
     _spring_rate = 0.1*0.001;// ko 0.1 0.001*0.0001
-    
-     
-    
+    MAXI = 30;
 }
 
 BubblePacking2D::~BubblePacking2D()
 {
+    
+}
+
+float BubblePacking2D::findDistanceXDirection(bubble B1, bubble B2, int state)
+{
+    float result =0.0;
+    
+    if (state == 0) // X direction
+    {
+        result = fabs(B1.u-B2.u);
+    }
+    if (state ==1) // Y direction
+    {
+        result = fabs(B1.v-B2.v);
+    }
+    return (result);
     
 }
 
@@ -35,13 +50,13 @@ float BubblePacking2D::findDistanceBetweenBubbles(bubble B1, bubble B2)
     return(distance);
 }
 
-float BubblePacking2D::diameterAverage(bubble B1, bubble B2)
+float BubblePacking2D::radiiSum(bubble B1, bubble B2)
 {
-    float diameter = 0.0;
+    float radius = 0.0;
     
-    diameter = (B1.radius + B2.radius)/(float)2;    
+    radius = (B1.radius + B2.radius);    
     
-    return(diameter);
+    return(radius);
 }
 
 float BubblePacking2D::wParameter(float distance, float stableDistance)
@@ -80,5 +95,140 @@ float BubblePacking2D::function2(float t, float v,float fw)
     
     return (f);
 }
+
+PointUVp BubblePacking2D::Simulation(bubble B1, bubble B2)
+{
+    PointUVp result;
+   // float distance = findDistanceBetweenBubbles(B1, B2);
+    float stableDistance = radiiSum(B1, B2);
+    float w = 0.0;
+    float interbubbleForces = 0.0;
+   // float tempX;
+    float h=0.01; //time step
+        
+     
+    // x direction
+    float distanceIDirection = findDistanceXDirection(B1, B2, 0);
+    w = wParameter(distanceIDirection, stableDistance);
+    interbubbleForces =  interBubbleForces( _spring_rate, stableDistance, w);
+    result.u =rk4_sol(B2.u, h, interbubbleForces);
+    
+    // x direction
+    float distanceJDirection = findDistanceXDirection(B1, B2, 1);
+    w = wParameter(distanceJDirection, stableDistance);
+    interbubbleForces =  interBubbleForces( _spring_rate, stableDistance, w);
+    result.v =rk4_sol(B2.v, h, interbubbleForces);
+        
+    cout <<  "w : " << w <<endl;
+    cout <<  "interbubble_force : " << interbubbleForces <<endl;
+  //  cout <<  "tempx : " << tempX <<endl;
+        
+    return (result);
+    
+}
+
+
+float BubblePacking2D::rk4_sol(float xi, float time_step, float fw)
+{
+    // ofstream outfile ("/Users/diegoandrade/Dropbox/CMU 2012/PointsRK4.txt"); //Check is there is a file functionlaity does not exist
+    
+    
+    
+    //int _number_of_iter = _number_of_iter;
+    
+    float *x= new float  [MAXI+1];
+    float *v = new float [MAXI+1];
+    float *a = new float [MAXI+1];
+    
+    // cout << ">> Runge Kutta Solution Points Test<< " << endl << endl;
+    
+    x[0]=xi;
+    v[0]=0.0;
+    a[0]=0.0;
+    
+    float x1,x2,x3,x4;
+    float v1,v2,v3,v4;
+    float a1,a2,a3,a4;
+    
+    float h = time_step;
+    float dt;
+    
+    if(MAXI>180) MAXI=180; //CHANGE HERE
+    
+    for (int i =0 ; i<MAXI ; i++)
+    {             
+        dt = i*h;
+        
+        x1 = x[i];
+        v1 = v[i];
+        a1 = function2(dt, v1, fw);
+        
+        x2 = x[i] + 0.5*v1*dt;
+        v2 = v[i] + 0.5*a1*dt;
+        a2 = function2(dt, v2, fw);
+        
+        x3 = x[i] + 0.5*v2*dt;
+        v3 = v[i] + 0.5*a2*dt;
+        a3 = function2(dt, v3, fw);
+        
+        x4 = x[i] + v3*dt;
+        v4 = v[i] + a3*dt;
+        a4 = function2(dt, v4, fw);
+        
+        x[i+1] = x[i]+(dt/((float)(6.0)))*(v1+2*v2+2*v3+v4);
+        v[i+1] = v[i]+(dt/((float)(6.0)))*(a1+2*a2+2*a3+a4);
+        
+        
+        /*cout << "x[" << i+1 << "]= "<<setprecision(7)<<setw(7)<< x[i+1] <<"\t\n";
+         cout << "v[" << i+1 << "]= "<< v[i+1] <<"\n";
+         
+         cout  << "x1[" << i << "]= "<< x1 <<"\t\t\t";
+         cout  << "x2[" << i << "]= "<< x2 <<"\t\t\t";
+         cout  << "x3[" << i << "]= "<< x3 <<"\t\t\t";
+         cout  << "x4[" << i << "]= "<< x4 <<"\t\t\t"<<endl;
+         
+         cout  << "v1[" << i << "]= "<< v1 <<"\t\t\t";
+         cout  << "v2[" << i << "]= "<< v2 <<"\t\t\t";
+         cout  << "v3[" << i << "]= "<< v3 <<"\t\t\t";
+         cout  << "v4[" << i << "]= "<< v4 <<"\t\t\t"<<endl;
+         
+         cout  << "a1[" << i << "]= "<< a1 <<"\t\t\t";
+         cout  << "a2[" << i << "]= "<< a2 <<"\t\t\t";
+         cout  << "a3[" << i << "]= "<< a3 <<"\t\t\t";
+         cout  << "a4[" << i << "]= "<< a4 <<"\t\t\t"<<endl;*/
+        
+        /*outfile  << "x[" << i << "]= "<< x[i] <<"\t";
+         outfile  << "v[" << i << "]= "<< v[i] <<"\t"<<endl;
+         
+         outfile  << "x1[" << i << "]= "<< x1 <<"\t";
+         outfile  << "x2[" << i << "]= "<< x2 <<"\t";
+         outfile  << "x3[" << i << "]= "<< x3 <<"\t";
+         outfile  << "x4[" << i << "]= "<< x4 <<"\t"<<endl;
+         
+         outfile  << "v1[" << i << "]= "<< v1 <<"\t";
+         outfile  << "v2[" << i << "]= "<< v2 <<"\t";
+         outfile  << "v3[" << i << "]= "<< v3 <<"\t";
+         outfile  << "v4[" << i << "]= "<< v4 <<"\t"<<endl;
+         
+         
+         outfile  << "a1[" << i << "]= "<< a1 <<"\t";
+         outfile  << "a2[" << i << "]= "<< a2 <<"\t";
+         outfile  << "a3[" << i << "]= "<< a3 <<"\t";
+         outfile  << "a4[" << i << "]= "<< a4 <<"\t"<<endl<<endl;*/
+        
+    }
+    
+    // outfile.close();
+    
+    //delete []x;
+    delete []v;
+    delete []a;
+    
+    return (x[MAXI]);
+    
+}
+
+
+
 
 

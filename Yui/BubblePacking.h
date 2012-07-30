@@ -46,14 +46,13 @@ class BubblePacking
     
 public:
     vector<Point2D> _working_vector2d;
-   // vector<Point3D> _working_vector3d;
+    // vector<Point3D> _working_vector3d;
     vector<BubbleDSt> _working_BDST_;
     
 public:
     vector<Point2D> _location_vector2d;
     
     vector<Point2D> _location_spline;
-    
     
     int counter;
     
@@ -134,7 +133,6 @@ public:
     vector<Point2D>  sevenbubble(int state, vector<Point2D> & location_points, int k, float _bubble_size_owner);
     
     vector<Point2D>  eightbubble(int state, vector<Point2D> & location_points, int k, float _bubble_size_owner);
-    
     
     //This funciton calculates the number of bubbles per edge
     float NumberBubbles (float diameter_Xend1, float diameter_Xend2);

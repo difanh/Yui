@@ -29,6 +29,8 @@
 #include "BSpline.h"
 #include "Subdivision.h"
 
+#include "BubblePacking2D.h"
+
 //#include "AllColor.h"
 
 #define DTOR 0.0174532925
@@ -92,6 +94,8 @@ GLboolean sCreateBubbleBSpline = GL_TRUE;
 
 GLboolean sSubdivision = GL_TRUE;
 
+GLboolean sOneBubble = GL_TRUE;
+
 myPoint3D S;
 
 GLboolean gShowSplineControlPoints = GL_TRUE;
@@ -147,6 +151,8 @@ BSPline objMainBSPline;
 
 Subdivision objMainSubdivision;
 
+BubblePacking2D objBP2D;
+
 vector<Point2D> location_2d;
 vector<Point2D> location_2d_tmp;
 
@@ -156,6 +162,9 @@ vector<Point2D> location_bubbles_bezier_2d; //For bubble definition
 vector<Point2D> location_2da;
 
 vector<myPoint3D> pointsBSpline;
+
+bubble B1,B2,B3;
+ PointUVp currentPoint;
 
 
 #pragma mark ---- gCamera control ----
@@ -388,7 +397,7 @@ void init12 (void)
 	
     
     objBB.createPoints(); //Creates location // IMPORTANT
-    // objSpline.SplinePointsLocation();   //Create location on spline
+    //objSpline.SplinePointsLocation();   //Create location on spline
     
     // objBB._location_vector_spline_2d = objSpline.spline_location_2d; //Estoy pasando la info al vector de esta manera o que????s
     
@@ -438,6 +447,29 @@ void init12 (void)
 	
     glEnable(GL_LIGHTING);
     
+    
+    
+    
+    
+    //----------------
+    // bubble packing 2d
+    //----------------
+    
+    objMainBSPline.InitializeControlPoints();
+    
+    B1.u = 0.0;
+    B1.v = 0.0;
+    B1.radius = 0.1;
+    
+    B2.u = 0.2;
+    B2.v = 0.0;
+    B2.radius = 0.1;
+    
+    B3.u = 0.4;
+    B3.v = 0.0;
+    B3.radius = 0.1;
+  
+    //-----------------
     
 }
 
@@ -494,7 +526,7 @@ void createBubbleSplineT(float dx, float dy, float radius)
     float x = (float)radius * cos(359*PI/180.0f)+dx; 
     float z = (float)radius * sin(359*PI/180.0f)+dy; 
     
-    objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray,
+  objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray,
                             Uknot, Vknot, 5, 5, 5, 5, x, z, objMainBSPline.pts);
     
     for (int j=0; j<360; j++)
@@ -801,97 +833,97 @@ void maindisplay(void)
      
      if(sFlag == GL_TRUE )
      {
-     for (int i=0;i<IMAX;i++){
-     //sMAT[i] = new myPoint3D [10];
-     u=i/(float)(IMAX-1)*2;
-     //  cout << "\n u : " << u << endl;
+         for (int i=0;i<IMAX;i++){
+         //sMAT[i] = new myPoint3D [10];
+         u=i/(float)(IMAX-1)*2;
+         //  cout << "\n u : " << u << endl;
+         
+         for(int j=0;j<JMAX ;j++){
+         
+         
+         v=j/(float)(JMAX-1)*1;
+          //   cout << "\n v : " << v << endl;
+         
+         
+         /////////cout << "["<<i<<"]"<<"["<<j<<"]-----------------------------------------" << endl ;
+         //cout << "\nu: " << u << "v : " << v ;
+         // cout << "\t\t[ " << i <<"]"<< "[ " << j <<"]"<< endl;
+         // objMainBSPline.basisFuns(2, u, 2, Uknot);
+         
+         //    S = objMainBSPline.surfacePoint(5, 2, Uknot, 4, 2, Vknot, objMainBSPline.controlPointsArray , u, v);// 
+         //   S = objMainBSPline.surfacePoint(5, 2, Uknot, 4, 2, Vknot, objMainBSPline.controlPointsArray , u, v);// 
+         
+         objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray,
+         Uknot, Vknot, 5, 5, 5, 5, u,v, objMainBSPline.pts);
+         
+         sMAT[i][j].x = objMainBSPline.pts[0];
+         sMAT[i][j].y = objMainBSPline.pts[1];
+         sMAT[i][j].z = objMainBSPline.pts[2];
+         
+         pointsBSpline.push_back(sMAT[i][j]);
+         
+         ///////cout << "\n\nSx: " << objMainBSPline.pts[0]  << 
+         ///////"\tSy: " <<objMainBSPline.pts[1] << 
+         ///////"\tSz: " <<objMainBSPline.pts[2] << endl<<endl ;
+         
+         
+         }
+         
+         //S.x = 0.0;
+         }
+         
+        }
+         
+      sFlag =GL_FALSE;
+         
+         
+         glBegin(GL_POINTS);
+         for(int i=0;i<IMAX;i++) {
+             for(int j=0;j<JMAX;j++) {
+                 
+                 
+                 //  cout <<  sMAT[i][j].x<< endl;
+                 //   cout <<  sMAT[i][j].y<< endl;
+                 //   cout <<  sMAT[i][j].z<< endl;
+                 
+                 
+             }
+         }
+         glEnd();
+         
+         glBegin(GL_LINES);
+         
+         for(int i=0;i<IMAX-1;i++) {
+             for(int j=0;j<JMAX;j++) {
+                 
+                 
+                 float Point1[3] = { sMAT[i][j].x,sMAT[i][j].y ,sMAT[i][j].z  };
+                 float Point2[3] = { sMAT[i+1][j].x,sMAT[i+1][j].y ,sMAT[i+1][j].z  };
+                 
+                 glVertex3fv(Point1);
+                 glVertex3fv(Point2);
+                 
+             }
+         }
      
-     for(int j=0;j<JMAX ;j++){
-     
-     
-     v=j/(float)(JMAX-1)*1;
-      //   cout << "\n v : " << v << endl;
-     
-     
-     /////////cout << "["<<i<<"]"<<"["<<j<<"]-----------------------------------------" << endl ;
-     //cout << "\nu: " << u << "v : " << v ;
-     // cout << "\t\t[ " << i <<"]"<< "[ " << j <<"]"<< endl;
-     // objMainBSPline.basisFuns(2, u, 2, Uknot);
-     
-     //    S = objMainBSPline.surfacePoint(5, 2, Uknot, 4, 2, Vknot, objMainBSPline.controlPointsArray , u, v);// 
-     //   S = objMainBSPline.surfacePoint(5, 2, Uknot, 4, 2, Vknot, objMainBSPline.controlPointsArray , u, v);// 
-     
-     objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray,
-     Uknot, Vknot, 5, 5, 5, 5, u,v, objMainBSPline.pts);
-     
-     sMAT[i][j].x = objMainBSPline.pts[0];
-     sMAT[i][j].y = objMainBSPline.pts[1];
-     sMAT[i][j].z = objMainBSPline.pts[2];
-     
-     pointsBSpline.push_back(sMAT[i][j]);
-     
-     ///////cout << "\n\nSx: " << objMainBSPline.pts[0]  << 
-     ///////"\tSy: " <<objMainBSPline.pts[1] << 
-     ///////"\tSz: " <<objMainBSPline.pts[2] << endl<<endl ;
-     
-     
-     }
-     
-     //S.x = 0.0;
-     }
-     
-     }
-     
-     sFlag =GL_FALSE;
-     
-     
-     glBegin(GL_POINTS);
-     for(int i=0;i<IMAX;i++) {
-     for(int j=0;j<JMAX;j++) {
-     
-     
-     //  cout <<  sMAT[i][j].x<< endl;
-     //   cout <<  sMAT[i][j].y<< endl;
-     //   cout <<  sMAT[i][j].z<< endl;
-     
-     
-     }
-     }
      glEnd();
+     
      
      glBegin(GL_LINES);
      
-     for(int i=0;i<IMAX-1;i++) {
-     for(int j=0;j<JMAX;j++) {
      
-     
-     float Point1[3] = { sMAT[i][j].x,sMAT[i][j].y ,sMAT[i][j].z  };
-     float Point2[3] = { sMAT[i+1][j].x,sMAT[i+1][j].y ,sMAT[i+1][j].z  };                
-     
-     glVertex3fv(Point1);
-     glVertex3fv(Point2);
-     
-     }
-     }
-     
-     glEnd();
-     
-     
-     glBegin(GL_LINES);
-     
-     
-     for(int j=0;j<JMAX-1;j++) {
-     for(int i=0;i<IMAX;i++) {
-     
-     float Point1[3] = { sMAT[i][j].x,sMAT[i][j].y ,sMAT[i][j].z  };
-     float Point2[3] = { sMAT[i][j+1].x,sMAT[i][j+1].y ,sMAT[i][j+1].z  };                
-     
-     glVertex3fv(Point1);
-     glVertex3fv(Point2);
-     
-     
-     }
-     }
+         for(int j=0;j<JMAX-1;j++) {
+             for(int i=0;i<IMAX;i++) {
+                 
+                 float Point1[3] = { sMAT[i][j].x,sMAT[i][j].y ,sMAT[i][j].z  };
+                 float Point2[3] = { sMAT[i][j+1].x,sMAT[i][j+1].y ,sMAT[i][j+1].z  };
+                 
+                 glVertex3fv(Point1);
+                 glVertex3fv(Point2);
+                 
+                 
+             }
+         }
      
      glEnd();
      
@@ -922,12 +954,28 @@ void maindisplay(void)
      
      if(sCreateBubbleBSpline)
      {
+         //cout << "HOLA" ;
+        
          
-              
+         currentPoint = objBP2D.Simulation(B1, B3);
+         cout << "U : " << currentPoint.u <<  endl;
+         cout << "V : " << currentPoint.v <<  endl;
+         
+         B3.u = currentPoint.u;
+         B3.v = currentPoint.v;
+         
+         createBubbleSplineT(B1.u,B1.v, 0.1);
+         createBubbleSplineT(B2.u,B2.v, 0.1);
+         createBubbleSplineT(B3.u,B3.v, 0.1);
+         
+         createBubbleSplineT(currentPoint.u,currentPoint.v, 0.1);
+         
+         //createBubbleSplineT(0.2,0.5, 0.053);
+         
      
      }
      
-    
+/*
     
     int nPoints = 10; //numebr of points in the subdivision
     BubbleDSalfa QoP[nPoints*nPoints*nPoints];
@@ -985,8 +1033,7 @@ void maindisplay(void)
         
         
     }
-    
-    
+  */  
     glutSwapBuffers();
     
     

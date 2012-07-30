@@ -22,7 +22,7 @@ using namespace std;
 #define PI 4*atan(1)
 
 //Strores location in U and V
-struct PointUV {
+struct PointUVp {
     float u;
     float v;
 };
@@ -34,7 +34,7 @@ struct bubble {
     float u; //position in the parametric u space (0-1) dependes on the KnotVector  
     float v; //position in the parametric v space (0-1)
     
-    PointUV location;
+    PointUVp location;
     
     //what level
     int level;
@@ -55,15 +55,19 @@ class BubblePacking2D
     float _mass; // Mass of a bubble for phisical simulation    
     float _damping_force; //Damping force for phisical simulation
     float _spring_rate;  // spring constant for physical simulation k0
+    int MAXI;
         
     BubblePacking2D();
     ~BubblePacking2D();
     
+    //This function finds the distance between bubbles in each direction
+    float findDistanceXDirection(bubble B1, bubble B2, int state);
+  
     //This function finds the distance between bubbles
     float findDistanceBetweenBubbles (bubble B1, bubble B2);
     
-    //This function finds the summation of two diameters
-    float diameterAverage (bubble B1, bubble B2);
+    //This function finds the summation of two radii
+    float radiiSum (bubble B1, bubble B2);
     
     //Calculating w parameter for force function
     float wParameter(float distance, float stable_distance);
@@ -72,6 +76,14 @@ class BubblePacking2D
     float interBubbleForces (float spring_rate, float stable_distance, float w_parameter);
     
     float function2(float t, float v,float fw);
+    
+    PointUVp Simulation(bubble B1, bubble B2);
+    
+    //Function tries to solve runge Kutta for a system of equation
+    //RuggeKutta Solution for a set of equations
+    float rk4_sol(float initial_point_1D, float time_step, float interbubble_forces); // RungeKutta working function
+    
+
    
     
     

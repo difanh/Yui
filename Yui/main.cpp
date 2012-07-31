@@ -457,17 +457,17 @@ void init12 (void)
     
     objMainBSPline.InitializeControlPoints();
     
-    B1.u = 0.0;
-    B1.v = 0.0;
-    B1.radius = 0.1;
+    B1.u = 0.3;
+    B1.v = 0.5;
+    B1.radius = 0.05;
     
-    B2.u = 0.2;
-    B2.v = 0.0;
-    B2.radius = 0.1;
+    B2.u = 0.4;
+    B2.v = 0.5;
+    B2.radius = 0.05;
     
     B3.u = 0.4;
-    B3.v = 0.0;
-    B3.radius = 0.1;
+    B3.v = 0.5;
+    B3.radius = 0.05;
   
     //-----------------
     
@@ -964,11 +964,11 @@ void maindisplay(void)
          B3.u = currentPoint.u;
          B3.v = currentPoint.v;
          
-         createBubbleSplineT(B1.u,B1.v, 0.1);
-         createBubbleSplineT(B2.u,B2.v, 0.1);
-         createBubbleSplineT(B3.u,B3.v, 0.1);
+         createBubbleSplineT(B1.u,B1.v, 0.05);
+         createBubbleSplineT(B2.u,B2.v, 0.05);
+         createBubbleSplineT(B3.u,B3.v, 0.05);
          
-         createBubbleSplineT(currentPoint.u,currentPoint.v, 0.1);
+         createBubbleSplineT(currentPoint.u,currentPoint.v, 0.05);
          
          //createBubbleSplineT(0.2,0.5, 0.053);
          

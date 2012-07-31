@@ -54,7 +54,7 @@ float BubblePacking2D::radiiSum(bubble B1, bubble B2)
 {
     float radius = 0.0;
     
-    radius = (B1.radius + B2.radius);    
+    radius = (B1.radius + B2.radius);
     
     return(radius);
 }

@@ -14,10 +14,10 @@
 BubblePacking2D::BubblePacking2D()
 {
     
-    _mass = 1.0; // Mass of a bubble for phisical simulation    
+    _mass = 1.0; // Mass of a bubble for phisical simulation
     _damping_force = 0.7*sqrt( _spring_rate*_mass); //Damping force for phisical simulation
-    _spring_rate = 0.1*0.001;// ko 0.1 0.001*0.0001
-    MAXI = 30;
+    _spring_rate = 0.1*0.00001;// ko 0.1 0.001*0.0001
+    MAXI = 120;
 }
 
 BubblePacking2D::~BubblePacking2D()
@@ -33,7 +33,7 @@ float BubblePacking2D::findDistanceXDirection(bubble B1, bubble B2, int state)
     {
         result = fabs(B1.u-B2.u);
     }
-    if (state ==1) // Y direction
+    if (state == 1) // Y direction
     {
         result = fabs(B1.v-B2.v);
     }
@@ -54,7 +54,7 @@ float BubblePacking2D::radiiSum(bubble B1, bubble B2)
 {
     float radius = 0.0;
     
-    radius = (B1.radius + B2.radius);
+    radius = 1*(B1.radius + B2.radius);
     
     return(radius);
 }
@@ -106,21 +106,32 @@ PointUVp BubblePacking2D::Simulation(bubble B1, bubble B2)
    // float tempX;
     float h=0.01; //time step
         
+    result.u = B2.u;
+    result.v = B2.v;
+    
+    float distanceIDirection = findDistanceBetweenBubbles(B1, B2);
+    w = wParameter(distanceIDirection, stableDistance);
+    interbubbleForces =  interBubbleForces( _spring_rate, stableDistance, w);
+    result.u =rk4_sol(B2.u, h, interbubbleForces);
+    result.v =rk4_sol(B2.v, h, interbubbleForces);
+
+
+    
      
     // x direction
-    float distanceIDirection = findDistanceXDirection(B1, B2, 0);
+    /*float distanceIDirection = findDistanceXDirection(B1, B2, 0);
     w = wParameter(distanceIDirection, stableDistance);
     interbubbleForces =  interBubbleForces( _spring_rate, stableDistance, w);
     result.u =rk4_sol(B2.u, h, interbubbleForces);
     
-    // x direction
+    // y direction
     float distanceJDirection = findDistanceXDirection(B1, B2, 1);
     w = wParameter(distanceJDirection, stableDistance);
     interbubbleForces =  interBubbleForces( _spring_rate, stableDistance, w);
-    result.v =rk4_sol(B2.v, h, interbubbleForces);
+    result.v =rk4_sol(B2.v, h, interbubbleForces);*/
         
-    cout <<  "w : " << w <<endl;
-    cout <<  "interbubble_force : " << interbubbleForces <<endl;
+  //  cout <<  "w : " << w <<endl;
+  //  cout <<  "interbubble_force : " << interbubbleForces <<endl;
   //  cout <<  "tempx : " << tempX <<endl;
         
     return (result);
@@ -228,7 +239,76 @@ float BubblePacking2D::rk4_sol(float xi, float time_step, float fw)
     
 }
 
+void BubblePacking2D::surfaceSimulation(bubble **mBubbles, int IMAX , int JMAX)
+{
+    //working only with the interior points in the parametric domain
+    for (int i=1;i<IMAX-1;i++){
+        for(int j=1;j<JMAX-1;j++){
+            bubbleInteraction(mBubbles[i][j], mBubbles,  IMAX,  JMAX);
+        }
+    }
+    
+    
+}
 
+void BubblePacking2D::bubbleInteraction(bubble current, bubble **bubbleAll, int IMAX, int JMAX)
+{
+    
+    PointUVp currentPoint;
+    float temp;
+    
+    for (int i=0;i<IMAX;i++){
+        for(int j=0;j<JMAX;j++){
+            
+            temp= findDistanceBetweenBubbles(bubbleAll[i][j], current);
+            
+            if(temp<=(1.5*current.radius))
+            {
+                currentPoint = Simulation(bubbleAll[i][j], current);
+                current.u = currentPoint.u;
+                current.v = currentPoint.v;
+                cout << "u :" << current.u << "v:" << current.u << endl;
+            }
+            else {
+                //Just making explicit that point location does not change
+                current.u = current.u;
+                current.v = current.v;
+            }
+        }
+    }
+    
+    
+    
+}
+
+
+void BubblePacking2D:: subdivisionHardCode( bubble** P, int IMAX, int JMAX)
+{
+    
+    
+    for(int i=0; i<IMAX; i++)
+    {
+        for(int j=0; j<JMAX; j++)
+        {
+            P[i][j].u = 1/(float)(IMAX-1)*i;
+            P[i][j].v=  1/(float)(JMAX-1)*j;
+            // cout << U[i][j] << endl;
+            //  cout << V[i][j] << endl;
+            
+           
+            P[i][j].idx = i*IMAX+j;
+            //P[i][j].radius = 0.02; //change here
+            
+            //  cout << i*nPoints+j << endl;
+            
+        }
+    }
+    
+    
+    
+    
+    //return (U);
+}
 
 
 

@@ -95,6 +95,7 @@ GLboolean sCreateBubbleBSpline = GL_TRUE;
 GLboolean sSubdivision = GL_TRUE;
 
 GLboolean sOneBubble = GL_TRUE;
+GLboolean sResetSim = GL_TRUE;
 
 myPoint3D S;
 
@@ -133,8 +134,13 @@ float b=WIDTH;
 
 myPoint3D** sMAT;
 
-int IMAX = 20;
-int JMAX = 20;
+int IMAX = 7;
+int JMAX = 7;
+
+bubble ** P; //matrix saves all the data for all the points in the surface
+
+float initialBubbleRadius = 0.085
+;
 
 
 
@@ -164,15 +170,15 @@ vector<Point2D> location_2da;
 vector<myPoint3D> pointsBSpline;
 
 bubble B1,B2,B3;
- PointUVp currentPoint;
+PointUVp currentPoint;
 
 
 #pragma mark ---- gCamera control ----
 
 void gCameraReset(void)
 {
-    gCamera.aperture = 20;
-    gCamera.focalLength = 15;
+    gCamera.aperture = 25;
+    gCamera.focalLength = 25;
     gCamera.rotPoint = gOrigin;
     
     gCamera.viewPos.x = 0.0;
@@ -399,7 +405,7 @@ void init12 (void)
     objBB.createPoints(); //Creates location // IMPORTANT
     //objSpline.SplinePointsLocation();   //Create location on spline
     
-    // objBB._location_vector_spline_2d = objSpline.spline_location_2d; //Estoy pasando la info al vector de esta manera o que????s
+    // objBB._location_vector_spline_2d = objSpline.spline_location_2d; //Estoy pasando la info al vector de //esta manera o que????s
     
     //objSpline.
     
@@ -468,6 +474,31 @@ void init12 (void)
     B3.u = 0.4;
     B3.v = 0.5;
     B3.radius = 0.05;
+    
+    
+    //Initializes U, V and P matrices
+    
+
+    
+    P = new bubble * [IMAX];
+    for(int i=0;i<IMAX;i++){
+        P[i] = new bubble  [JMAX];
+        for(int j=0;j<JMAX;j++){
+            P[i][j].radius = initialBubbleRadius; //change here if needed
+            P[i][j].u = 0.0;
+            P[i][j].v = 0.0;
+            P[i][j].idx = 0.0;
+        }
+        
+    }
+
+
+    
+    objBP2D.subdivisionHardCode( P, IMAX, JMAX);
+
+    
+
+   
   
     //-----------------
     
@@ -853,8 +884,7 @@ void maindisplay(void)
          //    S = objMainBSPline.surfacePoint(5, 2, Uknot, 4, 2, Vknot, objMainBSPline.controlPointsArray , u, v);// 
          //   S = objMainBSPline.surfacePoint(5, 2, Uknot, 4, 2, Vknot, objMainBSPline.controlPointsArray , u, v);// 
          
-         objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray,
-         Uknot, Vknot, 5, 5, 5, 5, u,v, objMainBSPline.pts);
+         objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray, Uknot, Vknot, 5, 5, 5, 5, u,v, objMainBSPline.pts);
          
          sMAT[i][j].x = objMainBSPline.pts[0];
          sMAT[i][j].y = objMainBSPline.pts[1];
@@ -956,23 +986,326 @@ void maindisplay(void)
      {
          //cout << "HOLA" ;
         
+        /* if (sResetSim)
+         {
+             B3.u = 0.4;
+             B3.v = 0.5;
+         }
          
          currentPoint = objBP2D.Simulation(B1, B3);
-         cout << "U : " << currentPoint.u <<  endl;
-         cout << "V : " << currentPoint.v <<  endl;
+        // cout << "U : " << currentPoint.u <<  endl;
+        // cout << "V : " << currentPoint.v <<  endl;
          
          B3.u = currentPoint.u;
          B3.v = currentPoint.v;
          
-         createBubbleSplineT(B1.u,B1.v, 0.05);
-         createBubbleSplineT(B2.u,B2.v, 0.05);
-         createBubbleSplineT(B3.u,B3.v, 0.05);
+         createBubbleSplineT(B1.u,B1.v, initialBubbleRadius );
+         createBubbleSplineT(B2.u,B2.v, initialBubbleRadius);
+         createBubbleSplineT(B3.u,B3.v, initialBubbleRadius);
          
-         createBubbleSplineT(currentPoint.u,currentPoint.v, 0.05);
+         createBubbleSplineT(currentPoint.u,currentPoint.v, initialBubbleRadius);*/
          
-         //createBubbleSplineT(0.2,0.5, 0.053);
+
+    
+         
+         
+       //  createBubbleSplineT(P[0][0].u,P[0][0].v, initialBubbleRadius);
+       //  createBubbleSplineT(P[0][1].u,P[0][1].v, initialBubbleRadius);
+        // createBubbleSplineT(P[0][2].u,P[0][2].v, initialBubbleRadius);
+       //  createBubbleSplineT(P[0][3].u,P[0][3].v, initialBubbleRadius);
+        // createBubbleSplineT(P[0][4].u,P[0][4].v, initialBubbleRadius);
+       //  createBubbleSplineT(P[0][5].u,P[0][5].v, initialBubbleRadius);
+        // createBubbleSplineT(P[0][6].u,P[0][6].v, initialBubbleRadius);
+         
+         for (int i=0;i<IMAX;i++)
+         {
+             createBubbleSplineT(P[0][i].u,P[0][i].v, initialBubbleRadius);
+            
+             
+             
+         }
+         
+         for (int i=0;i<IMAX-1;i++)
+         {
+             createBubbleSplineT(P[i][0].u,P[i][0].v, initialBubbleRadius);
+             
+             createBubbleSplineT(P[i][6].u,P[i][6].v, initialBubbleRadius);
+             
+             
+             
+         }
+
+         
+         
+         /*   for (int j=0;j<JMAX;j++)
+          {
+          createBubbleSplineT(P[0][j].u,P[0][j].v, initialBubbleRadius);
+          createBubbleSplineT(P[IMAX-1][j].u,P[IMAX-1][j].v, initialBubbleRadius);
+          
+          
+          
+          }
+
+       
+         
+//         currentPoint = objBP2D.Simulation(P[1][0], P[1][1]);
+//         
+//         P[1][1].u = currentPoint.u;
+//         P[1][1].v = currentPoint.v;
+//         
+//         
+//         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+//         
+//         currentPoint = objBP2D.Simulation(P[0][1], P[1][1]);
+//         
+//         P[1][1].u = currentPoint.u;
+//         P[1][1].v = currentPoint.v;
+//         
+//         
+//         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+         
+  
+         
+ /*        currentPoint = objBP2D.Simulation(P[0][0], P[1][1]);
+         
+         P[1][1].u = currentPoint.u;
+         P[1][1].v = currentPoint.v;
+         
+         
+         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+         
+         currentPoint = objBP2D.Simulation(P[0][1], P[1][1]);
+         
+         P[1][1].u = currentPoint.u;
+         P[1][1].v = currentPoint.v;
+         
+         
+         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+         
+         currentPoint = objBP2D.Simulation(P[0][2], P[1][1]);
+         
+         P[1][1].u = currentPoint.u;
+         P[1][1].v = currentPoint.v;
+         
+         
+         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+         
+         currentPoint = objBP2D.Simulation(P[0][3], P[1][1]);
+         
+         P[1][1].u = currentPoint.u;
+         P[1][1].v = currentPoint.v;
+         
+         
+         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+         
+         currentPoint = objBP2D.Simulation(P[0][4], P[1][1]);
+         
+         P[1][1].u = currentPoint.u;
+         P[1][1].v = currentPoint.v;
+         
+         
+         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+         
+         currentPoint = objBP2D.Simulation(P[0][5], P[1][1]);
+         
+         P[1][1].u = currentPoint.u;
+         P[1][1].v = currentPoint.v;
+         
+         
+         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+         
+         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+         
+         currentPoint = objBP2D.Simulation(P[0][6], P[1][1]);
+         
+         P[1][1].u = currentPoint.u;
+         P[1][1].v = currentPoint.v;
+         
+         
+         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+         
+         currentPoint = objBP2D.Simulation(P[1][0], P[1][1]);
+         
+         P[1][1].u = currentPoint.u;
+         P[1][1].v = currentPoint.v;
+         
+         
+         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+         
+         currentPoint = objBP2D.Simulation(P[1][2], P[1][1]);
+         
+         P[1][1].u = currentPoint.u;
+         P[1][1].v = currentPoint.v;
+         
+         
+         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+         
+         currentPoint = objBP2D.Simulation(P[1][3], P[1][1]);
+         
+         P[1][1].u = currentPoint.u;
+         P[1][1].v = currentPoint.v;
+         
+         
+         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+         
+         currentPoint = objBP2D.Simulation(P[1][4], P[1][1]);
+         
+         P[1][1].u = currentPoint.u;
+         P[1][1].v = currentPoint.v;
+         
+         
+         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+         
+         currentPoint = objBP2D.Simulation(P[1][5], P[1][1]);
+         
+         P[1][1].u = currentPoint.u;
+         P[1][1].v = currentPoint.v;
+         
+         
+         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+         
+         currentPoint = objBP2D.Simulation(P[1][6], P[1][1]);
+         
+         P[1][1].u = currentPoint.u;
+         P[1][1].v = currentPoint.v;
+         
+         
+         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
+*/
+         
+         for(int m=1;m<IMAX-1;m++){
+             for(int n=1;n<JMAX-1;n++){
+                          
+                 for(int i=0;i<IMAX;i++){
+                     for(int j=0;j<IMAX;j++){
+                         
+                         if(i==m && j==n)
+                         {
+                             //P[m][n].u =  P[m][n].u;
+                            // P[m][n].v =  P[m][n].v;
+                         }
+                         else{
+                             currentPoint = objBP2D.Simulation(P[i][j], P[m][n]);
+                             
+                             P[m][n].u = currentPoint.u;
+                             P[m][n].v = currentPoint.v;
+                             
+                             
+                             
+                             
+                         }
+                        
+                         
+
+                     }
+                   
+                 }
+                 
+                  createBubbleSplineT(P[m][n].u,P[m][n].v, initialBubbleRadius);
+                 
+                 if(k%5==0)
+                 {
+                
+                 }
+
+                       
+                 
+             }
+         }
+                         
+                        
+
+
+
+         
+         
+
+         k++;
+
+
+   /*      createBubbleSplineT(P[0][0].u,P[0][0].v, initialBubbleRadius);
+         createBubbleSplineT(P[0][1].u,P[0][1].v, initialBubbleRadius);
+         createBubbleSplineT(P[0][2].u,P[0][2].v, initialBubbleRadius);
+         createBubbleSplineT(P[0][3].u,P[0][3].v, initialBubbleRadius);
+         createBubbleSplineT(P[0][4].u,P[0][4].v, initialBubbleRadius);
+         createBubbleSplineT(P[0][5].u,P[0][5].v, initialBubbleRadius);
+         createBubbleSplineT(P[0][6].u,P[0][6].v, initialBubbleRadius);
+
+         int k=0;
+         
+        for(int j=1;j<JMAX-1;j++)
+        {
+         for(int i=1;i<IMAX-1;i++)
+         {
+             
+             for(int m=0;m<6;m++){
+                 
+                 currentPoint = objBP2D.Simulation(P[k][m], P[j][i]);
+                 
+                 P[j][i].u = currentPoint.u;
+                 P[j][i].v = currentPoint.v;
+                                
+                 createBubbleSplineT(P[j][i].u,P[j][i].v, initialBubbleRadius);
+             }
+                 
+                 
+                 
+                 
+                 //Borders
+                // createBubbleSplineT(P[k][0].u,P[k][0].v, initialBubbleRadius);
+                // createBubbleSplineT(P[k][6].u,P[k][6].v, initialBubbleRadius);
+                 
+                // k=i;
+            }
+             k++;
+             
+         }
+
+       
+  /*
+        for(int i=1;i<IMAX-1;i++)
+        {
+         for(int j=1;j<JMAX-1;j++)
+             {
+                 
+                 for(int m=0;m<2;m++){
+                     for(int n=0;n<JMAX;n++){
+                         currentPoint = objBP2D.Simulation(P[n][m], P[i][j]);
+                         
+                         P[i][j].u = currentPoint.u;
+                         P[i][j].v = currentPoint.v;
+                         
+                         
+                        createBubbleSplineT(P[i][j].u,P[i][j].v, initialBubbleRadius);
+                         
+                     }
+                                          
+                 }
+                 
+                
+             }
+        }
          
      
+    */     
+                  
+         //objBP2D.surfaceSimulation(P, IMAX, JMAX );
+         
+         //Matrix initialization to stared all the points in the animation for each time step for all bubbles
+         
+        /*
+         for (int i=1;i<IMAX-1;i++){
+             for (int j=1;j<JMAX-1;j++){
+                 createBubbleSplineT(P[i][j].u,P[i][j].v, initialBubbleRadius);
+
+             }
+         }
+         */
+                 
+         //createBubbleSplineT(P[1][6].u,P[1][6].v, initialBubbleRadius);
+
+         
+         
      }
      
 /*
@@ -1256,6 +1589,12 @@ void key(unsigned char inkey, int px, int py)
         case 'g': 
         case 'G':
             gGeometrySpline =  1 - gGeometrySpline;
+            glutPostRedisplay();
+            break; // print point spline
+            
+        case 'm':
+        case 'M':
+            sResetSim =  1 - sResetSim;
             glutPostRedisplay();
             break; // print point spline
             

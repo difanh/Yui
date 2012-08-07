@@ -34,10 +34,10 @@ struct bubble {
     float u; //position in the parametric u space (0-1) dependes on the KnotVector  
     float v; //position in the parametric v space (0-1)
     
-    PointUVp location;
+   // PointUVp location;
     
     //what level
-    int level;
+   // int level;
     
     //radius
     float radius;
@@ -82,6 +82,23 @@ class BubblePacking2D
     //Function tries to solve runge Kutta for a system of equation
     //RuggeKutta Solution for a set of equations
     float rk4_sol(float initial_point_1D, float time_step, float interbubble_forces); // RungeKutta working function
+    
+    //This function creates check if a bubble interact with another within a region
+    // defined as 1.5 times the radius of the bubble looked upon
+    // input: matrix with all the bubbles definitions
+    // output: matrix with all the bubbles definitions after interaction 1 step
+    void surfaceSimulation (bubble **mBubbles, int IMAX, int JMAX);
+    
+    //This function checks for the distance between bubbles and the region interest
+    // in this case 1.5 times the radius of the bubble looked upon
+    // input: the current bubble and all the matrix with all bubble locations
+    // output: bubble current location changes
+    void  bubbleInteraction (bubble current, bubble** bubbleAll , int IMAX, int JMAX) ;
+    
+    
+    //Domain subdivision
+    void subdivisionHardCode (bubble** P, int IMAX, int JMAX);
+
     
 
    

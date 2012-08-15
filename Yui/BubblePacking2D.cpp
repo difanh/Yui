@@ -16,8 +16,8 @@ BubblePacking2D::BubblePacking2D()
     
     _mass = 1.0; // Mass of a bubble for phisical simulation
     _damping_force = 0.7*sqrt( _spring_rate*_mass); //Damping force for phisical simulation
-    _spring_rate = 0.1*0.00001;// ko 0.1 0.001*0.0001
-    MAXI = 120;
+    _spring_rate = 0.1*0.001;// ko 0.1 0.001*0.0001
+    MAXI = 100;
 }
 
 BubblePacking2D::~BubblePacking2D()
@@ -112,10 +112,41 @@ PointUVp BubblePacking2D::Simulation(bubble B1, bubble B2)
     float distanceIDirection = findDistanceBetweenBubbles(B1, B2);
     w = wParameter(distanceIDirection, stableDistance);
     interbubbleForces =  interBubbleForces( _spring_rate, stableDistance, w);
-    result.u =rk4_sol(B2.u, h, interbubbleForces);
-    result.v =rk4_sol(B2.v, h, interbubbleForces);
-
-
+    
+    
+    
+    // ( 1 )
+    if (B2.u > B1.u && B2.v > B1.v )
+    {
+     result.u =rk4_sol(B2.u, h, interbubbleForces);
+     result.v =rk4_sol(B2.v, h, interbubbleForces);
+    }
+    
+    // ( 2 )
+    if (B2.u > B1.u && B2.v < B1.v )
+    {
+        result.u =rk4_sol(B2.u, h, interbubbleForces);
+        result.v =rk4_sol(B2.v, h, -interbubbleForces);
+    }
+    
+    //( 3 )
+    if (B2.u < B1.u && B2.v < B1.v )
+    {
+        result.u =rk4_sol(B2.u, h, -interbubbleForces);
+        result.v =rk4_sol(B2.v, h, -interbubbleForces);
+    }
+    
+    //( 4 )
+    if (B2.u < B1.u && B2.v > B1.v )
+    {
+        result.u =rk4_sol(B2.u, h, -interbubbleForces);
+        result.v =rk4_sol(B2.v, h, +interbubbleForces);
+    }
+    
+    else{
+        interbubbleForces = interbubbleForces;
+    }
+        
     
      
     // x direction
@@ -164,7 +195,7 @@ float BubblePacking2D::rk4_sol(float xi, float time_step, float fw)
     float h = time_step;
     float dt;
     
-    if(MAXI>180) MAXI=180; //CHANGE HERE
+    if(MAXI>60) MAXI=60; //CHANGE HERE
     
     for (int i =0 ; i<MAXI ; i++)
     {             
@@ -292,8 +323,8 @@ void BubblePacking2D:: subdivisionHardCode( bubble** P, int IMAX, int JMAX)
         {
             P[i][j].u = 1/(float)(IMAX-1)*i;
             P[i][j].v=  1/(float)(JMAX-1)*j;
-            // cout << U[i][j] << endl;
-            //  cout << V[i][j] << endl;
+            //cout <<"P["<<i<<"]["<<j<<"].u:"<< P[i][j].u << endl;
+            //cout <<"P["<<i<<"]["<<j<<"].v:"<< P[i][j].v << endl;
             
            
             P[i][j].idx = i*IMAX+j;
@@ -303,6 +334,7 @@ void BubblePacking2D:: subdivisionHardCode( bubble** P, int IMAX, int JMAX)
             
         }
     }
+    
     
     
     

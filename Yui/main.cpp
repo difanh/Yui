@@ -90,7 +90,7 @@ GLboolean gKRestart = GL_FALSE;
 GLboolean sWire = GL_TRUE;
 
 GLboolean sFlag = GL_TRUE;
-GLboolean sCreateBubbleBSpline = GL_TRUE;
+GLboolean sCreateBubbleBSpline = GL_FALSE;
 
 GLboolean sSubdivision = GL_TRUE;
 
@@ -137,10 +137,9 @@ myPoint3D** sMAT;
 int IMAX = 7;
 int JMAX = 7;
 
-bubble ** P; //matrix saves all the data for all the points in the surface
+bubble ** PointMat; //matrix saves all the data for all the points in the surface
 
-float initialBubbleRadius = 0.085
-;
+float initialBubbleRadius = 0.083;//1/(float)7/(float)2;
 
 
 
@@ -480,21 +479,21 @@ void init12 (void)
     
 
     
-    P = new bubble * [IMAX];
+    PointMat = new bubble * [IMAX];
     for(int i=0;i<IMAX;i++){
-        P[i] = new bubble  [JMAX];
+        PointMat[i] = new bubble  [JMAX];
         for(int j=0;j<JMAX;j++){
-            P[i][j].radius = initialBubbleRadius; //change here if needed
-            P[i][j].u = 0.0;
-            P[i][j].v = 0.0;
-            P[i][j].idx = 0.0;
+            PointMat[i][j].radius = initialBubbleRadius; //change here if needed
+            PointMat[i][j].u = 0.0;
+            PointMat[i][j].v = 0.0;
+            PointMat[i][j].idx = 0.0;
         }
         
     }
 
 
     
-    objBP2D.subdivisionHardCode( P, IMAX, JMAX);
+    objBP2D.subdivisionHardCode( PointMat, IMAX, JMAX);
 
     
 
@@ -534,11 +533,11 @@ void createBubbleSplineT(float dx, float dy, float radius)
     float* Vknot = new float [9];
     
     Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
-    Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.0; //By changing the knot value the extends
+    Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.1; //By changing the knot value the extends
     
     
     Vknot[0]= Vknot[1] = Vknot[2]= Vknot[3]= Vknot[4] =  0.0;
-    Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.0;
+    Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.1;
     
     
     // glPushMatrix(); //Copies the matrix on the top of the stack, this would be like save the funcion
@@ -549,7 +548,11 @@ void createBubbleSplineT(float dx, float dy, float radius)
     
     // float radius = 0.1;
     
-    float	colorUSER[3]	=	{0.99609375, 0.3984375, 0};
+    float	Diegol[3]=	{255, 245, 195};
+
+    
+    float	colorUSER[3]	=	{255, 245, 195};
+    ; //{0.99609375, 0.3984375, 0};
     
     glBegin(GL_LINES);
     glColor3fv(colorUSER);
@@ -587,6 +590,112 @@ void createBubbleSplineT(float dx, float dy, float radius)
     
 }
 
+void simulation()
+{
+    
+        
+    
+    
+ 
+    
+    float lastu, lastv;
+    int deti = 5;
+    int detj = 1;
+    
+    /*currentPoint = objBP2D.Simulation(PointMat[6][0], PointMat[deti][detj]);
+    
+    PointMat[deti][detj].u = currentPoint.u;
+    PointMat[deti][detj].v = currentPoint.v;
+    
+    lastu= currentPoint.u;
+    lastv= currentPoint.v;
+    
+    
+    createBubbleSplineT(PointMat[deti][detj].u,PointMat[deti][detj].v, initialBubbleRadius);
+    
+    
+  
+    float	Diegol[3]=	{255, 245, 195};
+    
+    
+    glColor3fv(Diegol);
+    glPointSize(2);
+    //  glBegin(GL_POINTS);
+    
+    
+    
+    createBubbleSplineT(PointMat[deti][detj].u,PointMat[deti][detj].v, initialBubbleRadius);
+    */
+    
+    
+    
+    for(int m=1;m<IMAX-1;m++){
+        for(int n=1;n<IMAX-1;n++){
+            
+            for(int i=0;i<IMAX;i++){
+                for(int j=0;j<IMAX;j++){
+                    
+                    if(i==m && j==n)
+                    {
+                        //P[m][n].u =  P[m][n].u;
+                        // P[m][n].v =  P[m][n].v;
+                    }
+                    /* if(i==0 && j==0)
+                     {
+                     
+                     
+                     }*/
+                    
+                    else{
+                        lastu = PointMat[m][n].u;
+                        lastv = PointMat[m][n].v;
+                        
+                        currentPoint = objBP2D.Simulation(PointMat[i][j], PointMat[m][n]);
+                        
+                        PointMat[m][n].u = currentPoint.u;
+                        PointMat[m][n].v = currentPoint.v;
+                        
+                        if(PointMat[m][n].u>=1.0) PointMat[m][n].u = lastu;
+                        if(PointMat[m][n].v>=1.0) PointMat[m][n].v = lastv;
+                        
+                        
+                        
+                        
+                    }
+                    
+                    
+                    
+                }
+                
+            }
+            
+           // createBubbleSplineT(PointMat[m][n].u,PointMat[m][n].v, initialBubbleRadius);
+            
+            if(k%5==0)
+            {
+                
+            }
+            
+            
+            
+        }
+    }
+     
+     
+    
+    
+    
+    
+    
+    
+    k++;
+    
+    
+  
+    
+    
+    
+}
 
 void maindisplay(void)
 {
@@ -596,7 +705,7 @@ void maindisplay(void)
 	// near frustum plane clamped at 1.0
 	GLdouble zNear = MIN (-gCamera.viewPos.z - gShapeSize * 0.5, 1.0);
 	// window aspect ratio
-	GLdouble aspect = gCamera.screenWidth / (GLdouble)gCamera.screenHeight; 
+	GLdouble aspect = gCamera.screenWidth / (GLdouble)gCamera.screenHeight;
     
 	glMatrixMode (GL_PROJECTION);
 	glLoadIdentity ();
@@ -642,7 +751,7 @@ void maindisplay(void)
         //glColor3f (1.0, 1.0, 1.0); // no coloring
         
         
-        objBB.createGeometry(); //Creates visalization of _location_vector_2d  
+        objBB.createGeometry(); //Creates visalization of _location_vector_2d
         
         
     }
@@ -666,7 +775,7 @@ void maindisplay(void)
 		glCallList (gSolidList);
         
         
-    } 
+    }
     
     if (gGeometrySpline)
     {
@@ -984,329 +1093,51 @@ void maindisplay(void)
      
      if(sCreateBubbleBSpline)
      {
-         //cout << "HOLA" ;
-        
-        /* if (sResetSim)
-         {
-             B3.u = 0.4;
-             B3.v = 0.5;
-         }
+         simulation();
          
-         currentPoint = objBP2D.Simulation(B1, B3);
-        // cout << "U : " << currentPoint.u <<  endl;
-        // cout << "V : " << currentPoint.v <<  endl;
+         if (k==250) sCreateBubbleBSpline = false;
          
-         B3.u = currentPoint.u;
-         B3.v = currentPoint.v;
          
-         createBubbleSplineT(B1.u,B1.v, initialBubbleRadius );
-         createBubbleSplineT(B2.u,B2.v, initialBubbleRadius);
-         createBubbleSplineT(B3.u,B3.v, initialBubbleRadius);
          
-         createBubbleSplineT(currentPoint.u,currentPoint.v, initialBubbleRadius);*/
-         
-
-    
-         
-         
-       //  createBubbleSplineT(P[0][0].u,P[0][0].v, initialBubbleRadius);
-       //  createBubbleSplineT(P[0][1].u,P[0][1].v, initialBubbleRadius);
-        // createBubbleSplineT(P[0][2].u,P[0][2].v, initialBubbleRadius);
-       //  createBubbleSplineT(P[0][3].u,P[0][3].v, initialBubbleRadius);
-        // createBubbleSplineT(P[0][4].u,P[0][4].v, initialBubbleRadius);
-       //  createBubbleSplineT(P[0][5].u,P[0][5].v, initialBubbleRadius);
-        // createBubbleSplineT(P[0][6].u,P[0][6].v, initialBubbleRadius);
-         
-         for (int i=0;i<IMAX;i++)
-         {
-             createBubbleSplineT(P[0][i].u,P[0][i].v, initialBubbleRadius);
-            
-             
-             
-         }
-         
-         for (int i=0;i<IMAX-1;i++)
-         {
-             createBubbleSplineT(P[i][0].u,P[i][0].v, initialBubbleRadius);
-             
-             createBubbleSplineT(P[i][6].u,P[i][6].v, initialBubbleRadius);
-             
-             
-             
-         }
-
-         
-         
-         /*   for (int j=0;j<JMAX;j++)
-          {
-          createBubbleSplineT(P[0][j].u,P[0][j].v, initialBubbleRadius);
-          createBubbleSplineT(P[IMAX-1][j].u,P[IMAX-1][j].v, initialBubbleRadius);
-          
-          
-          
-          }
-
-       
-         
-//         currentPoint = objBP2D.Simulation(P[1][0], P[1][1]);
-//         
-//         P[1][1].u = currentPoint.u;
-//         P[1][1].v = currentPoint.v;
-//         
-//         
-//         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-//         
-//         currentPoint = objBP2D.Simulation(P[0][1], P[1][1]);
-//         
-//         P[1][1].u = currentPoint.u;
-//         P[1][1].v = currentPoint.v;
-//         
-//         
-//         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-         
-  
-         
- /*        currentPoint = objBP2D.Simulation(P[0][0], P[1][1]);
-         
-         P[1][1].u = currentPoint.u;
-         P[1][1].v = currentPoint.v;
-         
-         
-         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-         
-         currentPoint = objBP2D.Simulation(P[0][1], P[1][1]);
-         
-         P[1][1].u = currentPoint.u;
-         P[1][1].v = currentPoint.v;
-         
-         
-         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-         
-         currentPoint = objBP2D.Simulation(P[0][2], P[1][1]);
-         
-         P[1][1].u = currentPoint.u;
-         P[1][1].v = currentPoint.v;
-         
-         
-         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-         
-         currentPoint = objBP2D.Simulation(P[0][3], P[1][1]);
-         
-         P[1][1].u = currentPoint.u;
-         P[1][1].v = currentPoint.v;
-         
-         
-         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-         
-         currentPoint = objBP2D.Simulation(P[0][4], P[1][1]);
-         
-         P[1][1].u = currentPoint.u;
-         P[1][1].v = currentPoint.v;
-         
-         
-         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-         
-         currentPoint = objBP2D.Simulation(P[0][5], P[1][1]);
-         
-         P[1][1].u = currentPoint.u;
-         P[1][1].v = currentPoint.v;
-         
-         
-         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-         
-         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-         
-         currentPoint = objBP2D.Simulation(P[0][6], P[1][1]);
-         
-         P[1][1].u = currentPoint.u;
-         P[1][1].v = currentPoint.v;
-         
-         
-         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-         
-         currentPoint = objBP2D.Simulation(P[1][0], P[1][1]);
-         
-         P[1][1].u = currentPoint.u;
-         P[1][1].v = currentPoint.v;
-         
-         
-         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-         
-         currentPoint = objBP2D.Simulation(P[1][2], P[1][1]);
-         
-         P[1][1].u = currentPoint.u;
-         P[1][1].v = currentPoint.v;
-         
-         
-         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-         
-         currentPoint = objBP2D.Simulation(P[1][3], P[1][1]);
-         
-         P[1][1].u = currentPoint.u;
-         P[1][1].v = currentPoint.v;
-         
-         
-         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-         
-         currentPoint = objBP2D.Simulation(P[1][4], P[1][1]);
-         
-         P[1][1].u = currentPoint.u;
-         P[1][1].v = currentPoint.v;
-         
-         
-         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-         
-         currentPoint = objBP2D.Simulation(P[1][5], P[1][1]);
-         
-         P[1][1].u = currentPoint.u;
-         P[1][1].v = currentPoint.v;
-         
-         
-         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-         
-         currentPoint = objBP2D.Simulation(P[1][6], P[1][1]);
-         
-         P[1][1].u = currentPoint.u;
-         P[1][1].v = currentPoint.v;
-         
-         
-         createBubbleSplineT(P[1][1].u,P[1][1].v, initialBubbleRadius);
-*/
-         
-         for(int m=1;m<IMAX-1;m++){
-             for(int n=1;n<JMAX-1;n++){
-                          
-                 for(int i=0;i<IMAX;i++){
-                     for(int j=0;j<IMAX;j++){
-                         
-                         if(i==m && j==n)
-                         {
-                             //P[m][n].u =  P[m][n].u;
-                            // P[m][n].v =  P[m][n].v;
-                         }
-                         else{
-                             currentPoint = objBP2D.Simulation(P[i][j], P[m][n]);
-                             
-                             P[m][n].u = currentPoint.u;
-                             P[m][n].v = currentPoint.v;
-                             
-                             
-                             
-                             
-                         }
-                        
-                         
-
-                     }
-                   
-                 }
-                 
-                  createBubbleSplineT(P[m][n].u,P[m][n].v, initialBubbleRadius);
-                 
-                 if(k%5==0)
-                 {
-                
-                 }
-
-                       
-                 
-             }
-         }
-                         
-                        
-
-
-
-         
-         
-
-         k++;
-
-
-   /*      createBubbleSplineT(P[0][0].u,P[0][0].v, initialBubbleRadius);
-         createBubbleSplineT(P[0][1].u,P[0][1].v, initialBubbleRadius);
-         createBubbleSplineT(P[0][2].u,P[0][2].v, initialBubbleRadius);
-         createBubbleSplineT(P[0][3].u,P[0][3].v, initialBubbleRadius);
-         createBubbleSplineT(P[0][4].u,P[0][4].v, initialBubbleRadius);
-         createBubbleSplineT(P[0][5].u,P[0][5].v, initialBubbleRadius);
-         createBubbleSplineT(P[0][6].u,P[0][6].v, initialBubbleRadius);
-
-         int k=0;
-         
-        for(int j=1;j<JMAX-1;j++)
-        {
-         for(int i=1;i<IMAX-1;i++)
-         {
-             
-             for(int m=0;m<6;m++){
-                 
-                 currentPoint = objBP2D.Simulation(P[k][m], P[j][i]);
-                 
-                 P[j][i].u = currentPoint.u;
-                 P[j][i].v = currentPoint.v;
-                                
-                 createBubbleSplineT(P[j][i].u,P[j][i].v, initialBubbleRadius);
-             }
-                 
-                 
-                 
-                 
-                 //Borders
-                // createBubbleSplineT(P[k][0].u,P[k][0].v, initialBubbleRadius);
-                // createBubbleSplineT(P[k][6].u,P[k][6].v, initialBubbleRadius);
-                 
-                // k=i;
-            }
-             k++;
-             
-         }
-
-       
-  /*
-        for(int i=1;i<IMAX-1;i++)
-        {
-         for(int j=1;j<JMAX-1;j++)
-             {
-                 
-                 for(int m=0;m<2;m++){
-                     for(int n=0;n<JMAX;n++){
-                         currentPoint = objBP2D.Simulation(P[n][m], P[i][j]);
-                         
-                         P[i][j].u = currentPoint.u;
-                         P[i][j].v = currentPoint.v;
-                         
-                         
-                        createBubbleSplineT(P[i][j].u,P[i][j].v, initialBubbleRadius);
-                         
-                     }
-                                          
-                 }
-                 
-                
-             }
-        }
-         
-     
-    */     
-                  
-         //objBP2D.surfaceSimulation(P, IMAX, JMAX );
-         
-         //Matrix initialization to stared all the points in the animation for each time step for all bubbles
-         
-        /*
-         for (int i=1;i<IMAX-1;i++){
-             for (int j=1;j<JMAX-1;j++){
-                 createBubbleSplineT(P[i][j].u,P[i][j].v, initialBubbleRadius);
-
-             }
-         }
-         */
-                 
-         //createBubbleSplineT(P[1][6].u,P[1][6].v, initialBubbleRadius);
-
          
          
      }
+    
+    //----->
+    
+    //BOUNDARIES
+    
+    for (int i=0;i<IMAX;i++)
+    {
+        createBubbleSplineT(PointMat[0][i].u,PointMat[0][i].v, initialBubbleRadius);
+        
+        createBubbleSplineT(PointMat[IMAX-1][i].u,PointMat[IMAX-1][i].v, initialBubbleRadius);
+        
+        
+        
+        
+    }
+    
+    for (int i=0;i<IMAX;i++)
+    {
+        createBubbleSplineT(PointMat[i][0].u,PointMat[i][0].v, initialBubbleRadius);
+        
+        createBubbleSplineT(PointMat[i][IMAX-1].u,PointMat[i][IMAX-1].v, initialBubbleRadius);
+        
+        
+        
+    }
+
+
+    
+    for(int m=1;m<IMAX-1;m++){
+        for(int n=1;n<IMAX-1;n++){
+            
+            
+            createBubbleSplineT(PointMat[m][n].u,PointMat[m][n].v, initialBubbleRadius);
+            
+        }
+    }
      
 /*
     
@@ -1597,6 +1428,15 @@ void key(unsigned char inkey, int px, int py)
             sResetSim =  1 - sResetSim;
             glutPostRedisplay();
             break; // print point spline
+            
+        case 'y':
+        case 'Y':
+            sCreateBubbleBSpline =  1 - sCreateBubbleBSpline;
+            glutPostRedisplay();
+            break; // print point spline
+            
+            
+            
             
         default:   break;
             

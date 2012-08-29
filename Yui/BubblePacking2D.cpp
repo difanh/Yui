@@ -16,8 +16,8 @@ BubblePacking2D::BubblePacking2D()
     
     _mass = 1.0; // Mass of a bubble for phisical simulation
     _damping_force = 0.7*sqrt( _spring_rate*_mass); //Damping force for phisical simulation
-    _spring_rate = 0.1*0.001;// ko 0.1 0.001*0.0001
-    MAXI = 100;
+    _spring_rate = 0.1*0.001;// ko 0.1 0.001*0.0001 faster
+    MAXI = 35; //max number of iterations
 }
 
 BubblePacking2D::~BubblePacking2D()
@@ -334,6 +334,26 @@ void BubblePacking2D:: subdivisionHardCode( bubble** P, int IMAX, int JMAX)
             
         }
     }
+    
+    
+    for(int i=1; i<IMAX-1; i++)
+    {
+        for(int j=1; j<JMAX-1; j++)
+        {
+            P[i][j].u = 1/(float)(IMAX-1)*i;
+            P[i][j].v=  1/(float)(JMAX-1)*j;
+            //cout <<"P["<<i<<"]["<<j<<"].u:"<< P[i][j].u << endl;
+            //cout <<"P["<<i<<"]["<<j<<"].v:"<< P[i][j].v << endl;
+            
+            
+            P[i][j].idx = i*IMAX+j;
+            //P[i][j].radius = 0.02; //change here
+            
+            //  cout << i*nPoints+j << endl;
+            
+        }
+    }
+    
     
     
     

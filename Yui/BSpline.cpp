@@ -74,7 +74,7 @@ void BSPline::InitializeControlPoints()
     }
     
     
-    
+    /*
      controlPointsArray[0][0].x = -1.0;  controlPointsArray[0][0].y = -1.0;  controlPointsArray[0][0].z = 4.0;
      controlPointsArray[0][1].x = -1.5;  controlPointsArray[0][1].y = -1.0;  controlPointsArray[0][1].z = 3.0;
      controlPointsArray[0][2].x = -1.5;  controlPointsArray[0][2].y = 1.0;  controlPointsArray[0][2].z = 2.0;
@@ -114,8 +114,46 @@ void BSPline::InitializeControlPoints()
      controlPointsArray[4][4].x = 3.0;  controlPointsArray[4][4].y = 1.0;  controlPointsArray[4][4].z = 0.0;
      controlPointsArray[4][5].x = 3.0;  controlPointsArray[4][5].y = 1.0;  controlPointsArray[4][5].z = 1.0;
     
-    
-   
+    */
+     controlPointsArray[0][0].x = -1.0;  controlPointsArray[0][0].y = -1.2;  controlPointsArray[0][0].z = 4.0;
+     controlPointsArray[0][1].x = -1.0;  controlPointsArray[0][1].y = -0.6;  controlPointsArray[0][1].z = 3.0;
+     controlPointsArray[0][2].x = -1.0;  controlPointsArray[0][2].y = 0.0;  controlPointsArray[0][2].z = 2.0;
+     controlPointsArray[0][3].x = -1.0;  controlPointsArray[0][3].y = 0.6;  controlPointsArray[0][3].z = 1.0;
+     controlPointsArray[0][4].x = -1.0;  controlPointsArray[0][4].y = 1.2;  controlPointsArray[0][4].z = 0.0;
+     controlPointsArray[0][5].x = -1.0;  controlPointsArray[0][5].y = 1.8;  controlPointsArray[0][5].z = -1.0;
+     
+     
+     controlPointsArray[1][0].x = 0.0;  controlPointsArray[1][0].y = -1.2;  controlPointsArray[1][0].z = 4.0;
+     controlPointsArray[1][1].x = 0.0;  controlPointsArray[1][1].y = -0.6;  controlPointsArray[1][1].z = 3.0;
+     controlPointsArray[1][2].x = 0.0;  controlPointsArray[1][2].y = 0.0;  controlPointsArray[1][2].z = 2.0;
+     controlPointsArray[1][3].x = 0.0;  controlPointsArray[1][3].y = 0.6;  controlPointsArray[1][3].z = 1.0;
+     controlPointsArray[1][4].x = 0.0;  controlPointsArray[1][4].y = 1.2;  controlPointsArray[1][4].z = 0.0;
+     controlPointsArray[1][5].x = 0.0;  controlPointsArray[1][5].y = 1.8;  controlPointsArray[1][5].z = -1.0;
+     
+     
+     controlPointsArray[2][0].x = 1.0;  controlPointsArray[2][0].y = -1.2;  controlPointsArray[2][0].z = 4.0;
+     controlPointsArray[2][1].x = 1.0;  controlPointsArray[2][1].y = -0.6;  controlPointsArray[2][1].z = 3.0;
+     controlPointsArray[2][2].x = 1.0;  controlPointsArray[2][2].y = 0.0;  controlPointsArray[2][2].z = 2.0;
+     controlPointsArray[2][3].x = 1.0;  controlPointsArray[2][3].y = 0.6;  controlPointsArray[2][3].z = 1.0;
+     controlPointsArray[2][4].x = 1.0;  controlPointsArray[2][4].y = 1.2;  controlPointsArray[2][4].z = 0.0;
+     controlPointsArray[2][5].x = 1.0;  controlPointsArray[2][5].y = 1.8;  controlPointsArray[2][5].z = -1.0;
+     
+     
+     controlPointsArray[3][0].x = 2.0;  controlPointsArray[3][0].y = -1.2;  controlPointsArray[3][0].z = 4.0;
+     controlPointsArray[3][1].x = 2.0;  controlPointsArray[3][1].y = -0.6;  controlPointsArray[3][1].z = 3.0;
+     controlPointsArray[3][2].x = 2.0;  controlPointsArray[3][2].y = 0.0;  controlPointsArray[3][2].z = 2.0;
+     controlPointsArray[3][3].x = 2.0;  controlPointsArray[3][3].y = 0.6;  controlPointsArray[3][3].z = 1.0;
+     controlPointsArray[3][4].x = 2.0;  controlPointsArray[3][4].y = 1.2;  controlPointsArray[3][4].z = 0.0;
+     controlPointsArray[3][5].x = 2.0;  controlPointsArray[3][5].y = 1.8;  controlPointsArray[3][5].z = -1.0;
+     
+     
+     controlPointsArray[4][0].x = 3.0;  controlPointsArray[4][0].y = -1.2;  controlPointsArray[4][0].z = 4.0;
+     controlPointsArray[4][1].x = 3.0;  controlPointsArray[4][1].y = -0.6;  controlPointsArray[4][1].z = 3.0;
+     controlPointsArray[4][2].x = 3.0;  controlPointsArray[4][2].y = 0.0;  controlPointsArray[4][2].z = 2.0;
+     controlPointsArray[4][3].x = 3.0;  controlPointsArray[4][3].y = 0.6;  controlPointsArray[4][3].z = 1.0;
+     controlPointsArray[4][4].x = 3.0;  controlPointsArray[4][4].y = 1.2;  controlPointsArray[4][4].z = 0.0;
+     controlPointsArray[4][5].x = 3.0;  controlPointsArray[4][5].y = 1.8;  controlPointsArray[4][5].z = -1.0;
+     
 
     
     controlPointsWeightsArray = new float * [15];
@@ -447,7 +485,7 @@ void BSPline::ptsNURBS(myPoint3D **P, float ** weight, float *knot_i, float *kno
     float   basis_i[50],basis_j[50];
     float   tempx,tempy,tempz,denominator;
     
-    /* ----------- End of Decleration -------------- */
+    /* ----------- End of Declaration -------------- */
     lowi = orderi - 1 ; highi = m + 1; 
     lowj = orderj - 1 ; highj = n + 1; 
     I = knotSearch(knot_i,s,lowi,highi);

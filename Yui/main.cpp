@@ -134,12 +134,12 @@ float b=WIDTH;
 
 myPoint3D** sMAT;
 
-int IMAX = 7;
-int JMAX = 7;
+int IMAX = 15;
+int JMAX = 15;
 
 bubble ** PointMat; //matrix saves all the data for all the points in the surface
 
-float initialBubbleRadius = 0.083;//1/(float)7/(float)2;
+float initialBubbleRadius = 0.035;//10-0.0523;//7-0.083;//1/(float)7/(float)2;
 
 
 
@@ -655,8 +655,11 @@ void simulation()
                         PointMat[m][n].u = currentPoint.u;
                         PointMat[m][n].v = currentPoint.v;
                         
-                        if(PointMat[m][n].u>=1.0) PointMat[m][n].u = lastu;
-                        if(PointMat[m][n].v>=1.0) PointMat[m][n].v = lastv;
+                        if(PointMat[m][n].u>=0.99) PointMat[m][n].u = lastu; ////IMPORTANT TO CHANGE
+                        if(PointMat[m][n].v>=0.99) PointMat[m][n].v = lastv;
+                        
+                        if(PointMat[m][n].u<=0.01) PointMat[m][n].u = lastu; ////IMPORTANT TO CHANGE
+                        if(PointMat[m][n].v<=0.01) PointMat[m][n].v = lastv;
                         
                         
                         
@@ -1065,8 +1068,36 @@ void maindisplay(void)
          }
      
      glEnd();
+         
+      
+         
+         
+  // QUADS
+         
+        /*
+         
+         glBegin(GL_QUADS);
+         
+         for(int j=0;j<JMAX-1;j++) {
+             for(int i=0;i<IMAX-1;i++) {
+
+         
+             float Point1[3] = { sMAT[i][j].x,sMAT[i][j].y ,sMAT[i][j].z  };
+             float Point2[3] = { sMAT[i][j+1].x,sMAT[i][j+1].y ,sMAT[i][j+1].z  };
+             float Point3[3] = { sMAT[i+1][j+1].x,sMAT[i+1][j+1].y ,sMAT[i+1][j+1].z  };
+             float Point4[3] = { sMAT[i+1][0].x,sMAT[i+1][0].y ,sMAT[i+1][0].z  };
+             
+             glVertex3fv(Point1);
+             glVertex3fv(Point2);
+             glVertex3fv(Point3);
+             glVertex3fv(Point4);
+                 
+             }
+         }
+         
+         glEnd();
      
-     
+     */
      
      delete [] Uknot;
      delete [] Vknot;

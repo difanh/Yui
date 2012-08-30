@@ -6,49 +6,101 @@
 //  Copyright (c) 2012 Carnegie Mellon University. All rights reserved.
 //
 
-#include <string.h>
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
-
-#include <GLUT/glut.h>
-#include <OpenGL/glext.h>
+//Includes for system classes
 #include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
 #include <OpenGL/glu.h>
+#include <GLUT/glut.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+//Includes for costume classes
+#include "Common.h"
 #include "trackball.h"
 #include "SurfaceGeometry.h" 
-
 #include "BubbleGeometry.h"
 #include "RungeKutta.h"
 #include "Euler.h"
-
 #include "Spline.h"
 #include "BubblePacking.h"
-
 #include "BSpline.h"
 #include "Subdivision.h"
-
 #include "BubblePacking2D.h"
 
 //#include "AllColor.h"
 
-#define DTOR 0.0174532925
+
+/*
+ Costume #define pre-processor directives
+*/
+
+#define DTOR 0.017453925
 #define CROSSPROD(p1,p2,p3) \
 p3.x = p1.y*p2.z - p1.z*p2.y; \
 p3.y = p1.z*p2.x - p1.x*p2.z; \
 p3.z = p1.x*p2.y - p1.y*p2.x
 
-#define PI 4*atan(1)
 
 #ifndef MIN
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
 
-enum {
-	kTextureSize = 256
-};
+#define HEIGHT 600
+#define WIDTH 800
 
+/*
+ Open Gl Variables
+ */
+GLint gDollyPanStartPoint[2] = {0, 0};
+//static GLint snowman_display_list;
+
+GLuint gPointList = NULL;
+GLuint gWireList = NULL;
+GLuint gSolidList = NULL;
+
+GLfloat gfDeltaX = .01;
+GLfloat gfPosX = 0.0;
+GLfloat gShapeSize = 11.0f;
+GLfloat gTrackBallRotation [4] = {0.0, 0.0, 0.0, 0.0};
+GLfloat gWorldRotation [4] = {180, 0.0, 1.0, 0.0}; //{155.0, 0.0, -1.0, 0.0};
+
+GLboolean gDolly = GL_FALSE;
+GLboolean gPan = GL_FALSE;
+
+
+GLboolean gShowHelp = GL_TRUE;
+GLboolean gShowInfo = GL_TRUE;
+GLboolean gShowSplineControlPoints = GL_TRUE;
+GLboolean gTrackBall = GL_FALSE;
+
+GLboolean sSimulationInBSplinePatch= GL_FALSE;
+GLboolean sFlag=GL_TRUE;
+GLboolean sOneBubble = GL_TRUE;
+GLboolean sWire = GL_TRUE;
+GLboolean sSubdivision = GL_TRUE;
+
+static GLboolean WIRE=0;		// draw mesh in wireframe?
+
+int gLastKey = ' ';
+int gMainWindow = 0;
+int k=0;
+int IMAX = 10;
+int JMAX = 10;
+int number_of_bubbles = IMAX; //(int) (distance_geometry)/(int) IMAX *2;
+
+float a=HEIGHT;
+float b=WIDTH;
+
+float distance_geometry =4.0;
+float nodeformationRadius = distance_geometry/(float)number_of_bubbles*0.5+0.01;
+float initialBubbleRadius = nodeformationRadius/(float) distance_geometry;// 0.05;//10-0.0523;//7-0.083;//1/(float)7/(float)2;
+
+
+/*
+ Costume Structures
+ */
 typedef struct {
     GLdouble x,y,z;
 } recVec;
@@ -65,111 +117,39 @@ typedef struct {
 } recCamera;
 
 
-
-GLfloat gShapeSize = 11.0f;
-
-GLint gDollyPanStartPoint[2] = {0, 0};
-GLfloat gTrackBallRotation [4] = {0.0, 0.0, 0.0, 0.0};
-GLboolean gDolly = GL_FALSE;
-GLboolean gPan = GL_FALSE;
-GLboolean gTrackBall = GL_FALSE;
-GLfloat gWorldRotation [4] = {180, 0.0, 1.0, 0.0}; //{155.0, 0.0, -1.0, 0.0};
-
-GLboolean gLines = GL_FALSE;
-GLboolean gPolygons = GL_TRUE;
-GLboolean gSplines = GL_FALSE;
-GLboolean gPrint = GL_FALSE;
-GLboolean gGeometrySpline = GL_FALSE;
-
-
-GLboolean gShowHelp = GL_TRUE;
-GLboolean gShowInfo = GL_TRUE;
-
-GLboolean sLastIter = GL_TRUE;
-GLboolean gKRestart = GL_FALSE;
-GLboolean sWire = GL_TRUE;
-
-GLboolean sFlag = GL_TRUE;
-GLboolean sCreateBubbleBSpline = GL_FALSE;
-
-GLboolean sSubdivision = GL_TRUE;
-
-GLboolean sOneBubble = GL_TRUE;
-GLboolean sResetSim = GL_TRUE;
-
-myPoint3D S;
-
-GLboolean gShowSplineControlPoints = GL_TRUE;
-
 recCamera gCamera;
 recVec gOrigin = {0.0, 0.0, 0.0};
-
-int gLastKey = ' ';
-
-int gMainWindow = 0;
-
-int SixBubbleState = 0;
-
-GLuint gPointList = NULL;
-GLuint gWireList = NULL;
-GLuint gSolidList = NULL;
-
-static GLboolean WIRE=0;		// draw mesh in wireframe?
-static GLboolean RUNGAKUTTA=0;		// starts simualtion Runge Kutta
-static GLboolean EULERV=0;		// starts simualtion Runge Kutta
-
-float* location_x =  new float [200]; // Vector with the x locations for the bubbles 1D 
-float* location_y =  new float [200]; // Vector with the y locations for the bubbles 1D  CHANGE THIS SO THE MEMORY IS DYNAMIC
-
-GLfloat gfPosX = 0.0;
-GLfloat gfDeltaX = .01;
-
-int k=0;
-
-#define HEIGHT 600
-#define WIDTH 800
-
-float a=HEIGHT;
-float b=WIDTH;
-
-myPoint3D** sMAT;
-
-int IMAX = 15;
-int JMAX = 15;
-
-bubble ** PointMat; //matrix saves all the data for all the points in the surface
-
-float initialBubbleRadius = 0.035;//10-0.0523;//7-0.083;//1/(float)7/(float)2;
 
 
 
 #pragma mark ---- User's Objects ----
 
-Spline objSpline;
 BubbleGeometry objBB;
-RungeKutta objRK;
-Euler objEuler;
-
-BubblePacking objBP; 
-
+BubblePacking objBP;
 BSPline objMainBSPline;
-
+BubblePacking2D objBP2D;
+Euler objEuler;
+RungeKutta objRK;
+Spline objSpline;
 Subdivision objMainSubdivision;
 
-BubblePacking2D objBP2D;
+PointUVp currentPoint;
 
+myPoint3D S;
+myPoint3D** sMAT;
+
+bubble B1,B2,B3;
+bubble ** PointMat; //matrix saves all the data for all the points in the surface
+bubble ** PointMat2; //matrix saves all the data for all the points in the surface
+
+
+vector<myPoint3D> pointsBSpline;
+vector<Point2D> location_bezier_2d; //For curve definition
+vector<Point2D> location_bubbles_bezier_2d; //For bubble definition
+vector<Point2D> location_2da;
 vector<Point2D> location_2d;
 vector<Point2D> location_2d_tmp;
 
-vector<Point2D> location_bezier_2d; //For curve definition
-vector<Point2D> location_bubbles_bezier_2d; //For bubble definition
-
-vector<Point2D> location_2da;
-
-vector<myPoint3D> pointsBSpline;
-
-bubble B1,B2,B3;
-PointUVp currentPoint;
 
 
 #pragma mark ---- gCamera control ----
@@ -196,34 +176,58 @@ void gCameraReset(void)
 
 #pragma mark ---- Geometries  ----
 
-void drawSphere(double r, int lats, int longs) 
+
+void drawBubble ()
 {
-    int i, j;
-    for(i = 0; i <= lats; i++) {
-        double lat0 = M_PI * (-0.5 + (double) (i - 1) / lats);
-        double z0  = sin(lat0);
-        double zr0 =  cos(lat0);
-        
-        double lat1 = M_PI * (-0.5 + (double) i / lats);
-        double z1 = sin(lat1);
-        double zr1 = cos(lat1);
-        
-        glBegin(GL_QUAD_STRIP);
-        for(j = 0; j <= longs; j++) {
-            double lng = 2 * M_PI * (double) (j - 1) / longs;
-            double x = cos(lng);
-            double y = sin(lng);
-            
-            glNormal3f(x * zr0, y * zr0, z0);
-            glVertex3f(x * zr0, y * zr0, z0);
-            glNormal3f(x * zr1, y * zr1, z1);
-            glVertex3f(x * zr1, y * zr1, z1);
-        }
-        glEnd();
-    }
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glColor3f(1.0f, 1.0f, 1.0f);
+    
+	glBegin(GL_POLYGON);
+	glColor3f(   0.2,  0.39812096,  .0918263 );
+	glVertex3f(  0.5,  0.5,  0.5 );
+	glVertex3f(  0.5,  0.5, -0.5 );
+	glVertex3f( -0.5,  0.5, -0.5 );
+	glVertex3f( -0.5,  0.5,  0.5 );
+	glEnd();
+    
+    
+	glBegin(GL_LINES);
+	glColor3f(   0.23,  1.0,  0.23 );
+	glVertex3f(  0.5,  0.5,  0.5 );
+	glVertex3f(  0.5,  0.5, -0.5 );
+	glEnd();
+    
+	glBegin(GL_LINES);
+	glColor3f(   0.23,  1.0,  0.23 );
+	glVertex3f(  0.5,  0.5, -0.5 );
+	glVertex3f( -0.5,  0.5, -0.5 );
+	glEnd();
+    glBegin(GL_LINES);
+	glColor3f(   0.23,  1.0,  0.23 );
+    glVertex3f( -0.5,  0.5, -0.5 );
+	glVertex3f( -0.5,  0.5,  0.5 );
+	glEnd();
+    glBegin(GL_LINES);
+	glColor3f(   0.23,  1.0,  0.23 );
+	glVertex3f( -0.5,  0.5,  0.5 );
+	glVertex3f(  0.5,  0.5,  0.5 );
+	glEnd();
+    
+    
 }
 
-
+GLuint createDL() {
+	GLuint snowManDL;
+    
+	// Create the id for the list
+	snowManDL = glGenLists(1);
+    
+	glNewList(snowManDL,GL_COMPILE);
+    drawBubble();
+	glEndList();
+    
+	return(snowManDL);
+}
 
 #pragma mark ---- Utilities ----
 
@@ -279,6 +283,8 @@ void SetLighting(unsigned int mode)
 			glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER,GL_TRUE);
 			break;
 	}
+    
+    
 	
 	glLightfv(GL_LIGHT0,GL_POSITION,position);
 	glLightfv(GL_LIGHT0,GL_AMBIENT,ambient);
@@ -383,10 +389,9 @@ void init12 (void)
     
 	glColor3f(1.0,1.0,1.0);
     
-	//BuildGeometry (kTranguloidTrefoil, 4, 64, 3, &gSolidList, &gWireList, &gPointList);
-    // dodecahedron();
 	
 	glClearColor(0.0,0.0,0.0,0.0);         /* Background recColor */
+    
 	gCameraReset ();
     
     //Initialize matrix
@@ -402,11 +407,7 @@ void init12 (void)
 	
     
     objBB.createPoints(); //Creates location // IMPORTANT
-    //objSpline.SplinePointsLocation();   //Create location on spline
-    
-    // objBB._location_vector_spline_2d = objSpline.spline_location_2d; //Estoy pasando la info al vector de //esta manera o que????s
-    
-    //objSpline.
+  
     
     cout << "\n --------------- SPLINE CURVE POINTS DEFINITION : " << endl;
     
@@ -490,16 +491,27 @@ void init12 (void)
         }
         
     }
+    
+    PointMat2 = new bubble * [IMAX];
+    for(int i=0;i<IMAX;i++){
+        PointMat2[i] = new bubble  [JMAX];
+        for(int j=0;j<JMAX;j++){
+            PointMat2[i][j].radius = initialBubbleRadius; //change here if needed
+            PointMat2[i][j].u = 0.0;
+            PointMat2[i][j].v = 0.0;
+            PointMat2[i][j].idx = 0.0;
+        }
+        
+    }
 
+    #pragma mark >  INIT().subdivisionHardCode
 
     
     objBP2D.subdivisionHardCode( PointMat, IMAX, JMAX);
+    
+    objBP2D.subdivisionHardCode2( PointMat2 , IMAX, JMAX, distance_geometry);
 
     
-
-   
-  
-    //-----------------
     
 }
 
@@ -511,22 +523,9 @@ void reshape (int w, int h)
 	glutPostRedisplay();
 }
 
-void Draw() {
-    glClear(GL_COLOR_BUFFER_BIT);
-    glColor3f(1.0, 1.0, 1.0);
-    glBegin(GL_LINES);
-    glVertex3f(gfPosX, 0.25, 0.0);
-    glVertex3f(1.0 - gfPosX, 0.75,0.0);
-    glEnd();
-    //glutSwapBuffers();
-    gfPosX += gfDeltaX;
-    if (gfPosX >= 1.0 || gfPosX <= 0.0) {
-        gfDeltaX = -gfDeltaX;
-    }
-}
 
 
-
+//This function creates bubbles in a BSPline surface
 void createBubbleSplineT(float dx, float dy, float radius)
 {
     float* Uknot = new float [9];
@@ -543,16 +542,8 @@ void createBubbleSplineT(float dx, float dy, float radius)
     // glPushMatrix(); //Copies the matrix on the top of the stack, this would be like save the funcion
     glColor3f(1,0,1);  //set colour ball
     glTranslatef(0.0, 0.0 , 0.0); // back to origin
-    //   glTranslatef(1.0, 0.0, -2.0);
-    
-    
-    // float radius = 0.1;
-    
-    float	Diegol[3]=	{255, 245, 195};
-
-    
-    float	colorUSER[3]	=	{255, 245, 195};
-    ; //{0.99609375, 0.3984375, 0};
+      
+    float	colorUSER[3]	=	{255, 245, 195}; //{0.99609375, 0.3984375, 0};
     
     glBegin(GL_LINES);
     glColor3fv(colorUSER);
@@ -560,7 +551,7 @@ void createBubbleSplineT(float dx, float dy, float radius)
     float x = (float)radius * cos(359*PI/180.0f)+dx; 
     float z = (float)radius * sin(359*PI/180.0f)+dy; 
     
-  objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray,
+    objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray,
                             Uknot, Vknot, 5, 5, 5, 5, x, z, objMainBSPline.pts);
     
     for (int j=0; j<360; j++)
@@ -579,12 +570,88 @@ void createBubbleSplineT(float dx, float dy, float radius)
         
     }
     
-    //cout << "PI Value = " << PI << endl;
-    
     glEnd();
     
     delete [] Uknot;
     delete [] Vknot;   
+    
+}
+
+
+#pragma mark > create Bubble NO deformation
+
+//This function creates bubbles in a BSPline surface
+void createBubbleSplineNoDeformation(float dx, float dy, float radius)
+{
+    glPushMatrix(); //Copies the matrix on the top of the stack, this would be like save the funcion
+    glColor3f(1,0,1);  //set colour ball
+    ////glTranslatef(0.0, 0.0 , 0.0); // back to origin
+    //glTranslatef(dx, 0.0, dy);
+    
+    float* Uknot = new float [9];
+    float* Vknot = new float [9];
+    
+    Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
+    Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.1; //By changing the knot value the extends
+    
+    
+    Vknot[0]= Vknot[1] = Vknot[2]= Vknot[3]= Vknot[4] =  0.0;
+    Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.1;
+
+    
+    float x ,y,z;
+    
+    y=0;
+    
+    float	colorUSER[3]	=	{255, 245, 190};
+    
+    
+    objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray,
+                            Uknot, Vknot, 5, 5, 4, 4, dx, dy, objMainBSPline.pts); //gives the location of a point in the NURB patch
+    
+    //glVertex3f(objMainBSPline.pts[0], objMainBSPline.pts[1] , objMainBSPline.pts[2]); //location of the point in a NURB patch
+    
+    //glPushMatrix(); //Copies the matrix on the top of the stack, this would be like save the funcion
+    glColor3f(1,0,1);  //set colour ball
+    glTranslatef(0.0, 0.0 , 0.0); // back to origin
+    glTranslatef(objMainBSPline.pts[0], objMainBSPline.pts[1] , objMainBSPline.pts[2]);
+     
+    glBegin(GL_LINES);
+    glColor3fv(colorUSER);
+    
+    x = (float)radius * cos(359*PI/180.0f);
+    y= objMainBSPline.pts[1];
+    z = (float)radius * sin(359*PI/180.0f);
+    
+    for (int j=0; j<360; j++)
+    {
+        glVertex3f(x, y, z);
+        
+        x = (float)radius * cos(j*PI/180.0f);
+        y = objMainBSPline.pts[1];
+        z = (float)radius * sin(j*PI/180.0f);
+        
+        glVertex3f(x, y, z);
+    }
+    
+    //cout << "PI Value = " << PI << endl;
+    
+    glEnd();
+    
+    
+    //glPopMatrix(); // Would be equivalent like load the function
+    
+
+    
+   // glutSolidSphere(radius, 5, 5);
+    
+    delete [] Uknot;
+    delete [] Vknot;
+    
+
+    
+    
+     glPopMatrix(); // Would be equivalent like load the function
     
     
     
@@ -595,12 +662,9 @@ void simulation()
     
         
     
-    
- 
-    
     float lastu, lastv;
-    int deti = 5;
-    int detj = 1;
+   // int deti = 5;
+   // int detj = 1;
     
     /*currentPoint = objBP2D.Simulation(PointMat[6][0], PointMat[deti][detj]);
     
@@ -676,7 +740,7 @@ void simulation()
             
             if(k%5==0)
             {
-                
+                //Every 5 iterations DO something
             }
             
             
@@ -685,20 +749,81 @@ void simulation()
     }
      
      
+    k++;
+
     
+}
+
+//simulation2 makes the sim in the 2d real not the nurb surface in other words no deformation
+void simulation2()
+{
     
+
+    float lastu, lastv;
+        
+    for(int m=1;m<IMAX-1;m++){
+        for(int n=1;n<IMAX-1;n++){
+            
+            for(int i=0;i<IMAX;i++){
+                for(int j=0;j<IMAX;j++){
+                    
+                    if(i==m && j==n)
+                    {
+                      
+                    
+                    }
+                    /* if(i==0 && j==0)
+                     {
+                     
+                     
+                     }*/
+                    
+                    else{
+                        lastu = PointMat2[m][n].u;
+                        lastv = PointMat2[m][n].v;
+                        
+                        currentPoint = objBP2D.Simulation(PointMat2[i][j], PointMat2[m][n]);
+                        
+                        PointMat2[m][n].u = currentPoint.u;
+                        PointMat2[m][n].v = currentPoint.v;
+                        
+                        if(PointMat2[m][n].u>=0.99) PointMat2[m][n].u = lastu; ////IMPORTANT TO CHANGE
+                        if(PointMat2[m][n].v>=0.99) PointMat2[m][n].v = lastv;
+                        
+                        if(PointMat2[m][n].u<=0.01) PointMat2[m][n].u = lastu; ////IMPORTANT TO CHANGE
+                        if(PointMat2[m][n].v<=0.01) PointMat2[m][n].v = lastv;
+                        
+                        
+                        
+                        
+                    }
+                    
+                    
+                    
+                }
+                
+            }
+            
+            // createBubbleSplineT(PointMat[m][n].u,PointMat[m][n].v, initialBubbleRadius);
+            
+            if(k%5==0)
+            {
+                
+            }
+            
+            
+            
+        }
+    }
     
-    
-    
+
     
     k++;
     
     
-  
-    
-    
-    
 }
+
+#pragma mark > Main Display
 
 void maindisplay(void)
 {
@@ -709,6 +834,8 @@ void maindisplay(void)
 	GLdouble zNear = MIN (-gCamera.viewPos.z - gShapeSize * 0.5, 1.0);
 	// window aspect ratio
 	GLdouble aspect = gCamera.screenWidth / (GLdouble)gCamera.screenHeight;
+    
+    glEnable(GL_LIGHTING); //not really used just put here to remind me to use it... CHANGE
     
 	glMatrixMode (GL_PROJECTION);
 	glLoadIdentity ();
@@ -743,141 +870,13 @@ void maindisplay(void)
 	glClearColor (0.2f, 0.2f, 0.4f, 1.0f);	// clear the surface
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-    
-    
-    //objBP.drawlines(k);
-    
-    
-    if (WIRE)
-    {
-        glDisable(GL_LIGHTING);
-        //glColor3f (1.0, 1.0, 1.0); // no coloring
-        
-        
-        objBB.createGeometry(); //Creates visalization of _location_vector_2d
-        
-        
-    }
-    
-    
     drawGLText (gCamera.screenWidth, gCamera.screenHeight);
-    
-    
-    
-    
-    if (gLines) {
-		glColor3f (1.0, 1.0, 1.0); // no coloring
-		glDisable(GL_LIGHTING);
-		glCallList (gWireList);
-        
-        
-        
-	}
-	if (gPolygons) {
-		glEnable(GL_LIGHTING);
-		glCallList (gSolidList);
-        
-        
-    }
-    
-    if (gGeometrySpline)
-    {
-        glDisable(GL_LIGHTING);
-        //glColor3f (1.0, 1.0, 1.0); // no coloring
-        
-        
-        
-        // objSpline.SplinePrintLocation(location_2d);
-        
-        objSpline.SplinePrintLocation(location_bubbles_bezier_2d);
-        
-        
-        
-    }
-    if (RUNGAKUTTA)
-    {
-        glEnable(GL_LIGHT_MODEL_TWO_SIDE);
-        
-        if (sLastIter) {
-            // objBB.onebubble();
-            
-            // objBB.twobubble();
-            
-            // objBB.threebubble(k);
-            
-            //  objBB.fourbubble(k);
-            
-            //objBB.fivebubble(objSpline.spline_location_2d);
-            
-            //objSpline.SplinePrintLocation();
-            
-            //   location_2d = objBB.sixbubble(SixBubbleState,location_2d);
-            
-            // location_2da = objBP.sixbubble(SixBubbleState,location_2da);// ---> working
-            
-            
-            // cout << location_bubbles_bezier_2d.size() <<endl;
-            location_bubbles_bezier_2d = objBP.sevenbubble(SixBubbleState,location_bubbles_bezier_2d,k, 0.5001);
-            
-            //location_bubbles_bezier_2d = objBP.eightbubble(SixBubbleState,location_bubbles_bezier_2d,k, 0.5001);
-            
-            
-            //ksgr gGeometrySpline = gGeometrySpline-1;
-            
-            //SixBubbleState++;
-            
-            
-            k++;
-            
-            //objSpline.SplinePrintLocation();
-            
-            
-            //gKRestart=!gKRestart;// .....srstarst
-            
-        }  
-        
-        if (k==5000) sLastIter = false;
-        
-        
-    }
-    
-    if (gSplines)
-    {
-        glEnable(GL_LIGHT_MODEL_TWO_SIDE);
-        
-        //cout << "Spline 1D demo";
-        
-        // objSpline.draw_spline();
-        objSpline.draw_bezier();
-        
-        
-        // objSpline.SplinePointsLocation();
-        
-        //objSpline.SplinePrintLocation();
-        //Draw();
-        
-    }
-    
-    if (gKRestart)
-    {
-        RUNGAKUTTA =true; 
-        sLastIter=true;
-        SixBubbleState=0;
-    }
-    
-    if (gPrint)
-    {
-        //objSpline.SplinePrintLocation();
-        //gPrint= !gPrint;
-        
-    }
-    
-    
+
+
+    //Erases the control points and the convex hull from the screen
      if(gShowSplineControlPoints)
      {
      objMainBSPline.InitializeControlPoints();
-     
-     
      
      
      float* Uknot = new float [9];
@@ -1122,117 +1121,61 @@ void maindisplay(void)
      
      }
      
-     if(sCreateBubbleBSpline)
+    //Starts the simulation for the given geometry and stops after 250 iterations
+     if(sSimulationInBSplinePatch)
      {
-         simulation();
+         //simulation();
+         simulation2();
          
-         if (k==250) sCreateBubbleBSpline = false;
-         
-         
-         
-         
-         
+         if (k==250) sSimulationInBSplinePatch = false;
+              
      }
     
-    //----->
-    
-    //BOUNDARIES
-    
+
+    //Draw boundaries
+    //TOP AND BOTTOM
     for (int i=0;i<IMAX;i++)
     {
-        createBubbleSplineT(PointMat[0][i].u,PointMat[0][i].v, initialBubbleRadius);
+       
+        createBubbleSplineNoDeformation(PointMat2[0][i].u, PointMat2[0][i].v, nodeformationRadius);
+        createBubbleSplineNoDeformation(PointMat2[IMAX-1][i].u,PointMat2[IMAX-1][i].v, nodeformationRadius);
+
         
-        createBubbleSplineT(PointMat[IMAX-1][i].u,PointMat[IMAX-1][i].v, initialBubbleRadius);
-        
-        
+       // createBubbleSplineT(PointMat[0][i].u,PointMat[0][i].v, initialBubbleRadius);
+       // createBubbleSplineT(PointMat[IMAX-1][i].u,PointMat[IMAX-1][i].v, initialBubbleRadius);
         
         
     }
     
+    //SIDES    
     for (int i=0;i<IMAX;i++)
     {
+        
+        createBubbleSplineNoDeformation(PointMat2[i][0].u,PointMat2[i][0].v, nodeformationRadius);
+        createBubbleSplineNoDeformation(PointMat2[i][IMAX-1].u,PointMat2[i][IMAX-1].v, nodeformationRadius);
+
+        /*
         createBubbleSplineT(PointMat[i][0].u,PointMat[i][0].v, initialBubbleRadius);
         
         createBubbleSplineT(PointMat[i][IMAX-1].u,PointMat[i][IMAX-1].v, initialBubbleRadius);
-        
+        */
         
         
     }
 
-
-    
+    //INTERNAL POINTS
     for(int m=1;m<IMAX-1;m++){
         for(int n=1;n<IMAX-1;n++){
             
-            
-            createBubbleSplineT(PointMat[m][n].u,PointMat[m][n].v, initialBubbleRadius);
+             createBubbleSplineNoDeformation(PointMat2[m][n].u, PointMat2[m][n].v, nodeformationRadius);
+            //createBubbleSplineT(PointMat[m][n].u,PointMat[m][n].v, initialBubbleRadius);
             
         }
     }
      
-/*
-    
-    int nPoints = 10; //numebr of points in the subdivision
-    BubbleDSalfa QoP[nPoints*nPoints*nPoints];
 
-
-    if(sSubdivision)
-    {
-       // objMainSubdivision.bubbleCreateInitialLocation(10);
-        
-       // objMainSubdivision.bubbleSubdivisionDomain();
-        
-                
-            //Matrix initialization to stared all the points in the animation for each time step for all bubbles
-                        
-            float **U = new float * [nPoints];
-            for(int i=0;i<nPoints;i++){
-                U[i] = new float  [nPoints];
-                for(int j=0;j<nPoints;j++){
-                    U[i][j] = 0.0;
-                }
-                
-            }
-            
-            float **V = new float * [nPoints];
-            for(int i=0;i<nPoints;i++){
-                V[i] = new float  [nPoints];
-                for(int j=0;j<nPoints;j++){
-                    V[i][j] = 0.0;
-                }
-                
-            }
-
-            
-            
-          //  BubbleDSalfa QoP[nPoints*nPoints];
-
-        objMainSubdivision.subdivisionHardCode(nPoints, U, V,QoP);
-            
-            
-        float radius = 0.2/4;
-            
-        for(int i =0; i<(nPoints*nPoints)-nPoints;i++)
-        {
-        
-          //  cout << "U:" << QoP[i].u << endl;
-          //  cout << "V:" << QoP[i].v << endl;
-            createBubbleSplineT(QoP[i].u,QoP[i].v, 0.053);
-        }
-            
-                       
-  
-        
-       // sFlag=true;
-        
-        
-        
-    }
-  */  
     glutSwapBuffers();
     
-    
-    //if(k>20) k=0;
     
 	
 	
@@ -1412,57 +1355,14 @@ void key(unsigned char inkey, int px, int py)
             gShowInfo =  1 - gShowInfo;
             glutPostRedisplay();
             break;
-        case 'w': // toggle wire
-        case 'W':
-            gLines = 1 - gLines;
-            gPolygons = 1 - gPolygons;
-            WIRE = !WIRE;
-            glutPostRedisplay();
-            break;
-        case 'r':  
-        case 'R':  
-            RUNGAKUTTA = !RUNGAKUTTA;		
-            break;	// starts Runge Kutta simualtion
-        case 'e':  
-        case 'E':  
-            EULERV = !EULERV;		
-            break;	// starts Euler simualtion
-        case 's': 
-        case 'S':
-            gSplines =  1 - gSplines;
-            glutPostRedisplay();
-            break; // spline
-        case 'k': 
-        case 'K':
-            gKRestart =  1 - gKRestart;
-            glutPostRedisplay();
-            break; // spline
-        case 'p': 
-        case 'P':
-            gPrint =  1 - gPrint;
-            glutPostRedisplay();
-            break; // print point spline
         case 'c': 
         case 'C':
             gShowSplineControlPoints =  1 - gShowSplineControlPoints;
             glutPostRedisplay();
-            break; // print point spline
-            
-        case 'g': 
-        case 'G':
-            gGeometrySpline =  1 - gGeometrySpline;
-            glutPostRedisplay();
-            break; // print point spline
-            
-        case 'm':
-        case 'M':
-            sResetSim =  1 - sResetSim;
-            glutPostRedisplay();
-            break; // print point spline
-            
+            break; // print point spline            
         case 'y':
         case 'Y':
-            sCreateBubbleBSpline =  1 - sCreateBubbleBSpline;
+            sSimulationInBSplinePatch =  1 - sSimulationInBSplinePatch;
             glutPostRedisplay();
             break; // print point spline
             
@@ -1530,11 +1430,6 @@ void menuOb (int value)
 {
     switch (value) {
         case 0:  WIRE = !WIRE;		break;
-        case 1:  RUNGAKUTTA = !RUNGAKUTTA;		break;	// starts simualtion
-        case 2:  EULERV = !EULERV;		break;	// starts simualtion   
-        case 3:  gSplines = !gSplines;		break;	// starts simualtion 
-        case 4:  gKRestart = !gKRestart;		break;	// re-starts using current location vector 
-            
         default:   				break;
     }
     glutPostRedisplay();
@@ -1571,7 +1466,7 @@ int main (int argc, const char * argv[])
 	glutSpaceballMotionFunc(spaceballmotion);
 	glutSpaceballRotateFunc(spaceballrotate);
     
-    glutCreateMenu (menuOb);
+   // glutCreateMenu (menuOb);
     glutAddMenuEntry ("> Geometry [w]", 0);
     glutAddMenuEntry ("> Runge Kutta [r]", 1);
     glutAddMenuEntry ("> Euler [e]", 2);

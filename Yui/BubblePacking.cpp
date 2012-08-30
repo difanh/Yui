@@ -98,17 +98,17 @@ vector<Point2D> BubblePacking::sixbubble(int state, vector<Point2D> & location_p
     ofstream outfile ("/Users/diegoandrade/Dropbox/CMU 2012/SixBubble.txt"); //Check is there is a file functionlaity does not exist
     // glClear(GL_COLOR_BUFFER_BIT);
     
-    float _distance_left =0.0;
-    float _distance_right =0.0;
+   // float _distance_left =0.0;
+  //  float _distance_right =0.0;
     
     float _distance_bubbles =0.0;
     
-    float _bubble_size_left = 0.0;
-    float _bubble_size_right= 0.0;
-    float _bubble_size_current= 0.0;
+   // float _bubble_size_left = 0.0;
+   // float _bubble_size_right= 0.0;
+   // float _bubble_size_current= 0.0;
     
     float _stable_distance =0.0;
-    float _interbubble_force = 0.0;
+   // float _interbubble_force = 0.0;
     
     float _diameter_bubble = _bubble_size;
     
@@ -118,14 +118,14 @@ vector<Point2D> BubblePacking::sixbubble(int state, vector<Point2D> & location_p
     float tempY =0.0;
     
     
-    float kcolor=0.0;
+   // float kcolor=0.0;
     
     float spring_var = _spring_rate;
     
     vector<Point2D> Vnext; //next vector
     vector<Point2D> Vcurr; //current vector
     
-    int _id = 0;
+  //  int _id = 0;
     
     float xt =0.0;
     float yt =0.0;
@@ -134,9 +134,9 @@ vector<Point2D> BubblePacking::sixbubble(int state, vector<Point2D> & location_p
     
     float tpar =0.0;
     
-    const int TIMERMSECS = 20;
-    float animation_time = 0;
-    const float  animation_step = .5;
+   // const int TIMERMSECS = 20;
+  //  float animation_time = 0;
+  //  const float  animation_step = .5;
     
     Point2D _Tpoint(0,0); //tangent a that point in the bezier curve
     Point2D _Delta(xt,yt); //delta X point
@@ -620,7 +620,7 @@ vector<Point2D> BubblePacking::sevenbubble(int state, vector<Point2D> & location
             cout << "tempS :  " << tempS <<endl;
           //  cout << "\t Delta S : " << tempS << endl; //dot product of the same vector is zero
             
-            float temppS2 = objSplineBP.parameter_for_each_bubble_location[j];
+          //  float temppS2 = objSplineBP.parameter_for_each_bubble_location[j];
             
           //  cout << "tempS2 :  " << temppS2 <<endl;
 
@@ -1213,9 +1213,9 @@ float BubblePacking::diameter_sum(float dia1, float dia2)
 float BubblePacking::NumberBubbles(float diameter_Xend1, float diameter_Xend2)
 {
     
-    float length = objSplineBP.curve_length(objSplineBP.spline_location_2d);
+    //float length = objSplineBP.curve_length(objSplineBP.spline_location_2d);
     float number_of_bubbles = 0.0;
-    float Lo = 1; //Unit edge bubble diameter
+    //float Lo = 1; //Unit edge bubble diameter
     
     // number_of_bubbles = (1/(float)Lo)*(length-(Lo/(float)2)*(1/(float)diameter_Xend1+1/(float)diameter_Xend2));
     
@@ -1235,7 +1235,7 @@ float BubblePacking::NumberBubbles(float diameter_Xend1, float diameter_Xend2)
     
     Point2D DeltaX (xt,yt);
     
-    float tempS = deltaS(DeltaX, CPOINT);
+    //float tempS = deltaS(DeltaX, CPOINT);
     
     return number_of_bubbles;
 }

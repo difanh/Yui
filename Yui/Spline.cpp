@@ -204,7 +204,7 @@ void Spline::draw_bezier()
     
     //ofstream outfile ("/Users/diegoandrade/Dropbox/CMU 2012/BSpline.txt"); //Check is there is a file functionlaity does not exist
     
-    int k = 0;
+    //int k = 0;
     
     float x =0.0;
     float y =0.0;
@@ -328,10 +328,12 @@ void Spline::SplinePointsLocation()
             b2 * GetPoint( start_cv + 2 )[1] +
             b3 * GetPoint( start_cv + 3 )[1] ;
             
+            /*
 			float z = b0 * GetPoint( start_cv + 0 )[2] +
             b1 * GetPoint( start_cv + 1 )[2] +
             b2 * GetPoint( start_cv + 2 )[2] +
             b3 * GetPoint( start_cv + 3 )[2] ;
+             */
             
 			// specify the point
 			////glVertex3f( x,y,z );
@@ -429,11 +431,12 @@ vector<Point2D> Spline::CreateBubbleLocationSpline()
             b2 * GetPoint( start_cv + 2 )[1] +
             b3 * GetPoint( start_cv + 3 )[1] ;
             
+            /*
 			float z = b0 * GetPoint( start_cv + 0 )[2] +
             b1 * GetPoint( start_cv + 1 )[2] +
             b2 * GetPoint( start_cv + 2 )[2] +
             b3 * GetPoint( start_cv + 3 )[2] ;
-            
+            */
 		
             
             if (sPrint)

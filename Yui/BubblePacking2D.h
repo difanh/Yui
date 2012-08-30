@@ -98,6 +98,10 @@ class BubblePacking2D
     
     //Domain subdivision
     void subdivisionHardCode (bubble** P, int IMAX, int JMAX);
+    
+    //Domain subdivision in real space
+    void subdivisionHardCode2 (bubble** P, int IMAX, int JMAX, float distance);
+
 
     
 

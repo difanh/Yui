@@ -293,7 +293,7 @@ void BubbleGeometry::createBubble(float x_location, float y_location, float radi
     glEnd();
     
    
-    glPopMatrix(); // Would be equivalent like load the function 
+    glPopMatrix(); // Would be equivalent like load the function
     
 }
 
@@ -1089,7 +1089,7 @@ void BubbleGeometry::fourbubble(int k)
    // float _bubbles_distance = 0.0;
     float _interbubble_force = 0.0;
     
-    float kcolor=0.0;
+    //float kcolor=0.0;
     
     float _distance_left =0.0;
     float _distance_right =0.0;
@@ -1558,23 +1558,23 @@ vector<Point2D> BubbleGeometry::sixbubble(int state, vector<Point2D> & location_
     //ofstream outfile ("/Users/diegoandrade/Dropbox/CMU 2012/SixBubble.txt"); //Check is there is a file functionlaity does not exist
     
     float _distance_left =0.0;
-    float _distance_right =0.0;
+   // float _distance_right =0.0;
     
     float _distance_bubbles =0.0;
     
     float _bubble_size_left = 0.0;
-    float _bubble_size_right= 0.0;
-    float _bubble_size_current= 0.0;
+   /// float _bubble_size_right= 0.0;
+   // float _bubble_size_current= 0.0;
     
      float _stable_distance =0.0;
-    float _interbubble_force = 0.0;
+   // float _interbubble_force = 0.0;
     
     float _diameter_bubble =0.2;
     
     float h=0.01;
     
     
-    float kcolor=0.0;
+   // float kcolor=0.0;
 
     
    // _location_spline = objSplineBB.CreateBubbleLocationSpline(); //crea otro vector por eso no son iguales

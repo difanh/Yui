@@ -50,9 +50,10 @@
 #include <stdlib.h>
 
 #include "SurfaceGeometry.h"
+#include "Common.h"
+
 
 #define TWOPI           6.283185307179586476925287
-#define PI              3.141592653589793238462643
 
 typedef struct {
    GLfloat x,y,z;

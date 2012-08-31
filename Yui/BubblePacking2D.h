@@ -14,12 +14,11 @@
 #include <fstream>
 #include <iostream>
 
+
+#include "Common.h"
 #include "RungeKutta.h"
 
 using namespace std;
-
-
-#define PI 4*atan(1)
 
 //Strores location in U and V
 struct PointUVp {
@@ -94,7 +93,6 @@ class BubblePacking2D
     // input: the current bubble and all the matrix with all bubble locations
     // output: bubble current location changes
     void  bubbleInteraction (bubble current, bubble** bubbleAll , int IMAX, int JMAX) ;
-    
     
     //Domain subdivision
     void subdivisionHardCode (bubble** P, int IMAX, int JMAX);

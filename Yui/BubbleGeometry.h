@@ -20,6 +20,7 @@
 #include <OpenGL/glu.h>
 #include <vector>
 
+#include "Common.h"
 //#include "Vector2D.h"
 #include "Point2d.h"
 //#include "Point3d.h"
@@ -37,8 +38,6 @@ using namespace std;
 //#define mTimenow Log::timenow()
 
 //==============================================================================
-
-#define PI 4*atan(1)
 
 class BubbleGeometry
 {

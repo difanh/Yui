@@ -13,11 +13,14 @@
 
 BubblePacking2D::BubblePacking2D()
 {
-    
-    _mass = 1.0; // Mass of a bubble for phisical simulation
-    _damping_force = 0.7*sqrt( _spring_rate*_mass); //Damping force for phisical simulation
-    _spring_rate = 0.1*0.001;// ko 0.1 0.001*0.0001 faster
-    MAXI = 40; //max number of iterations
+    _mass = MASS;
+    _damping_force = DAMPING_FORCE;
+    _spring_rate = SPRING_RATE;
+    MAXI = NUM_ITERATIONS;
+   // _mass = 1.0; // Mass of a bubble for phisical simulation
+   // _damping_force = 0.7*sqrt( _spring_rate*_mass); //Damping force for phisical simulation
+   // _spring_rate = 0.1*0.001;// ko 0.1 0.001*0.0001 faster
+   // MAXI = 40; //max number of iterations
 }
 
 BubblePacking2D::~BubblePacking2D()

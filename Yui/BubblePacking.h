@@ -21,6 +21,7 @@
 #include <OpenGL/glu.h>
 #include <vector>
 
+#include "Common.h"
 //#include "Vector2D.h"
 #include "Point2d.h"
 //#include "Point3d.h"
@@ -39,7 +40,6 @@ using namespace std;
 
 //==============================================================================
 
-#define PI 4*atan(1)
 
 class BubblePacking
 {
@@ -91,7 +91,6 @@ public:
     float _time_step; //Time needed for the relaxation to work 
     
     int _max_iter_outter; // Maximum number of iteatrion in the outter loop for the bubble smoothing
-    
     
     float function2(float t, float x,float fw);
     

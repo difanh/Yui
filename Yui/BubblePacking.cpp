@@ -23,6 +23,12 @@ Spline objSplineBP;
 
 BubblePacking::BubblePacking()
 {
+   
+    _mass = MASS;
+    _damping_force = DAMPING_FORCE;
+    _spring_rate = SPRING_RATE;
+    _max_iteration = NUM_ITERATIONS;
+    
     _number_of_bubbles_v = 10; //7
     _max_iter_outter = 150;
     _number_k = 150;
@@ -39,21 +45,13 @@ BubblePacking::BubblePacking()
     
     _w = 1.0;
     
-    _max_iteration = 33;//30 //42
-    
-    
     
     //Use the following relationship to find c = 0.7 * 2 * sqrt(m*ko)
     
-    _spring_rate = 0.1*0.001;// ko 0.1 0.001*0.0001
-    
-    
-    _mass =1.0; //m
-    
+       
     _time_step = 0.1; // t 0.01
     
     
-    _damping_force = 0.7*sqrt(_spring_rate*_mass); // c
     
     p1 = 0.0;
     p2 = 0.0;

@@ -41,6 +41,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1079C3CF15EFA3E200793A13 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		B55CA48615C1B32400097BEB /* BubblePacking2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BubblePacking2D.h; sourceTree = "<group>"; };
 		B55CA48815C1B33900097BEB /* BubblePacking2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BubblePacking2D.cpp; sourceTree = "<group>"; };
 		B5C6888715BEEC1400EE9E8F /* Yui */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Yui; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -144,6 +145,7 @@
 				B55CA48615C1B32400097BEB /* BubblePacking2D.h */,
 				B55CA48815C1B33900097BEB /* BubblePacking2D.cpp */,
 				B5C6888D15BEEC1400EE9E8F /* Yui.1 */,
+				1079C3CF15EFA3E200793A13 /* Common.h */,
 			);
 			path = Yui;
 			sourceTree = "<group>";

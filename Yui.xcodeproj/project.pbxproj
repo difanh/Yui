@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		103C739715F6530F00E8153F /* Boundary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 103C739515F6530F00E8153F /* Boundary.cpp */; };
 		B55CA48915C1B33900097BEB /* BubblePacking2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B55CA48815C1B33900097BEB /* BubblePacking2D.cpp */; };
 		B5C6888C15BEEC1400EE9E8F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C6888B15BEEC1400EE9E8F /* main.cpp */; };
 		B5C6888E15BEEC1400EE9E8F /* Yui.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5C6888D15BEEC1400EE9E8F /* Yui.1 */; };
@@ -41,6 +42,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		103C739515F6530F00E8153F /* Boundary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Boundary.cpp; sourceTree = "<group>"; };
+		103C739615F6530F00E8153F /* Boundary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Boundary.h; sourceTree = "<group>"; };
 		1079C3CF15EFA3E200793A13 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		B55CA48615C1B32400097BEB /* BubblePacking2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BubblePacking2D.h; sourceTree = "<group>"; };
 		B55CA48815C1B33900097BEB /* BubblePacking2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BubblePacking2D.cpp; sourceTree = "<group>"; };
@@ -146,6 +149,8 @@
 				B55CA48815C1B33900097BEB /* BubblePacking2D.cpp */,
 				B5C6888D15BEEC1400EE9E8F /* Yui.1 */,
 				1079C3CF15EFA3E200793A13 /* Common.h */,
+				103C739515F6530F00E8153F /* Boundary.cpp */,
+				103C739615F6530F00E8153F /* Boundary.h */,
 			);
 			path = Yui;
 			sourceTree = "<group>";
@@ -216,6 +221,7 @@
 				B5C688BF15BEEF3100EE9E8F /* SurfaceGeometry.c in Sources */,
 				B5C688C015BEEF3100EE9E8F /* trackball.c in Sources */,
 				B55CA48915C1B33900097BEB /* BubblePacking2D.cpp in Sources */,
+				103C739715F6530F00E8153F /* Boundary.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

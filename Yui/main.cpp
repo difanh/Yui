@@ -86,14 +86,14 @@ static GLboolean WIRE=0;		// draw mesh in wireframe?
 int gLastKey = ' ';
 int gMainWindow = 0;
 int k=0;
-int IMAX = 18;
-int JMAX = 18;
+int IMAX = 8;
+int JMAX = 8;
 int number_of_bubbles = IMAX; //(int) (distance_geometry)/(int) IMAX *2;
 
 float a=HEIGHT;
 float b=WIDTH;
 
-float distance_geometry =4.0;
+float distance_geometry =4.5;
 float nodeformationRadius = distance_geometry/(float)number_of_bubbles*0.5; //here change
 float initialBubbleRadius = nodeformationRadius/(float) distance_geometry;// 0.05;//10-0.0523;//7-0.083;//1/(float)7/(float)2;
 
@@ -135,20 +135,20 @@ Subdivision objMainSubdivision;
 
 PointUVp currentPoint;
 
-myPoint3D S;
+//myPoint3D S;
 myPoint3D** sMAT;
 
-bubble B1,B2,B3;
+//bubble B1,B2,B3;
 bubble ** PointMat; //matrix saves all the data for all the points in the surface
 bubble ** PointMat2; //matrix saves all the data for all the points in the surface
 
 
 vector<myPoint3D> pointsBSpline;
-vector<Point2D> location_bezier_2d; //For curve definition
-vector<Point2D> location_bubbles_bezier_2d; //For bubble definition
-vector<Point2D> location_2da;
-vector<Point2D> location_2d;
-vector<Point2D> location_2d_tmp;
+//vector<Point2D> location_bezier_2d; //For curve definition
+//vector<Point2D> location_bubbles_bezier_2d; //For bubble definition
+//vector<Point2D> location_2da;
+//vector<Point2D> location_2d;
+//vector<Point2D> location_2d_tmp;
 
 
 
@@ -169,7 +169,7 @@ void gCameraReset(void)
     gCamera.viewDir.z = -gCamera.viewPos.z;
     
     gCamera.viewUp.x = 0;  
-    gCamera.viewUp.y = 2;
+    gCamera.viewUp.y = 1;
     gCamera.viewUp.z = 0;
 }
 
@@ -406,73 +406,13 @@ void init (void)
     
     objBB.createPoints(); //Creates location // IMPORTANT
   
-    
-    cout << "\n --------------- SPLINE CURVE POINTS DEFINITION : " << endl;
-    
-    for (int i=0; i<objSpline.spline_location_2d.size();i++)
-    {
-        //slocation_2d.push_back(Point2D(objSpline.spline_location_2d[i].x, objSpline.spline_location_2d[i].y));
-        
-        location_2d.push_back(objSpline.spline_location_2d[i]);
-        cout << "x: " << location_2d[i].x << "\t y: " << location_2d[i].y <<endl;
-    }
-    
-    
-    cout << "\n --------------- BEZIER CURVE POINTS DEFINITION : " << endl;
-    
-    
-    for (int i=0; i<objSpline.bezier_location_2d.size();i++)
-    {
-        //slocation_2d.push_back(Point2D(objSpline.spline_location_2d[i].x, objSpline.spline_location_2d[i].y));
-        
-        location_bezier_2d.push_back(objSpline.bezier_location_2d[i]);
-        cout <<"Id["<<i<<"] " << "x: " << location_bezier_2d[i].x << "\t y: " << location_bezier_2d[i].y <<endl;
-    }
-    
-    cout << "\n --------------- BEZIER BUBBLE DEFINITION: " << endl;
-    
-    
-    for (int i=0; i<objSpline.bezier_points_location_2d.size();i++)
-    {
-        //slocation_2d.push_back(Point2D(objSpline.spline_location_2d[i].x, objSpline.spline_location_2d[i].y));
-        
-        location_bubbles_bezier_2d.push_back(objSpline.bezier_points_location_2d[i]);
-        cout << "x: " << location_bubbles_bezier_2d[i].x << "\t y: " << location_bubbles_bezier_2d[i].y <<endl;
-    }
-    
-    
-    myPoint3D S(0,0,0);
-    
-    //  location_2da = location_bubbles_bezier_2d;
-    
-	glPolygonOffset (1.0, 1.0);
-	
-    SetLighting(1); //Lighting function
-	
-    glEnable(GL_LIGHTING);
-    
-    
-    
-    
+   
     
     //----------------
     // bubble packing 2d
     //----------------
     
     objMainBSPline.InitializeControlPoints();
-    
-    B1.u = 0.3;
-    B1.v = 0.5;
-    B1.radius = 0.05;
-    
-    B2.u = 0.4;
-    B2.v = 0.5;
-    B2.radius = 0.05;
-    
-    B3.u = 0.4;
-    B3.v = 0.5;
-    B3.radius = 0.05;
-    
     
     //Initializes U, V and P matrices
     
@@ -859,7 +799,7 @@ void maindisplay(void)
 	glRotatef (gTrackBallRotation[0], gTrackBallRotation[1], gTrackBallRotation[2], gTrackBallRotation[3]);
 	glRotatef (gWorldRotation[0], gWorldRotation[1], gWorldRotation[2], gWorldRotation[3]);
     
-    glTranslatef(-1.0, -5, -2); // this translations is done after a world rotation so we are looking at x-z and then translation
+    glTranslatef(-1.0, 0.0, -2); // this translations is done after a world rotation so we are looking at x-z and then translation
 	
 	glClearColor (0.2f, 0.2f, 0.4f, 1.0f);	// clear the surface
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1039,7 +979,7 @@ void maindisplay(void)
     //Starts the simulation for the given geometry and stops after 250 iterations
      if(sSimulationInBSplinePatch)
      {
-         //simulation();
+        // simulation();
          simulation2();
          
          if (k==250) sSimulationInBSplinePatch = false;
@@ -1069,11 +1009,10 @@ void maindisplay(void)
         createBubbleSplineNoDeformation(PointMat2[i][0].u,PointMat2[i][0].v, nodeformationRadius);
         createBubbleSplineNoDeformation(PointMat2[i][IMAX-1].u,PointMat2[i][IMAX-1].v, nodeformationRadius);
 
-        /*
-        createBubbleSplineT(PointMat[i][0].u,PointMat[i][0].v, initialBubbleRadius);
         
-        createBubbleSplineT(PointMat[i][IMAX-1].u,PointMat[i][IMAX-1].v, initialBubbleRadius);
-        */
+        //createBubbleSplineT(PointMat[i][0].u,PointMat[i][0].v, initialBubbleRadius);
+        //createBubbleSplineT(PointMat[i][IMAX-1].u,PointMat[i][IMAX-1].v, initialBubbleRadius);
+       
         
         
     }

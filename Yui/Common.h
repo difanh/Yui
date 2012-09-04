@@ -15,6 +15,6 @@
 #define MASS 1.0
 #define SPRING_RATE 0.001
 #define DAMPING_FORCE 0.7*sqrt(SPRING_RATE*MASS)
-#define NUM_ITERATIONS 20
+#define NUM_ITERATIONS 25
 
 #endif

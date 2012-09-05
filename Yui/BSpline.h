@@ -14,6 +14,7 @@
 #include <vector>
 #include "Point2d.h"
 #include "Point3d.h"
+#include "Common.h"
 using namespace std;
 
 
@@ -71,6 +72,10 @@ public:
     static void ptsNURBS(myPoint3D** P,float **weight,float *knot_i,
                          float *knot_j,int orderi,int orderj,
                          int m,int n,float s, float t,float* pts);
+    
+    static void ptsNURBS(point_t *d,float *weight,float *knot_i,
+                         float *knot_j,int orderi,int orderj,
+                         int m,int n,float s, float t,float *pts);
         
     
     

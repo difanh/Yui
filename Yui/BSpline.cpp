@@ -22,7 +22,7 @@ BSPline::BSPline()
 BSPline::~BSPline()
 {
     
-     cout << "BSPline::BSPline() \n"; 
+     //cout << "BSPline::~BSPline() \n";
     
     
 }
@@ -114,8 +114,8 @@ void BSPline::InitializeControlPoints()
      controlPointsArray[4][4].x = 3.0;  controlPointsArray[4][4].y = 1.0;  controlPointsArray[4][4].z = 0.0;
      controlPointsArray[4][5].x = 3.0;  controlPointsArray[4][5].y = 1.0;  controlPointsArray[4][5].z = 1.0;
     
-    */
-    /* controlPointsArray[0][0].x = -1.0;  controlPointsArray[0][0].y = -1.2;  controlPointsArray[0][0].z = 4.0;
+    
+     /*controlPointsArray[0][0].x = -1.0;  controlPointsArray[0][0].y = -1.2;  controlPointsArray[0][0].z = 4.0;
      controlPointsArray[0][1].x = -1.0;  controlPointsArray[0][1].y = -0.6;  controlPointsArray[0][1].z = 3.0;
      controlPointsArray[0][2].x = -1.0;  controlPointsArray[0][2].y = 0.0;  controlPointsArray[0][2].z = 2.0;
      controlPointsArray[0][3].x = -1.0;  controlPointsArray[0][3].y = 0.6;  controlPointsArray[0][3].z = 1.0;
@@ -159,48 +159,48 @@ void BSPline::InitializeControlPoints()
      
     
     controlPointsArray[0][0].x = -1;  controlPointsArray[0][0].y = 0.0;  controlPointsArray[0][0].z = 4.0;
-    controlPointsArray[0][1].x = -2;  controlPointsArray[0][1].y = 0.0;  controlPointsArray[0][1].z = 3.0;
-    controlPointsArray[0][2].x = -2.0;  controlPointsArray[0][2].y = 0.0;  controlPointsArray[0][2].z = 2.0;
-    controlPointsArray[0][3].x = -2;  controlPointsArray[0][3].y = 0.0;  controlPointsArray[0][3].z = 1.0;
+    controlPointsArray[0][1].x = -1;  controlPointsArray[0][1].y = 0.0;  controlPointsArray[0][1].z = 3.0;
+    controlPointsArray[0][2].x = -1;  controlPointsArray[0][2].y = 0.0;  controlPointsArray[0][2].z = 2.0;
+    controlPointsArray[0][3].x = -1;  controlPointsArray[0][3].y = 0.0;  controlPointsArray[0][3].z = 1.0;
     controlPointsArray[0][4].x = -1;  controlPointsArray[0][4].y = 0.0;  controlPointsArray[0][4].z = 0.0;
     
     
     
-    controlPointsArray[1][0].x = 0.0;  controlPointsArray[1][0].y = 0.0;  controlPointsArray[1][0].z = 5.0;
+    controlPointsArray[1][0].x = 0.0;  controlPointsArray[1][0].y = 0.0;  controlPointsArray[1][0].z = 4;
     controlPointsArray[1][1].x = 0.0;  controlPointsArray[1][1].y = 0.0;  controlPointsArray[1][1].z = 3.0;
     controlPointsArray[1][2].x = 0.0;  controlPointsArray[1][2].y = 0.0;  controlPointsArray[1][2].z = 2.0;
     controlPointsArray[1][3].x = 0.0;  controlPointsArray[1][3].y = 0.0;  controlPointsArray[1][3].z = 1.0;
-    controlPointsArray[1][4].x = 0.0;  controlPointsArray[1][4].y = 0.0;  controlPointsArray[1][4].z = -0.5;
+    controlPointsArray[1][4].x = 0.0;  controlPointsArray[1][4].y = 0.0;  controlPointsArray[1][4].z = 0;
     //controlPointsArray[1][5].x = 0.0;  controlPointsArray[1][5].y = 1.8;  controlPointsArray[1][5].z = -1.0;
     
     
-    controlPointsArray[2][0].x = 1.0;  controlPointsArray[2][0].y = -0.0;  controlPointsArray[2][0].z = 5.0;
+    controlPointsArray[2][0].x = 1.0;  controlPointsArray[2][0].y = -0.0;  controlPointsArray[2][0].z = 4;
     controlPointsArray[2][1].x = 1.0;  controlPointsArray[2][1].y = -0.0;  controlPointsArray[2][1].z = 3.0;
     controlPointsArray[2][2].x = 1.0;  controlPointsArray[2][2].y = 0.0;  controlPointsArray[2][2].z = 2.0;
     controlPointsArray[2][3].x = 1.0;  controlPointsArray[2][3].y = 0.0;  controlPointsArray[2][3].z = 1.0;
-    controlPointsArray[2][4].x = 1.0;  controlPointsArray[2][4].y = 0.0;  controlPointsArray[2][4].z = -0.5;
+    controlPointsArray[2][4].x = 1.0;  controlPointsArray[2][4].y = 0.0;  controlPointsArray[2][4].z = 0;
    // controlPointsArray[2][5].x = 1.0;  controlPointsArray[2][5].y = 1.8;  controlPointsArray[2][5].z = -1.0;
     
     
-    controlPointsArray[3][0].x = 2.0;  controlPointsArray[3][0].y = -0.0;  controlPointsArray[3][0].z = 5.0;
+    controlPointsArray[3][0].x = 2.0;  controlPointsArray[3][0].y = -0.0;  controlPointsArray[3][0].z = 4;
     controlPointsArray[3][1].x = 2.0;  controlPointsArray[3][1].y = -0.0;  controlPointsArray[3][1].z = 3.0;
     controlPointsArray[3][2].x = 2.0;  controlPointsArray[3][2].y = 0.0;  controlPointsArray[3][2].z = 2.0;
     controlPointsArray[3][3].x = 2.0;  controlPointsArray[3][3].y = 0.0;  controlPointsArray[3][3].z = 1.0;
-    controlPointsArray[3][4].x = 2.0;  controlPointsArray[3][4].y = 0.0;  controlPointsArray[3][4].z = -0.5;
+    controlPointsArray[3][4].x = 2.0;  controlPointsArray[3][4].y = 0.0;  controlPointsArray[3][4].z = 0;
    // controlPointsArray[3][5].x = 2.0;  controlPointsArray[3][5].y = 1.8;  controlPointsArray[3][5].z = -1.0;
     
     
-    controlPointsArray[4][0].x = 3.0;  controlPointsArray[4][0].y = -0.0;  controlPointsArray[4][0].z = 4.0;
-    controlPointsArray[4][1].x = 4.0;  controlPointsArray[4][1].y = -0.0;  controlPointsArray[4][1].z = 3.0;
-    controlPointsArray[4][2].x = 4.0;  controlPointsArray[4][2].y = 0.0;  controlPointsArray[4][2].z = 2.0;
-    controlPointsArray[4][3].x = 4.0;  controlPointsArray[4][3].y = 0.0;  controlPointsArray[4][3].z = 1.0;
-    controlPointsArray[4][4].x = 3.0;  controlPointsArray[4][4].y = 0.0;  controlPointsArray[4][4].z = 0.0;
+    controlPointsArray[4][0].x = 3.0;  controlPointsArray[4][0].y = -0.0;  controlPointsArray[4][0].z = 4;
+    controlPointsArray[4][1].x = 3.0;  controlPointsArray[4][1].y = -0.0;  controlPointsArray[4][1].z = 3.0;
+    controlPointsArray[4][2].x = 3.0;  controlPointsArray[4][2].y = 0.0;  controlPointsArray[4][2].z = 2.0;
+    controlPointsArray[4][3].x = 3.0;  controlPointsArray[4][3].y = 0.0;  controlPointsArray[4][3].z = 1.0;
+    controlPointsArray[4][4].x = 3.0;  controlPointsArray[4][4].y = 0.0;  controlPointsArray[4][4].z = 0;
     //controlPointsArray[4][5].x = 3.0;  controlPointsArray[4][5].y = 1.8;  controlPointsArray[4][5].z = -1.0;
     
-    
     */
-
     
+
+    /*
     controlPointsArray[0][0].x = -1;  controlPointsArray[0][0].y = 0.0;  controlPointsArray[0][0].z = 4.0;
     controlPointsArray[0][1].x = -2;  controlPointsArray[0][1].y = 0.0;  controlPointsArray[0][1].z = 3.0;
     controlPointsArray[0][2].x = -2;  controlPointsArray[0][2].y = 0.0;  controlPointsArray[0][2].z = 2.0;
@@ -238,7 +238,7 @@ void BSPline::InitializeControlPoints()
     controlPointsArray[4][2].x = 4.0;  controlPointsArray[4][2].y = 0.0;  controlPointsArray[4][2].z = 2.0;
     controlPointsArray[4][3].x = 4.0;  controlPointsArray[4][3].y = 0.0;  controlPointsArray[4][3].z = 1.0;
     controlPointsArray[4][4].x = 3.0;  controlPointsArray[4][4].y = 0.0;  controlPointsArray[4][4].z = 0.0;
-    //controlPointsArray[4][5].x = 3.0;  controlPointsArray[4][5].y = 1.8;  controlPointsArray[4][5].z = -1.0;
+    //controlPointsArray[4][5].x = 3.0;  controlPointsArray[4][5].y = 1.8;  controlPointsArray[4][5].z = -1.0;*/
     
     controlPointsWeightsArray = new float * [15];
     for(int i=0;i<15;i++)
@@ -601,5 +601,54 @@ void BSPline::ptsNURBS(myPoint3D **P, float ** weight, float *knot_i, float *kno
     pts[0] = tempx/(float)denominator ;
     pts[1] = tempy/(float)denominator ;
     pts[2] = tempz/(float)denominator ;
+    
+}
+
+void BSPline::ptsNURBS(point_t *d,float *weight,float *knot_i,
+                       float *knot_j,int orderi,int orderj,
+                       int m,int n,float s, float t,float *pts)
+{
+    
+    int lowi, highi, lowj, highj;
+    int I, J;
+    int which_i, which_j, ii, jj;
+    float   basis_i[50],basis_j[50];
+    float   tempx,tempy,tempz,denominator;
+
+    
+    /* ----------- End of Decleration -------------- */
+    lowi = orderi - 1 ; highi = m + 1;
+    lowj = orderj - 1 ; highj = n + 1;
+    I = knotSearch(knot_i,s,lowi,highi);
+    basis_value(I,s,orderi,knot_i,basis_i);
+    
+    J = knotSearch(knot_j,t,lowj,highj);
+    basis_value(J,t,orderj,knot_j,basis_j) ;
+    
+    tempx=0.0;tempy=0.0;tempz=0.0;denominator=0.0;
+    
+    which_i = I - orderi + 1 ; which_j = J - orderj + 1 ;
+
+    for (ii=0;ii<orderi;ii++)
+        for (jj=0;jj<orderj;jj++)
+        {
+            denominator += weight[(ii+which_i) * (n+1) + jj+which_j]*
+            basis_i[ii]*basis_j[jj] ;
+            tempx       += weight[(ii+which_i) * (n+1) + jj+which_j]*
+            d[(ii+which_i) * (n+1) + jj+which_j].x *
+            basis_i[ii]*basis_j[jj] ;
+            tempy       += weight[(ii+which_i) * (n+1) + jj+which_j]*
+            d[(ii+which_i) * (n+1) + jj+which_j].y *
+            basis_i[ii]*basis_j[jj] ;
+            tempz       += weight[(ii+which_i) * (n+1) + jj+which_j]*
+            d[(ii+which_i) * (n+1) + jj+which_j].z *
+            basis_i[ii]*basis_j[jj] ;
+        }
+    pts[0] = tempx/denominator ;
+    pts[1] = tempy/denominator ;
+    pts[2] = tempz/denominator ;
+    
+    
+    
     
 }

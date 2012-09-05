@@ -392,8 +392,8 @@ void BubblePacking2D:: subdivisionHardCode2( bubble** P, int IMAX, int JMAX, flo
     {
         for(int j=1; j<JMAX-1; j++)
         {
-            P[i][j].u = 1/(float)(IMAX-1)*i;
-            P[i][j].v=  1/(float)(JMAX-1)*j;
+            P[i][j].u = 1/(float)(IMAX-1)*i;// 1/(float)(IMAX-1)*i;//1/(float)(IMAX-1)*i*0.5;
+            P[i][j].v=  1/(float)(IMAX-1)*j; //1/(float)(JMAX-1)*j;
             //cout <<"P["<<i<<"]["<<j<<"].u:"<< P[i][j].u << endl;
             //cout <<"P["<<i<<"]["<<j<<"].v:"<< P[i][j].v << endl;
             

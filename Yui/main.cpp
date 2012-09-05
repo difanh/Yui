@@ -64,7 +64,7 @@ GLfloat gfDeltaX = .01;
 GLfloat gfPosX = 0.0;
 GLfloat gShapeSize = 11.0f;
 GLfloat gTrackBallRotation [4] = {0.0, 0.0, 0.0, 0.0};
-GLfloat gWorldRotation [4] = {90.0, 0.0, 0.0, 0.0}; //{155.0, 0.0, -1.0, 0.0};
+GLfloat gWorldRotation [4] = {180, 0.0, 1.0, 0.0}; //{155.0, 0.0, -1.0, 0.0};
 
 GLboolean gDolly = GL_FALSE;
 GLboolean gPan = GL_FALSE;
@@ -95,7 +95,7 @@ float b=WIDTH;
 
 float distance_geometry =4.5;
 float nodeformationRadius = distance_geometry/(float)number_of_bubbles*0.5; //here change
-float initialBubbleRadius = nodeformationRadius/(float) distance_geometry;// 0.05;//10-0.0523;//7-0.083;//1/(float)7/(float)2;
+float initialBubbleRadius = 0.05;//10-0.0523;//7-0.083;//1/(float)7/(float)2;
 
 
 /*
@@ -527,11 +527,11 @@ void createBubbleSplineNoDeformation(float dx, float dy, float radius)
     float* Vknot = new float [9];
     
     Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
-    Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.0; //By changing the knot value the extends
+    Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.1; //By changing the knot value the extends
     
     
     Vknot[0]= Vknot[1] = Vknot[2]= Vknot[3]= Vknot[4] =  0.0;
-    Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.0;
+    Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.1;
 
     
     float x ,y,z;
@@ -992,8 +992,8 @@ void maindisplay(void)
     for (int i=0;i<IMAX;i++)
     {
        
-        createBubbleSplineNoDeformation(PointMat2[0][i].u, PointMat2[0][i].v, nodeformationRadius);
-        createBubbleSplineNoDeformation(PointMat2[IMAX-1][i].u,PointMat2[IMAX-1][i].v, nodeformationRadius);
+        createBubbleSplineNoDeformation(PointMat2[0][i].u, PointMat2[0][i].v, initialBubbleRadius);
+        createBubbleSplineNoDeformation(PointMat2[IMAX-1][i].u,PointMat2[IMAX-1][i].v, initialBubbleRadius);
 
         
        // createBubbleSplineT(PointMat[0][i].u,PointMat[0][i].v, initialBubbleRadius);
@@ -1006,8 +1006,8 @@ void maindisplay(void)
     for (int i=0;i<IMAX;i++)
     {
         
-        createBubbleSplineNoDeformation(PointMat2[i][0].u,PointMat2[i][0].v, nodeformationRadius);
-        createBubbleSplineNoDeformation(PointMat2[i][IMAX-1].u,PointMat2[i][IMAX-1].v, nodeformationRadius);
+        createBubbleSplineNoDeformation(PointMat2[i][0].u,PointMat2[i][0].v, initialBubbleRadius);
+        createBubbleSplineNoDeformation(PointMat2[i][IMAX-1].u,PointMat2[i][IMAX-1].v, initialBubbleRadius);
 
         
         //createBubbleSplineT(PointMat[i][0].u,PointMat[i][0].v, initialBubbleRadius);

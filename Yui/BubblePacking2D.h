@@ -33,17 +33,13 @@ struct bubble {
     float u; //position in the parametric u space (0-1) dependes on the KnotVector  
     float v; //position in the parametric v space (0-1)
     
-   // PointUVp location;
+    float x; //position in the real space
+    float y; //position in the real space
+    float z; //position in the real space
     
-    //what level
-   // int level;
-    
-    //radius
     float radius;
     
 }; //use here number of bubbles inside the geometry
-
-
 
 
 class BubblePacking2D
@@ -65,6 +61,8 @@ class BubblePacking2D
     //This function finds the distance between bubbles
     float findDistanceBetweenBubbles (bubble B1, bubble B2);
     
+    float findDistanceBetweenBubblesXYZ(bubble B1, bubble B2);
+    
     //This function finds the summation of two radii
     float radiiSum (bubble B1, bubble B2);
     
@@ -76,7 +74,9 @@ class BubblePacking2D
     
     float function2(float t, float v,float fw);
     
-    PointUVp Simulation(bubble B1, bubble B2);
+    PointUVp Simulation(bubble B1, bubble B2);  
+    
+    point_t SimulationXYZ(bubble B1, bubble B2);
     
     //Function tries to solve runge Kutta for a system of equation
     //RuggeKutta Solution for a set of equations

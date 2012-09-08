@@ -53,6 +53,16 @@ float BubblePacking2D::findDistanceBetweenBubbles(bubble B1, bubble B2)
     return(distance);
 }
 
+float BubblePacking2D::findDistanceBetweenBubblesXYZ(bubble B1, bubble B2)
+{
+    float distance = 0.0;
+    
+    distance = sqrt(pow((B1.x-B2.x),2)+pow((B1.y-B2.y),2)+pow((B1.z-B2.z),2));
+    
+    return(distance);
+}
+
+
 float BubblePacking2D::radiiSum(bubble B1, bubble B2)
 {
     float radius = 0.0;
@@ -168,6 +178,81 @@ PointUVp BubblePacking2D::Simulation(bubble B1, bubble B2)
   //  cout <<  "interbubble_force : " << interbubbleForces <<endl;
   //  cout <<  "tempx : " << tempX <<endl;
         
+    return (result);
+    
+}
+
+point_t BubblePacking2D::SimulationXYZ(bubble B1, bubble B2)
+{
+    point_t result;
+    // float distance = findDistanceBetweenBubbles(B1, B2);
+    float stableDistance = radiiSum(B1, B2);
+    float w = 0.0;
+    float interbubbleForces = 0.0;
+    // float tempX;
+    float h=0.01; //time step
+    
+    result.x = B2.x;
+    result.y = B2.y;
+    result.z = B2.z;
+    
+    float distanceIDirection = findDistanceBetweenBubblesXYZ(B1, B2);
+    w = wParameter(distanceIDirection, stableDistance);
+    interbubbleForces =  interBubbleForces( _spring_rate, stableDistance, w);
+    
+    
+    
+    // ( 1 )
+    if (B2.x > B1.x && B2.z > B1.z )
+    {
+        result.x =rk4_sol(B2.x, h, interbubbleForces);
+        ///Needs to add y position
+        result.z =rk4_sol(B2.z, h, interbubbleForces);
+    }
+    
+    // ( 2 )
+    if (B2.x > B1.x && B2.z < B1.z )
+    {
+        result.x =rk4_sol(B2.x, h, interbubbleForces);
+        result.z =rk4_sol(B2.z, h, -interbubbleForces);
+    }
+    
+    //( 3 )
+    if (B2.x < B1.x && B2.z < B1.z )
+    {
+        result.x =rk4_sol(B2.x, h, -interbubbleForces);
+        result.z =rk4_sol(B2.z, h, -interbubbleForces);
+    }
+    
+    //( 4 )
+    if (B2.x < B1.x && B2.z > B1.z )
+    {
+        result.x =rk4_sol(B2.x, h, -interbubbleForces);
+        result.z =rk4_sol(B2.z, h, +interbubbleForces);
+    }
+    
+    else{
+        interbubbleForces = interbubbleForces;
+    }
+    
+    
+    
+    // x direction
+    /*float distanceIDirection = findDistanceXDirection(B1, B2, 0);
+     w = wParameter(distanceIDirection, stableDistance);
+     interbubbleForces =  interBubbleForces( _spring_rate, stableDistance, w);
+     result.u =rk4_sol(B2.u, h, interbubbleForces);
+     
+     // y direction
+     float distanceJDirection = findDistanceXDirection(B1, B2, 1);
+     w = wParameter(distanceJDirection, stableDistance);
+     interbubbleForces =  interBubbleForces( _spring_rate, stableDistance, w);
+     result.v =rk4_sol(B2.v, h, interbubbleForces);*/
+    
+    //  cout <<  "w : " << w <<endl;
+    //  cout <<  "interbubble_force : " << interbubbleForces <<endl;
+    //  cout <<  "tempx : " << tempX <<endl;
+    
     return (result);
     
 }
@@ -387,7 +472,7 @@ void BubblePacking2D:: subdivisionHardCode2( bubble** P, int IMAX, int JMAX, flo
         }
     }
     
-    
+    /*
     for(int i=1; i<IMAX-1; i++)
     {
         for(int j=1; j<JMAX-1; j++)
@@ -405,6 +490,7 @@ void BubblePacking2D:: subdivisionHardCode2( bubble** P, int IMAX, int JMAX, flo
             
         }
     }
+     */
     
     
     

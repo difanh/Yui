@@ -86,16 +86,16 @@ static GLboolean WIRE=0;		// draw mesh in wireframe?
 int gLastKey = ' ';
 int gMainWindow = 0;
 int k=0;
-int IMAX = 8;
-int JMAX = 8;
+int IMAX = 6;
+int JMAX = 6;
 int number_of_bubbles = IMAX; //(int) (distance_geometry)/(int) IMAX *2;
 
 float a=HEIGHT;
 float b=WIDTH;
 
-float distance_geometry =4.5;
+float distance_geometry =5.5; //here measure the correct circumference / lenght
 float nodeformationRadius = distance_geometry/(float)number_of_bubbles*0.5; //here change
-float initialBubbleRadius = 0.05;//10-0.0523;//7-0.083;//1/(float)7/(float)2;
+float initialBubbleRadius = nodeformationRadius;//10-0.0523;//7-0.083;//1/(float)7/(float)2;
 
 
 /*
@@ -134,6 +134,8 @@ Spline objSpline;
 Subdivision objMainSubdivision;
 
 PointUVp currentPoint;
+point_t currentPointXYZ;
+
 
 //myPoint3D S;
 myPoint3D** sMAT;
@@ -157,7 +159,7 @@ vector<myPoint3D> pointsBSpline;
 void gCameraReset(void)
 {
     gCamera.aperture = 25;
-    gCamera.focalLength = 25;
+    gCamera.focalLength = 30; //THIS IS THE DEFAULT ZOOM
     gCamera.rotPoint = gOrigin;
     
     gCamera.viewPos.x = 0.0;
@@ -378,6 +380,56 @@ void drawGLText (GLint window_width, GLint window_height)
 
 #pragma mark ---- GLUT callbacks ----
 
+
+void MatPointInitial (bubble** PMat)
+{
+    
+    float* Uknot = new float [9];
+    float* Vknot = new float [9];
+    
+    Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
+    Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.0; //here how to strech space
+    
+    
+    Vknot[0]= Vknot[1] = Vknot[2]= Vknot[3]= Vknot[4] =  0.0;
+    Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.0;
+    
+    
+    
+    //float prevu, prevv;
+    float lastu, lastv;
+    //float lastx, lasty, lastz;
+   // bool mtrue = false;
+    
+    
+    for(int i=0;i<IMAX;i++){
+        for(int j=0;j<IMAX;j++){
+            
+            
+            lastu = 1/(float)(IMAX-1)*i; //using IMAX because is square same number of rows and columns
+            lastv = 1/(float)(JMAX-1)*j;
+            
+            //cout << "\nU:" << lastu << endl;
+            // cout << "V:" << lastv << endl;
+            
+            
+            objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray, Uknot, Vknot, 5, 5, 5, 5, lastu,lastv, objMainBSPline.pts);
+            
+            PMat[i][j].x = objMainBSPline.pts[0];
+            PMat[i][j].y = objMainBSPline.pts[1];
+            PMat[i][j].z = objMainBSPline.pts[2];
+           }
+    }
+    
+    
+    
+    
+    
+    
+    
+}
+
+
 void init (void)
 {
 	glEnable(GL_DEPTH_TEST);
@@ -425,7 +477,14 @@ void init (void)
             PointMat[i][j].radius = initialBubbleRadius; //change here if needed
             PointMat[i][j].u = 0.0;
             PointMat[i][j].v = 0.0;
+            
+            PointMat[i][j].x = 0.0;
+            PointMat[i][j].y = 0.0;
+            PointMat[i][j].z = 0.0;
+
             PointMat[i][j].idx = 0.0;
+            
+            
         }
         
     }
@@ -437,6 +496,12 @@ void init (void)
             PointMat2[i][j].radius = initialBubbleRadius; //change here if needed
             PointMat2[i][j].u = 0.0;
             PointMat2[i][j].v = 0.0;
+            
+            PointMat2[i][j].x = 0.0;
+            PointMat2[i][j].y = 0.0;
+            PointMat2[i][j].z = 0.0;
+
+            
             PointMat2[i][j].idx = 0.0;
         }
         
@@ -446,6 +511,8 @@ void init (void)
     objBP2D.subdivisionHardCode( PointMat, IMAX, JMAX);
     
     objBP2D.subdivisionHardCode2( PointMat2 , IMAX, JMAX, distance_geometry);
+    
+    MatPointInitial(PointMat2);
 
     
     
@@ -527,11 +594,11 @@ void createBubbleSplineNoDeformation(float dx, float dy, float radius)
     float* Vknot = new float [9];
     
     Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
-    Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.1; //By changing the knot value the extends
+    Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.0; //By changing the knot value the extends
     
     
     Vknot[0]= Vknot[1] = Vknot[2]= Vknot[3]= Vknot[4] =  0.0;
-    Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.1;
+    Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.0;
 
     
     float x ,y,z;
@@ -591,6 +658,112 @@ void createBubbleSplineNoDeformation(float dx, float dy, float radius)
     
     
 }
+
+void createBubbleXYZNoDeformation(float dx, float dy, float dz, float radius)
+{
+    
+    glPushMatrix(); //Copies the matrix on the top of the stack, this would be like save the funcion basically does not move
+
+    float x ,y,z;
+    
+    y=0;
+    
+    float	colorUSER[3]	=	{255, 245, 190};
+    
+    
+  //  objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray,
+    //                        Uknot, Vknot, 5, 5, 4, 4, dx, dy, objMainBSPline.pts); //gives the location of a point in the NURB patch
+    
+    //glVertex3f(objMainBSPline.pts[0], objMainBSPline.pts[1] , objMainBSPline.pts[2]); //location of the point in a NURB patch
+    
+    //glPushMatrix(); //Copies the matrix on the top of the stack, this would be like save the funcion
+    glColor3f(1,0,1);  //set colour ball
+    glTranslatef(0.0, 0.0 , 0.0); // back to origin
+    glTranslatef(dx, dy , dz);
+    
+    glBegin(GL_LINES);
+    glColor3fv(colorUSER);
+    
+    x = (float)radius * cos(359*PI/180.0f);
+    y= 0;
+    z = (float)radius * sin(359*PI/180.0f);
+    
+    for (int j=0; j<360; j++)
+    {
+        glVertex3f(x, y, z);
+        
+        x = (float)radius * cos(j*PI/180.0f);
+        y = 0;
+        z = (float)radius * sin(j*PI/180.0f);
+        
+        glVertex3f(x, y, z);
+    }
+    
+    //cout << "PI Value = " << PI << endl;
+    
+    glEnd();
+    
+    
+    //glPopMatrix(); // Would be equivalent like load the function
+    
+    
+    
+    // glutSolidSphere(radius, 5, 5);
+    
+  //  delete [] Uknot;
+  //  delete [] Vknot;
+    
+    
+    
+    
+    glPopMatrix(); // Would be equivalent like load the function
+    
+    
+    
+}
+
+
+
+
+
+void printMatrix (bubble** Mat, int val)
+{
+    
+    //char file2[] = "/Users/Serenity/Dropbox/CMU 2012/Pmat2XYZ";
+    //char buffer[33]="a";
+    
+    
+    // itoa(val,buffer,10);
+    
+    //strncat (file2,"txt");
+    //strncat (file,".txt");
+    
+    //cout << file2;
+    ofstream outfile ("/Users/Serenity/Dropbox/CMU 2012/Pmat2XYZ.txt"); //Check is there is a file functionlaity does not exist
+    
+    for(int m=0;m<IMAX;m++){
+        for(int n=0;n<IMAX;n++){
+            //outfile  << "\n[" << m << "]"<< "["<< n << "]:" <<endl;
+            
+            // outfile  << "X[" << m << "]"<< "["<< n << "]= "<< Mat[m][n].x <<"\t";
+            // outfile  << "Y[" << m << "]"<< "["<< n << "]= "<< Mat[m][n].y <<"\t";
+            // outfile  << "Z[" << m << "]"<< "["<< n << "]= "<< Mat[m][n].z <<"\t";
+            
+            
+            outfile  << Mat[m][n].x <<"\t" << Mat[m][n].z <<"\t"<< endl;
+            
+            
+        }
+    }
+    
+    
+    outfile.close();
+    
+    
+}
+
+
+
 
 void simulation()
 {
@@ -693,9 +866,143 @@ void simulation()
 void simulation2()
 {
     
+    
+  //  float* Uknot = new float [9];
+  //  float* Vknot = new float [9];
+    
+  //  Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
+  //  Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.0; //here how to strech space
+    
+    
+  ///  Vknot[0]= Vknot[1] = Vknot[2]= Vknot[3]= Vknot[4] =  0.0;
+  //  Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.0;
+    
+    
+    
+    float prevx, prevy, prevz;
+    float lastx, lasty, lastz;
+    //float lastx, lasty, lastz;
+    bool mtrue = false;
+    
+    for(int m=1;m<IMAX-1;m++){
+        for(int n=1;n<IMAX-1;n++){
+            
+           // prevx = PointMat2[m][n].x; //
+          //  prevy = PointMat2[m][n].y;
+          //  prevz = PointMat2[m][n].z;
+            
+            
+          //  objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray, Uknot, Vknot, 5, 5, 5, 5, prevu,prevv, objMainBSPline.pts);
+            
+          //  PointMat2[m][n].x = objMainBSPline.pts[0];
+          //  PointMat2[m][n].y = objMainBSPline.pts[1];
+          //  PointMat2[m][n].z = objMainBSPline.pts[2];
+            
+            mtrue = true;
+            
+            for(int i=0;i<IMAX;i++){
+                for(int j=0;j<IMAX;j++){
+                    
+                    if(i==m && j==n)
+                    {
+                        
+                        
+                    }
+                    /* if(i==0 && j==0)
+                     {
+                     
+                     
+                     }*/
+                    
+                    else{
+                        
+                        
+                       // lastx = PointMat2[i][j].x;
+                       // lasty = PointMat2[i][j].y;
+                       // lastz = PointMat2[i][j].z;
+                        
+                        //cout << "\nU:" << lastu << endl;
+                        // cout << "V:" << lastv << endl;
+                        
+                        
+                       // objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray, Uknot, Vknot, 5, 5, 5, 5, lastu,lastv, objMainBSPline.pts);
+                        
+                        //PointMat2[i][j].x = objMainBSPline.pts[0];
+                        //PointMat2[i][j].y = objMainBSPline.pts[1];
+                        //PointMat2[i][j].z = objMainBSPline.pts[2];
+                        
+                        
+                        // lastx = PointMat2[i][j].x;
+                        //  lasty = PointMat2[i][j].y;
+                        //  lastz = PointMat2[i][j].z;
+                        
+                        //currentPoint = objBP2D.Simulation(PointMat2[i][j], PointMat2[m][n]);
+                        
+                        currentPointXYZ = objBP2D.SimulationXYZ(PointMat2[i][j], PointMat2[m][n]);
+                        
+                        PointMat2[m][n].x = currentPointXYZ.x;
+                        PointMat2[m][n].y = currentPointXYZ.y;
+                        PointMat2[m][n].z = currentPointXYZ.z;
+                        
+                        
+                        if(mtrue == true)
+                        {
+                            
+                            //   cout <<"i:" << i <<"\t j: " << j << endl;
+                            //  cout << "\nX:" << PointMat2[m][n].x  << endl;
+                            //  cout << "Y:" << PointMat2[m][n].y  << endl;
+                            //   cout << "Z:" << PointMat2[m][n].z  << endl;
+                            
+                            //  mtrue = false;
+                        }
+                        
+                        
+                        
+                        // if(PointMat2[m][n].x>=5.0) PointMat2[m][n].x = lastx; ////IMPORTANT TO CHANGE
+                        // if(PointMat2[m][n].z>=5.0) PointMat2[m][n].z = lastz;
+                        
+                        /// if(PointMat2[m][n].x<=-1.0) PointMat2[m][n].x = lastx; ////IMPORTANT TO CHANGE
+                        //if(PointMat2[m][n].z<=-1.0) PointMat2[m][n].z = lastz;
+                        
+                        
+                        
+                    }
+                    
+                    
+                    
+                }
+                
+            }
+            
+            
+            
+            // createBubbleSplineT(PointMat[m][n].u,PointMat[m][n].v, initialBubbleRadius);
+            
+            if(k%5==0)
+            {
+                
+            }
+            
+            
+            
+        }
+    }
+   
+    
+    //if(k%50==250)  printMatrix(PointMat2,  k); //prints the matrix to a txt file
+    
+    k++;
+    
+    
+}
 
+//simulation2 makes the sim in the 2d real not the nurb surface in other words no deformation
+void simulation3()
+{
+    
+    
     float lastu, lastv;
-        
+    
     for(int m=1;m<IMAX-1;m++){
         for(int n=1;n<IMAX-1;n++){
             
@@ -704,8 +1011,8 @@ void simulation2()
                     
                     if(i==m && j==n)
                     {
-                      
-                    
+                        
+                        
                     }
                     /* if(i==0 && j==0)
                      {
@@ -751,12 +1058,13 @@ void simulation2()
         }
     }
     
-
+    
     
     k++;
     
     
 }
+
 
 #pragma mark <F> main display function
 
@@ -817,7 +1125,7 @@ void maindisplay(void)
              float* Vknot = new float [9];
              
              Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
-             Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  2.0;
+             Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.0; //here how to strech space
              
              
              Vknot[0]= Vknot[1] = Vknot[2]= Vknot[3]= Vknot[4] =  0.0;
@@ -903,7 +1211,7 @@ void maindisplay(void)
              {
                  for (int i=0;i<IMAX;i++){
 
-                     u=i/(float)(IMAX-1)*2;
+                     u=i/(float)(IMAX-1)*1; //change to 2 to strech space
 
                      
                      for(int j=0;j<JMAX ;j++){
@@ -979,21 +1287,27 @@ void maindisplay(void)
     //Starts the simulation for the given geometry and stops after 250 iterations
      if(sSimulationInBSplinePatch)
      {
-        // simulation();
+         //simulation();
          simulation2();
+         //simulation3();
          
          if (k==250) sSimulationInBSplinePatch = false;
               
      }
     
+    
+    #pragma mark <F> Boundaries
 
     //Draw boundaries
     //TOP AND BOTTOM
     for (int i=0;i<IMAX;i++)
     {
-       
-        createBubbleSplineNoDeformation(PointMat2[0][i].u, PointMat2[0][i].v, initialBubbleRadius);
-        createBubbleSplineNoDeformation(PointMat2[IMAX-1][i].u,PointMat2[IMAX-1][i].v, initialBubbleRadius);
+        createBubbleXYZNoDeformation(PointMat2[0][i].x, PointMat2[0][i].y, PointMat2[0][i].z, PointMat2[0][i].radius);
+        createBubbleXYZNoDeformation(PointMat2[IMAX-1][i].x, PointMat2[IMAX-1][i].y, PointMat2[IMAX-1][i].z, PointMat2[IMAX-1][i].radius);
+        
+        // just now
+       // createBubbleSplineNoDeformation(PointMat2[0][i].u, PointMat2[0][i].v, nodeformationRadius);
+       // createBubbleSplineNoDeformation(PointMat2[IMAX-1][i].u,PointMat2[IMAX-1][i].v, nodeformationRadius);
 
         
        // createBubbleSplineT(PointMat[0][i].u,PointMat[0][i].v, initialBubbleRadius);
@@ -1006,12 +1320,16 @@ void maindisplay(void)
     for (int i=0;i<IMAX;i++)
     {
         
-        createBubbleSplineNoDeformation(PointMat2[i][0].u,PointMat2[i][0].v, initialBubbleRadius);
-        createBubbleSplineNoDeformation(PointMat2[i][IMAX-1].u,PointMat2[i][IMAX-1].v, initialBubbleRadius);
+        createBubbleXYZNoDeformation(PointMat2[i][0].x, PointMat2[i][0].y, PointMat2[i][0].z, PointMat2[i][0].radius);
+        createBubbleXYZNoDeformation(PointMat2[i][IMAX-1].x, PointMat2[i][IMAX-1].y, PointMat2[i][IMAX-1].z, PointMat2[i][IMAX-1].radius);
+        
+        //just now
+        // createBubbleSplineNoDeformation(PointMat2[i][0].u,PointMat2[i][0].v, nodeformationRadius);
+       // createBubbleSplineNoDeformation(PointMat2[i][IMAX-1].u,PointMat2[i][IMAX-1].v, nodeformationRadius);
 
         
-        //createBubbleSplineT(PointMat[i][0].u,PointMat[i][0].v, initialBubbleRadius);
-        //createBubbleSplineT(PointMat[i][IMAX-1].u,PointMat[i][IMAX-1].v, initialBubbleRadius);
+       // createBubbleSplineT(PointMat[i][0].u,PointMat[i][0].v, initialBubbleRadius);
+       // createBubbleSplineT(PointMat[i][IMAX-1].u,PointMat[i][IMAX-1].v, initialBubbleRadius);
        
         
         
@@ -1021,11 +1339,19 @@ void maindisplay(void)
     for(int m=1;m<IMAX-1;m++){
         for(int n=1;n<IMAX-1;n++){
             
-             createBubbleSplineNoDeformation(PointMat2[m][n].u, PointMat2[m][n].v, nodeformationRadius);
+            
+            createBubbleXYZNoDeformation(PointMat2[m][n].x, PointMat2[m][n].y, PointMat2[m][n].z, PointMat2[m][n].radius);
+            
+            //just now
+            //createBubbleSplineNoDeformation(PointMat2[m][n].u, PointMat2[m][n].v, nodeformationRadius);
+            
+            
             //createBubbleSplineT(PointMat[m][n].u,PointMat[m][n].v, initialBubbleRadius);
             
         }
     }
+    
+  //  if (k==250) printMatrix(PointMat2);
      
 
     glutSwapBuffers();

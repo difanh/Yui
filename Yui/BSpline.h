@@ -15,6 +15,7 @@
 #include "Point2d.h"
 #include "Point3d.h"
 #include "Common.h"
+#include <cmath>
 using namespace std;
 
 
@@ -39,6 +40,10 @@ public:
      float ** controlPointsWeightsArray;
     
     float* pts;
+    
+    //curves storage
+    point_t * l_c;
+    Spoint1D * l_uv_curve_definition; //stores values in parametric space
     
     //myPoint3D ** controlPointsArray;
 
@@ -73,11 +78,12 @@ public:
                          float *knot_j,int orderi,int orderj,
                          int m,int n,float s, float t,float* pts);
     
-    static void ptsNURBS(point_t *d,float *weight,float *knot_i,
-                         float *knot_j,int orderi,int orderj,
-                         int m,int n,float s, float t,float *pts);
+    static void ptsNURBS(point_t *d, float *weight, float *knot_i, int orderi, int m, float s, float *fp);
         
+    //This funtcion finds the length of a NURB curve
+    float findLengthInSpace(point_t A, point_t B);
     
+    float findLengthCurve(point_t *d, float *weight, float *knot_i, int orderi, int m, float *fp,int numbeOfPointsInCurve );
     
     
 };

@@ -201,11 +201,12 @@ void BSPline::InitializeControlPoints()
     
 
     /* CIRCLE*/
+    
     controlPointsArray[0][0].x = -1;  controlPointsArray[0][0].y = 0.0;  controlPointsArray[0][0].z = 4.0;
     controlPointsArray[0][1].x = -2;  controlPointsArray[0][1].y = 0.0;  controlPointsArray[0][1].z = 3.0;
     controlPointsArray[0][2].x = -2;  controlPointsArray[0][2].y = 0.0;  controlPointsArray[0][2].z = 2.0;
     controlPointsArray[0][3].x = -2;  controlPointsArray[0][3].y = 0.0;  controlPointsArray[0][3].z = 1.0;
-    controlPointsArray[0][4].x = -1;  controlPointsArray[0][4].y = 0.0;  controlPointsArray[0][4].z = 0.0;
+    controlPointsArray[0][4].x = -3;  controlPointsArray[0][4].y = 0.0;  controlPointsArray[0][4].z = 0.0;
     
     
     
@@ -233,12 +234,13 @@ void BSPline::InitializeControlPoints()
     // controlPointsArray[3][5].x = 2.0;  controlPointsArray[3][5].y = 1.8;  controlPointsArray[3][5].z = -1.0;
     
     
-    controlPointsArray[4][0].x = 3.0;  controlPointsArray[4][0].y = -0.0;  controlPointsArray[4][0].z = 4.0;
+    controlPointsArray[4][0].x = 3.0;  controlPointsArray[4][0].y = -0.0;  controlPointsArray[4][0].z = 5.0;
     controlPointsArray[4][1].x = 4.0;  controlPointsArray[4][1].y = -0.0;  controlPointsArray[4][1].z = 3.0;
     controlPointsArray[4][2].x = 4.0;  controlPointsArray[4][2].y = 0.0;  controlPointsArray[4][2].z = 2.0;
     controlPointsArray[4][3].x = 4.0;  controlPointsArray[4][3].y = 0.0;  controlPointsArray[4][3].z = 1.0;
     controlPointsArray[4][4].x = 3.0;  controlPointsArray[4][4].y = 0.0;  controlPointsArray[4][4].z = 0.0;
     //controlPointsArray[4][5].x = 3.0;  controlPointsArray[4][5].y = 1.8;  controlPointsArray[4][5].z = -1.0;
+     
     
     
    /*  controlPointsArray[0][0].x = 0.0;   controlPointsArray[0][0].y = 0.0;  controlPointsArray[0][0].z = 0.0;
@@ -645,51 +647,119 @@ void BSPline::ptsNURBS(myPoint3D **P, float ** weight, float *knot_i, float *kno
     
 }
 
-void BSPline::ptsNURBS(point_t *d,float *weight,float *knot_i,
-                       float *knot_j,int orderi,int orderj,
-                       int m,int n,float s, float t,float *pts)
+void BSPline::ptsNURBS(point_t *d, float *weight, float *knot_i, int orderi, int m, float s, float *fp)
 {
     
-    int lowi, highi, lowj, highj;
-    int I, J;
-    int which_i, which_j, ii, jj;
-    float   basis_i[50],basis_j[50];
+    int lowi, highi;
+    int I;
+    int which_i, ii;
+    float   basis_i[50];
     float   tempx,tempy,tempz,denominator;
-
+    BSPline objBS;
     
     /* ----------- End of Decleration -------------- */
     lowi = orderi - 1 ; highi = m + 1;
-    lowj = orderj - 1 ; highj = n + 1;
-    I = knotSearch(knot_i,s,lowi,highi);
-    basis_value(I,s,orderi,knot_i,basis_i);
-    
-    J = knotSearch(knot_j,t,lowj,highj);
-    basis_value(J,t,orderj,knot_j,basis_j) ;
+    /*
+     
+     multi = 0 ;  i = m ;
+     while ((knot_i[m+1] == knot_i[i]) && (i > (orderi - 1)))
+     {
+     multi ++ ; i-- ;
+     }
+     
+     I = orderi  - 1 ;
+     while ((!((knot_i[I] <= s) && (knot_i[I+1] > s))) && (I < (m+1)))
+     I ++  ;
+     if (I >= (m+1)) I = (m+1) -  multi - 1 ;
+     basis_value(I,s,orderi,knot_i,basis_i) ;
+     */
+    I = objBS.knotSearch(knot_i,s,lowi,highi);
+    objBS.basis_value(I,s,orderi,knot_i,basis_i);
     
     tempx=0.0;tempy=0.0;tempz=0.0;denominator=0.0;
     
-    which_i = I - orderi + 1 ; which_j = J - orderj + 1 ;
-
+    which_i = I - orderi + 1 ;
+    
     for (ii=0;ii<orderi;ii++)
-        for (jj=0;jj<orderj;jj++)
-        {
-            denominator += weight[(ii+which_i) * (n+1) + jj+which_j]*
-            basis_i[ii]*basis_j[jj] ;
-            tempx       += weight[(ii+which_i) * (n+1) + jj+which_j]*
-            d[(ii+which_i) * (n+1) + jj+which_j].x *
-            basis_i[ii]*basis_j[jj] ;
-            tempy       += weight[(ii+which_i) * (n+1) + jj+which_j]*
-            d[(ii+which_i) * (n+1) + jj+which_j].y *
-            basis_i[ii]*basis_j[jj] ;
-            tempz       += weight[(ii+which_i) * (n+1) + jj+which_j]*
-            d[(ii+which_i) * (n+1) + jj+which_j].z *
-            basis_i[ii]*basis_j[jj] ;
-        }
-    pts[0] = tempx/denominator ;
-    pts[1] = tempy/denominator ;
-    pts[2] = tempz/denominator ;
+    {
+        denominator += weight[ii+which_i]* basis_i[ii] ;
+        tempx       += weight[ii+which_i]* d[ii+which_i].x * basis_i[ii] ;
+        tempy       += weight[ii+which_i]* d[ii+which_i].y * basis_i[ii] ;
+        tempz       += weight[ii+which_i]* d[ii+which_i].z * basis_i[ii] ;
+    }
+    
+    fp[0] = tempx/denominator ;
+    fp[1] = tempy/denominator ;
+    fp[2] = tempz/denominator ;
     
     
+}
+
+
+
+
+float BSPline::findLengthInSpace(point_t A, point_t B)
+{
+    float distance = 0.0;
     
+    distance = sqrt(pow((A.x-B.x),2)+pow((A.y-B.y),2)+pow((A.z-B.z),2));
+    
+    return(distance);
+}
+
+
+// numbeOfPointsInCurve defines the resolution of the curve
+// d control point vector
+float BSPline::findLengthCurve(point_t *d, float *weight, float *knot_i, int orderi, int m, float *fp,
+                               int numbeOfPointsInCurve ) //change here float* fp to point_t fp
+
+{
+    float temp = 0.0;
+    float u =0;    
+
+    point_t P1;
+    point_t P2;
+    
+    ptsNURBS(d, weight, knot_i, orderi, m, u, fp);
+    
+    P1.x = fp[0];
+    P1.y = fp[1];
+    P1.z = fp[2];
+    
+    l_c = new point_t[numbeOfPointsInCurve]; //stores the values of the curve for later use
+    
+    l_c[0].x = fp[0];
+    l_c[0].y = fp[1];
+    l_c[0].z = fp[2];
+    
+    
+    l_uv_curve_definition = new Spoint1D[numbeOfPointsInCurve]; //stores the values of the curve for later use
+    l_uv_curve_definition[0].u=0.0;
+   
+    for (int i=1;i<numbeOfPointsInCurve;i++)
+    {
+        
+        u=  1/(float)(numbeOfPointsInCurve-1)*i;
+        l_uv_curve_definition[i].u = u;
+        
+        ptsNURBS(d, weight, knot_i, orderi, m, u, fp);
+
+        P2.x = fp[0];
+        P2.y = fp[1];
+        P2.z = fp[2];
+        
+        temp = temp + findLengthInSpace(P1, P2);
+        
+        P1.x = P2.x;
+        P1.y = P2.y;
+        P1.z = P2.z;
+        
+        l_c[i].x = fp[0];
+        l_c[i].y = fp[1];
+        l_c[i].z = fp[2];
+        
+    }
+    
+    return temp;
     
 }

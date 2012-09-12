@@ -257,6 +257,81 @@ point_t BubblePacking2D::SimulationXYZ(bubble B1, bubble B2)
     
 }
 
+point_t BubblePacking2D::SimulationXYZ_Vector(bubble B1, bubble B2)
+{
+    point_t result;
+    // float distance = findDistanceBetweenBubbles(B1, B2);
+    float stableDistance = radiiSum(B1, B2);
+    float w = 0.0;
+    float interbubbleForces = 0.0;
+    // float tempX;
+    float h=0.01; //time step
+    
+    result.x = B2.x;
+    result.y = B2.y;
+    result.z = B2.z;
+    
+    float distanceIDirection = findDistanceBetweenBubblesXYZ(B1, B2);
+    w = wParameter(distanceIDirection, stableDistance);
+    interbubbleForces =  interBubbleForces( _spring_rate, stableDistance, w);
+    
+    
+    
+    // ( 1 )
+    if (B2.x > B1.x && B2.z > B1.z )
+    {
+        result.x =rk4_sol(B2.x, h, interbubbleForces);
+        ///Needs to add y position
+        result.z =rk4_sol(B2.z, h, interbubbleForces);
+    }
+    
+    // ( 2 )
+    if (B2.x > B1.x && B2.z < B1.z )
+    {
+        result.x =rk4_sol(B2.x, h, interbubbleForces);
+        result.z =rk4_sol(B2.z, h, -interbubbleForces);
+    }
+    
+    //( 3 )
+    if (B2.x < B1.x && B2.z < B1.z )
+    {
+        result.x =rk4_sol(B2.x, h, -interbubbleForces);
+        result.z =rk4_sol(B2.z, h, -interbubbleForces);
+    }
+    
+    //( 4 )
+    if (B2.x < B1.x && B2.z > B1.z )
+    {
+        result.x =rk4_sol(B2.x, h, -interbubbleForces);
+        result.z =rk4_sol(B2.z, h, +interbubbleForces);
+    }
+  
+    
+    else{
+        interbubbleForces = interbubbleForces;
+    }
+    
+    
+    // x direction
+    /*float distanceIDirection = findDistanceXDirection(B1, B2, 0);
+     w = wParameter(distanceIDirection, stableDistance);
+     interbubbleForces =  interBubbleForces( _spring_rate, stableDistance, w);
+     result.u =rk4_sol(B2.u, h, interbubbleForces);
+     
+     // y direction
+     float distanceJDirection = findDistanceXDirection(B1, B2, 1);
+     w = wParameter(distanceJDirection, stableDistance);
+     interbubbleForces =  interBubbleForces( _spring_rate, stableDistance, w);
+     result.v =rk4_sol(B2.v, h, interbubbleForces);*/
+    
+    //  cout <<  "w : " << w <<endl;
+    //  cout <<  "interbubble_force : " << interbubbleForces <<endl;
+    //  cout <<  "tempx : " << tempX <<endl;
+    
+    return (result);
+    
+}
+
 
 float BubblePacking2D::rk4_sol(float xi, float time_step, float fw)
 {
@@ -500,4 +575,132 @@ void BubblePacking2D:: subdivisionHardCode2( bubble** P, int IMAX, int JMAX, flo
     //return (U);
 }
 
+bubble* BubblePacking2D::bubbleBoundaries(int nOfBubbles, float len, int state)
+{
+    bubble* l0 = new bubble[nOfBubbles];
+    float radius = len/(float)(nOfBubbles-1)*0.5;
+    float parameter = 0.0;
+    
+    for(int i=0;i<nOfBubbles;i++){
+        l0[i].radius = radius;
+        parameter =  1/(float)(nOfBubbles-1)*i; //Chnage this because if they are curve does not work
+        
+        
 
+        if (state==0) //bottom
+        {
+            l0[i].u = 0.0;
+            l0[i].v = parameter;
+        }
+        else if (state==1) //right
+        {
+            l0[i].u = parameter;
+            l0[i].v = 0.0;
+        }
+        else if (state==2) //top
+        {
+            l0[i].u = 1.0;
+            l0[i].v = parameter;
+        }
+        else if (state==3) //left
+        {
+           
+            l0[i].u = parameter;
+            l0[i].v = 1.0;
+            
+        }
+
+        
+    }
+    
+    return l0;
+}
+
+int BubblePacking2D::AproxSearch(float val, point_t *curve,int numberOfPointsInCurve, int mode)
+{
+    //This will not work if entangle or descenging CHECK later!!!!
+    float min_val = numeric_limits<double>::max();
+    int index = 0;
+    
+    for(int i=0;i<numberOfPointsInCurve;++i)
+    {
+        
+        if(mode==0) //X values
+        {
+            float diff = abs(curve[i].x - val);
+            if(diff<min_val)
+            {
+                min_val = diff;
+                index = i;
+            }
+        }
+        if(mode==1) //Y values
+        {
+            float diff = abs(curve[i].z - val);
+            if(diff<min_val)
+            {
+                min_val = diff;
+                index = i;
+            }
+            
+        }
+        
+    }
+    return index;
+    
+}
+
+
+point_t * BubblePacking2D::DeltaVector(point_t *V1, point_t *V2, int numberOfPoints)
+{
+    point_t * dXi = new point_t[numberOfPoints]; //temporal delta vector
+       
+    //ADD A WAY OF CHECKING THAT THE VECTORS HAVE THE SAME LENGHT
+    
+    for(int i=0; i<numberOfPoints; i++){
+        dXi[i].x = V2[i].x-V1[i].x;
+        dXi[i].y = V2[i].y-V1[i].y;
+        dXi[i].z = V2[i].z-V1[i].z;
+              
+    }
+    
+    return (dXi);
+
+}
+
+//Unit vector of the tangent between two points
+point_t BubblePacking2D::Tangent(point_t *V, int numberOfPoints, float x, int state)
+{
+    
+    int _id = 0;
+    
+    _id = AproxSearch(x, V,numberOfPoints, state);
+    
+    point_t Curve;
+    
+    //unit vector
+    Curve.x = (V[_id+1].x-V[_id].x);
+    Curve.y = (V[_id+1].y-V[_id].y);
+    Curve.z = (V[_id+1].z-V[_id].z);
+    
+    float euclidean_distance = sqrt(pow(Curve.x,2)+pow(Curve.y,2)+pow(Curve.z,2));
+    
+    //calculating Unit vector
+    Curve.x = Curve.x/(float)(euclidean_distance);
+    Curve.y = Curve.y/(float)(euclidean_distance);
+    Curve.z = Curve.z/(float)(euclidean_distance);
+    
+    return (Curve);
+
+}
+
+float BubblePacking2D::DotProduct(point_t P1, point_t P2)
+{
+    
+    float _tempC;
+    
+    _tempC = P1.x*P2.x+P1.y*P2.y+P1.z*P2.z;
+    
+    return (_tempC);
+    
+}

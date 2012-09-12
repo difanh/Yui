@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "RungeKutta.h"
+#include "BSpline.h"
 
 using namespace std;
 
@@ -25,21 +26,6 @@ struct PointUVp {
     float u;
     float v;
 };
-
-//This is the bubble data structure
-struct bubble {
-    int idx; //unique id
-    
-    float u; //position in the parametric u space (0-1) dependes on the KnotVector  
-    float v; //position in the parametric v space (0-1)
-    
-    float x; //position in the real space
-    float y; //position in the real space
-    float z; //position in the real space
-    
-    float radius;
-    
-}; //use here number of bubbles inside the geometry
 
 
 class BubblePacking2D
@@ -55,6 +41,15 @@ class BubblePacking2D
     BubblePacking2D();
     ~BubblePacking2D();
     
+    bubble * lo; //boundary
+    bubble * l1; //boundary
+    bubble * l2; //boundary
+    bubble * l3; //boundary
+    
+  
+    
+    int Nlo,Nl1, Nl2, Nl3; // number of bubbles per baoundary;
+    
     //This function finds the distance between bubbles in each direction
     float findDistanceXDirection(bubble B1, bubble B2, int state);
   
@@ -62,6 +57,7 @@ class BubblePacking2D
     float findDistanceBetweenBubbles (bubble B1, bubble B2);
     
     float findDistanceBetweenBubblesXYZ(bubble B1, bubble B2);
+
     
     //This function finds the summation of two radii
     float radiiSum (bubble B1, bubble B2);
@@ -77,6 +73,10 @@ class BubblePacking2D
     PointUVp Simulation(bubble B1, bubble B2);  
     
     point_t SimulationXYZ(bubble B1, bubble B2);
+    
+    point_t SimulationXYZ_Vector(bubble B1, bubble B2);
+    
+    //point_t SimulationXYZVector(bubble B1, bubble B2);
     
     //Function tries to solve runge Kutta for a system of equation
     //RuggeKutta Solution for a set of equations
@@ -101,10 +101,24 @@ class BubblePacking2D
     void subdivisionHardCode2 (bubble** P, int IMAX, int JMAX, float distance);
 
 
+    //Boundaries stae show when a boundary is top, left , bottom, right or  (0-3)
+    bubble* bubbleBoundaries (int nOfBubbles, float len, int state);
+    
+    int AproxSearch(float val, point_t *curve,int numberOfPointsInCurve, int mode);
+
+    point_t * DeltaVector (point_t *V1, point_t *V2, int numberOfPoints);
+    
+    //Given a vecor and location finds the closest value to calculate the tangent at that location
+    point_t Tangent (point_t *V, int numberOfPoints, float x, int state);
+    
+    //Dot Product for unit vector 3D
+    float DotProduct (point_t P1, point_t P2);
+    
+    //Unit vector
+    //float UnitVector (val t);
     
 
-   
-    
+        
     
     
 };  // class bubble packing simulation

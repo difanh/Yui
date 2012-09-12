@@ -28,6 +28,7 @@
 #include "BSpline.h"
 #include "Subdivision.h"
 #include "BubblePacking2D.h"
+#include "Util.h"
 
 //#include "AllColor.h"
 
@@ -90,12 +91,35 @@ int IMAX = 6;
 int JMAX = 6;
 int number_of_bubbles = IMAX; //(int) (distance_geometry)/(int) IMAX *2;
 
+int numberOfBubblesl0 = 8; //bottom boundary
+int numberOfBubblesl1 = 15; //bottom boundary
+int numberOfBubblesl2 = 8; //bottom boundary
+int numberOfBubblesl3 = 15; //bottom boundary
+
+
+
 float a=HEIGHT;
 float b=WIDTH;
 
-float distance_geometry =5.5; //here measure the correct circumference / lenght
+float distance_geometry =4.48386; //here measure the correct circumference / lenght
 float nodeformationRadius = distance_geometry/(float)number_of_bubbles*0.5; //here change
 float initialBubbleRadius = nodeformationRadius;//10-0.0523;//7-0.083;//1/(float)7/(float)2;
+
+float l0_bd, l1_bd,l2_bd ,l3_bd; // lenghts for each boundary
+
+float * w; //weights
+
+point_t * l0_curve_definition; //saves all points for curve l0 in boundary
+point_t * l1_curve_definition;
+point_t * l2_curve_definition;
+point_t * l3_curve_definition;
+
+point_t * DeltaVector;
+
+Spoint1D * l0_uv_curve_definition; //saves teh values for the l0 in parametric space
+
+point_t* V1; 
+point_t* V2;
 
 
 /*
@@ -136,6 +160,8 @@ Subdivision objMainSubdivision;
 PointUVp currentPoint;
 point_t currentPointXYZ;
 
+Util objUtil;
+
 
 //myPoint3D S;
 myPoint3D** sMAT;
@@ -144,6 +170,15 @@ myPoint3D** sMAT;
 bubble ** PointMat; //matrix saves all the data for all the points in the surface
 bubble ** PointMat2; //matrix saves all the data for all the points in the surface
 
+bubble * l0c; //
+bubble * l1c;
+bubble * l2c;
+bubble * l3c;
+
+point_t * d0 ;
+point_t * d1 ;
+point_t * d2 ;
+point_t * d3 ;
 
 vector<myPoint3D> pointsBSpline;
 //vector<Point2D> location_bezier_2d; //For curve definition
@@ -380,7 +415,6 @@ void drawGLText (GLint window_width, GLint window_height)
 
 #pragma mark ---- GLUT callbacks ----
 
-
 void MatPointInitial (bubble** PMat)
 {
     
@@ -421,14 +455,159 @@ void MatPointInitial (bubble** PMat)
            }
     }
     
+
+    
+}
+
+void VectPointInitial (bubble* lcb, int numBubles)
+{
+    
+    float* Uknot = new float [9];
+    float* Vknot = new float [9];
+    
+    Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
+    Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.0; //here how to strech space
     
     
+    Vknot[0]= Vknot[1] = Vknot[2]= Vknot[3]= Vknot[4] =  0.0;
+    Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.0;
     
+
+    float lastu, lastv;
+
+    
+    
+    for(int i=0;i<numBubles;i++){
+              
+        lastu = lcb[i].u;
+        lastv = lcb[i].v;
+        
+            
+            objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray, Uknot, Vknot, 5, 5, 5, 5, lastu,lastv, objMainBSPline.pts);
+            
+            lcb[i].x = objMainBSPline.pts[0];
+            lcb[i].y = objMainBSPline.pts[1];
+            lcb[i].z = objMainBSPline.pts[2];
+        
+    }
     
     
     
 }
 
+point_t updateVectorUBased()
+{
+    
+    
+    float* Uknot = new float [9];
+    float* Vknot = new float [9];
+    
+    Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
+    Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.0; //here how to strech space
+    
+    
+    Vknot[0]= Vknot[1] = Vknot[2]= Vknot[3]= Vknot[4] =  0.0;
+    Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.0;
+    
+
+    
+}
+
+void findBoundariesLengths ( myPoint3D **controlPoints, int numberOfControlPoints)
+{
+    
+    float* Uknot = new float [9];
+    float* Vknot = new float [9];
+    
+    Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
+    Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.0; //here how to strech space
+    
+    
+    Vknot[0]= Vknot[1] = Vknot[2]= Vknot[3]= Vknot[4] =  0.0;
+    Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.0;
+
+    
+    d0 = new point_t[5];
+    d1 = new point_t[5];
+    d2 = new point_t[5];
+    d3 = new point_t[5];
+    
+    w = new float[5]; //weights
+    
+    for(int i =0;i<5;i++)
+    {
+        w[i] = 1.0;
+    }
+    
+    for(int i =0;i<numberOfControlPoints;i++) //actual points in different loops because the number of bubbles can change in each boundary
+    {
+        //boundary l0
+        d0[i].x = controlPoints[0][i].x;
+        d0[i].y = controlPoints[0][i].y;
+        d0[i].z = controlPoints[0][i].z;
+    }
+    
+    for(int i =0;i<numberOfControlPoints;i++) //actual points
+    {
+        //boundary l1
+        
+        d1[i].x = controlPoints[i][0].x;
+        d1[i].y = controlPoints[i][0].y;
+        d1[i].z = controlPoints[i][0].z;
+    }
+    
+    for(int i =0;i<numberOfControlPoints;i++) //actual points
+    {
+        //boundary l2
+        d2[i].x = controlPoints[numberOfControlPoints-1][i].x;
+        d2[i].y = controlPoints[numberOfControlPoints-1][i].y;
+        d2[i].z = controlPoints[numberOfControlPoints-1][i].z;
+
+    }
+    
+    for(int i =0;i<numberOfControlPoints;i++) //actual points
+    {
+        //boundary l3
+        d3[i].x = controlPoints[i][numberOfControlPoints-1].x;
+        d3[i].y = controlPoints[i][numberOfControlPoints-1].y;
+        d3[i].z = controlPoints[i][numberOfControlPoints-1].z;
+
+    }
+    
+    
+    float* wpts = new float [3];
+    wpts[0]=0.0;
+    wpts[1]=0.0;
+    wpts[2]=0.0;
+    l0_bd = objMainBSPline.findLengthCurve(d0, w, Uknot, numberOfControlPoints, 5, wpts, 15);
+    l0_curve_definition = objMainBSPline.l_c;
+    l0_uv_curve_definition = objMainBSPline.l_uv_curve_definition;
+    
+   // objUtil.printVectPoints(l0_curve_definition, 50);
+    
+//    wpts[0]= 3.0; //make sure this is the correct point
+ //   wpts[1]= 0.0;
+ //   wpts[2]= 0.0;
+    l1_bd = objMainBSPline.findLengthCurve(d1, w, Uknot, numberOfControlPoints, 5, wpts, 50);
+    l1_curve_definition = objMainBSPline.l_c;
+    l0_uv_curve_definition = objMainBSPline.l_uv_curve_definition;
+    
+//    wpts[0]=3.0;
+ //   wpts[1]=0.0;
+//    wpts[2]=4.0;
+    l2_bd = objMainBSPline.findLengthCurve(d2, w, Uknot, numberOfControlPoints, 5, wpts, 50);
+    
+//    wpts[0]=-3.0;
+ //   wpts[1]=0.0;
+//    wpts[2]=0.0;
+    l3_bd = objMainBSPline.findLengthCurve(d3, w, Uknot, numberOfControlPoints, 5, wpts, 50);
+    
+   // cout << l0_bd <<endl;
+   // cout << l1_bd <<endl;
+    cout << l2_bd <<endl;
+    cout << l3_bd <<endl;
+    
+}
 
 void init (void)
 {
@@ -458,18 +637,23 @@ void init (void)
     
     objBB.createPoints(); //Creates location // IMPORTANT
   
-   
+
     
     //----------------
     // bubble packing 2d
     //----------------
     
-    objMainBSPline.InitializeControlPoints();
-    
-    //Initializes U, V and P matrices
-    
+       
 
     
+    objMainBSPline.InitializeControlPoints();
+
+   
+    
+    
+    
+    //Initializes U, V and P matrices
+       
     PointMat = new bubble * [IMAX];
     for(int i=0;i<IMAX;i++){
         PointMat[i] = new bubble  [JMAX];
@@ -511,10 +695,27 @@ void init (void)
     objBP2D.subdivisionHardCode( PointMat, IMAX, JMAX);
     
     objBP2D.subdivisionHardCode2( PointMat2 , IMAX, JMAX, distance_geometry);
+      
     
+    //----------------
+    // Vector defined simulation
+    //----------------
+    
+    //lengths in the boundaries
+    findBoundariesLengths(objMainBSPline.controlPointsArray, 5);
+    //Creates the initial position of the points and finds lenght of boundaries
     MatPointInitial(PointMat2);
-
     
+    l0c = objBP2D.bubbleBoundaries(numberOfBubblesl0, l0_bd, 0); //l0 curve getting the values of the boundary
+    l1c = objBP2D.bubbleBoundaries(numberOfBubblesl1, l1_bd, 1); //l1 curve getting the values of the boundary
+    l2c = objBP2D.bubbleBoundaries(numberOfBubblesl2, l2_bd, 2); //l1 curve getting the values of the boundary
+    l3c = objBP2D.bubbleBoundaries(numberOfBubblesl3, l3_bd, 3); //l1 curve getting the values of the boundary
+    
+    VectPointInitial(l0c, numberOfBubblesl0);
+    VectPointInitial(l1c, numberOfBubblesl1);
+    VectPointInitial(l2c, numberOfBubblesl2);
+    VectPointInitial(l3c, numberOfBubblesl3);
+
     
 }
 
@@ -525,8 +726,6 @@ void reshape (int w, int h)
 	gCamera.screenHeight = h;
 	glutPostRedisplay();
 }
-
-
 
 //This function creates bubbles in a BSPline surface
 void createBubbleSplineT(float dx, float dy, float radius)
@@ -579,7 +778,6 @@ void createBubbleSplineT(float dx, float dy, float radius)
     delete [] Vknot;   
     
 }
-
 
 #pragma mark <F> create bubbles no deformation
 //This function creates bubbles in a BSPline surface
@@ -722,48 +920,377 @@ void createBubbleXYZNoDeformation(float dx, float dy, float dz, float radius)
     
 }
 
-
-
-
-
-void printMatrix (bubble** Mat, int val)
+void createBubbleXYZNoDeformationBoundary(float dx, float dy, float dz, float radius)
 {
     
-    //char file2[] = "/Users/Serenity/Dropbox/CMU 2012/Pmat2XYZ";
-    //char buffer[33]="a";
+    glPushMatrix(); //Copies the matrix on the top of the stack, this would be like save the funcion basically does not move
+    
+    float x ,y,z;
+    
+    y=0;
+    
+    float	colorUSER[3]	=	{0.933333, 0.866667, 0.509804};
     
     
-    // itoa(val,buffer,10);
+    //  objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray,
+    //                        Uknot, Vknot, 5, 5, 4, 4, dx, dy, objMainBSPline.pts); //gives the location of a point in the NURB patch
     
-    //strncat (file2,"txt");
-    //strncat (file,".txt");
+    //glVertex3f(objMainBSPline.pts[0], objMainBSPline.pts[1] , objMainBSPline.pts[2]); //location of the point in a NURB patch
     
-    //cout << file2;
-    ofstream outfile ("/Users/Serenity/Dropbox/CMU 2012/Pmat2XYZ.txt"); //Check is there is a file functionlaity does not exist
+    //glPushMatrix(); //Copies the matrix on the top of the stack, this would be like save the funcion
+    //glColor3f(1,0,1);  //set colour ball
+    glTranslatef(0.0, 0.0 , 0.0); // back to origin
+    glTranslatef(dx, dy , dz);
     
-    for(int m=0;m<IMAX;m++){
-        for(int n=0;n<IMAX;n++){
-            //outfile  << "\n[" << m << "]"<< "["<< n << "]:" <<endl;
-            
-            // outfile  << "X[" << m << "]"<< "["<< n << "]= "<< Mat[m][n].x <<"\t";
-            // outfile  << "Y[" << m << "]"<< "["<< n << "]= "<< Mat[m][n].y <<"\t";
-            // outfile  << "Z[" << m << "]"<< "["<< n << "]= "<< Mat[m][n].z <<"\t";
-            
-            
-            outfile  << Mat[m][n].x <<"\t" << Mat[m][n].z <<"\t"<< endl;
-            
-            
-        }
+    glBegin(GL_LINES);
+    glColor3fv(colorUSER);
+    
+    x = (float)radius * cos(359*PI/180.0f);
+    y= 0;
+    z = (float)radius * sin(359*PI/180.0f);
+    
+    for (int j=0; j<360; j++)
+    {
+        glVertex3f(x, y, z);
+        
+        x = (float)radius * cos(j*PI/180.0f);
+        y = 0;
+        z = (float)radius * sin(j*PI/180.0f);
+        
+        glVertex3f(x, y, z);
     }
     
+    //cout << "PI Value = " << PI << endl;
     
-    outfile.close();
+    glEnd();
+    
+    
+    //glPopMatrix(); // Would be equivalent like load the function
+    
+    
+    
+    // glutSolidSphere(radius, 5, 5);
+    
+    //  delete [] Uknot;
+    //  delete [] Vknot;
+    
+    
+    
+    
+    glPopMatrix(); // Would be equivalent like load the function
+    
     
     
 }
 
 
 
+#pragma mark ---- Boundaries Display----
+void boundariesDisplay()
+{
+    //Draw boundaries
+    //TOP AND BOTTOM
+    for (int i=0;i<IMAX;i++)
+    {
+        createBubbleXYZNoDeformation(PointMat2[0][i].x, PointMat2[0][i].y, PointMat2[0][i].z, PointMat2[0][i].radius);
+        createBubbleXYZNoDeformation(PointMat2[IMAX-1][i].x, PointMat2[IMAX-1][i].y, PointMat2[IMAX-1][i].z, PointMat2[IMAX-1][i].radius);
+        
+        // just now
+        // createBubbleSplineNoDeformation(PointMat2[0][i].u, PointMat2[0][i].v, nodeformationRadius);
+        // createBubbleSplineNoDeformation(PointMat2[IMAX-1][i].u,PointMat2[IMAX-1][i].v, nodeformationRadius);
+        
+        
+        // createBubbleSplineT(PointMat[0][i].u,PointMat[0][i].v, initialBubbleRadius);
+        // createBubbleSplineT(PointMat[IMAX-1][i].u,PointMat[IMAX-1][i].v, initialBubbleRadius);
+        
+        
+    }
+    
+    //SIDES
+    for (int i=0;i<IMAX;i++)
+    {
+        
+        createBubbleXYZNoDeformation(PointMat2[i][0].x, PointMat2[i][0].y, PointMat2[i][0].z, PointMat2[i][0].radius);
+        createBubbleXYZNoDeformation(PointMat2[i][IMAX-1].x, PointMat2[i][IMAX-1].y, PointMat2[i][IMAX-1].z, PointMat2[i][IMAX-1].radius);
+        
+        //just now
+        // createBubbleSplineNoDeformation(PointMat2[i][0].u,PointMat2[i][0].v, nodeformationRadius);
+        // createBubbleSplineNoDeformation(PointMat2[i][IMAX-1].u,PointMat2[i][IMAX-1].v, nodeformationRadius);
+        
+        
+        // createBubbleSplineT(PointMat[i][0].u,PointMat[i][0].v, initialBubbleRadius);
+        // createBubbleSplineT(PointMat[i][IMAX-1].u,PointMat[i][IMAX-1].v, initialBubbleRadius);
+        
+        
+        
+    }
+    
+    //INTERNAL POINTS
+    for(int m=1;m<IMAX-1;m++){
+        for(int n=1;n<IMAX-1;n++){
+            
+            
+            createBubbleXYZNoDeformation(PointMat2[m][n].x, PointMat2[m][n].y, PointMat2[m][n].z, PointMat2[m][n].radius);
+            
+            //just now
+            //createBubbleSplineNoDeformation(PointMat2[m][n].u, PointMat2[m][n].v, nodeformationRadius);
+            
+            
+            //createBubbleSplineT(PointMat[m][n].u,PointMat[m][n].v, initialBubbleRadius);
+            
+        }
+    }
+    
+    //  if (k==250) printMatrix(PointMat2);
+    
+}
+
+void simulationVector( bubble* vectorLo, int numBubbles, int iter,
+                       point_t* curveDefinition, int resCurveDef,
+                       bubble* lcurve, point_t * controlPoints , int state)
+{
+    
+    point_t currentPointXYZ;
+    bubble start = vectorLo[0];
+    bubble end = vectorLo[numBubbles-1];
+    
+    V1 = new point_t [numBubbles]; //initializes delta vector to numBubbles;
+    V2 = new point_t [numBubbles]; //initializes delta vector to numBubbles;
+    DeltaVector = new point_t [numBubbles]; //initializes delta vector to numBubbles;
+       
+    float* pts = new float[3];
+    
+    point_t tangent;
+    
+    float delta_s = 0.0;
+    float _u = 0.0;
+    point_t delta_point;
+    
+    float* Uknot = new float [9];
+    float* Vknot = new float [9];
+    
+    Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
+    Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.0; //here how to strech space
+    
+    
+    Vknot[0]= Vknot[1] = Vknot[2]= Vknot[3]= Vknot[4] =  0.0;
+    Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.0;
+
+    
+    //initial value of xi
+    for(int k=0; k<numBubbles; k++)
+    {
+        DeltaVector[k].x = vectorLo[k].x; //vectorLo no cambia toma lo tienes que ser dinamico
+        DeltaVector[k].y = vectorLo[k].y;
+        DeltaVector[k].z = vectorLo[k].z;
+        
+        V1[k].x = vectorLo[k].x; //vectorLo no cambia toma lo tienes que ser dinamico
+        V1[k].y = vectorLo[k].y;
+        V1[k].z = vectorLo[k].z;
+        
+        V2[k].x = vectorLo[k].x; //vectorLo no cambia toma lo tienes que ser dinamico
+        V2[k].y = vectorLo[k].y;
+        V2[k].z = vectorLo[k].z;
+        
+
+    }
+    
+   // char* file0 = "/Users/Serenity/Dropbox/CMU 2012/vectorLo.txt";
+  // objUtil.printVectPoints(V1, numBubbles, file0);
+
+    //first loop for the iteration
+    for( int ii=0;ii<1;ii++)
+    {
+        //printVect(vectorLo, numBubbles);
+        
+        
+        
+        for(int i=0;i<numBubbles;i++)
+        {
+            if(i==0 || i==numBubbles-1)
+            {
+                // cout << "----: " << ii<< endl;
+                // cout << "you enter the loop: " << i << endl ;
+                
+                // So the borders do not interact
+            }
+            
+            else
+            {
+                for(int j=0;j<numBubbles;j++)
+                {
+                    if(i==j)
+                    {
+                        // So the bubbles do not repeat themselves
+                    }
+                    
+                    else{
+                        
+                        currentPointXYZ = objBP2D.SimulationXYZ_Vector(vectorLo[j], vectorLo[i]);
+                        
+                        vectorLo[i].x = currentPointXYZ.x;
+                        vectorLo[i].y = currentPointXYZ.y;
+                        vectorLo[i].z = currentPointXYZ.z;
+                        
+                        V2[i].x = currentPointXYZ.x;
+                        V2[i].y = currentPointXYZ.y;
+                        V2[i].z = currentPointXYZ.z;
+                        
+                       
+                        
+                        /**/
+                        
+                        delta_point.x = V2[i].x-V1[i].x;
+                        delta_point.y = V2[i].y-V1[i].y;
+                        delta_point.z = V2[i].z-V1[i].z;
+                        
+                     //   cout << "\tV1: " << V1[i].x << "\tV2: " << V2[i].x << "\tdelta: " << delta_point.x;
+                        
+                      //  objUtil.printVectPoints(l0_curve_definition, 15, "/Users/Serenity/Dropbox/CMU 2012/nurbecurve.txt");
+                        
+                        
+                        
+                        
+                        if(state==0)
+                        {
+                            tangent = objBP2D.Tangent(curveDefinition, resCurveDef, V2[i].x, state); //check here if you use x or z
+                            
+                            delta_s = objBP2D.DotProduct(delta_point, tangent);
+                            
+                            delta_s = delta_s/(float)(pow(tangent.x,2)+pow(tangent.y,2)+pow(tangent.z,2));
+                            
+                            _u =  lcurve[i].v + delta_s; //importante to chance u and v
+                           
+                        }
+                        else if(state==1)
+                        {
+                            tangent = objBP2D.Tangent(curveDefinition, resCurveDef, V2[i].x , state); //check here if you use x or z
+                            
+                            delta_s = objBP2D.DotProduct(delta_point, tangent);
+                            
+                            delta_s = delta_s/(float)(pow(tangent.x,2)+pow(tangent.y,2)+pow(tangent.z,2));
+                            
+                            _u =  lcurve[i].u + delta_s; //importante to chance u and v
+                        }
+
+                        objMainBSPline.ptsNURBS(controlPoints, w, Uknot, 5, 5, _u, pts);
+                        
+                        V2[i].x = pts[0];
+                        V2[i].y = pts[1];
+                        V2[i].z = pts[2];
+                        
+                        
+                       /* cout << "\ni:" <<i<< ": "<< l0c[i].v << endl;
+                        cout << "delta_s: " << delta_s << endl;
+                        cout << "tangent: " << tangent.x << endl;
+                        cout <<"_u: " << _u << endl;
+                        
+                        cout << "V2.x: " << V2[i].x << endl;
+                        cout << "V2.y: " << V2[i].y << endl;
+                        cout << "V2.z: " << V2[i].z << endl<< endl;
+                        
+                        cout << "V1.x: " << vectorLo[i].x << endl;
+                        cout << "V1.y: " << vectorLo[i].y << endl;
+                        cout << "V1.z: " << vectorLo[i].z << endl;
+                        cout<< "--------------"<< endl<<endl;
+                        
+                        */
+                        
+                       // vectorLo[i].x = pts[0];
+                       // vectorLo[i].y=  pts[1];
+                       // vectorLo[i].z=  pts[2];
+
+                        /**/
+
+                        
+                        
+                        
+                        
+                        /////-----
+                                
+                    }
+
+                                       
+                }
+                
+                
+            }
+            
+            vectorLo[0] = start;
+            vectorLo[numBubbles-1]= end;
+            
+        }
+        
+       // DeltaVector = objBP2D.DeltaVector(V1, V2, numBubbles);
+        
+      //  char* file1 = "/Users/Serenity/Dropbox/CMU 2012/DeltaVector.txt";
+      //  objUtil.printVectPoints(DeltaVector, numBubbles, file1);
+        
+        /*
+        for(int i=1;i<numBubbles-1;i++) //for all the bubbles but the extremes
+        {
+            tangent = objBP2D.Tangent(l0_curve_definition, 15, V2[i].x); //check here if you use x or z
+            delta_s = objBP2D.DotProduct(DeltaVector[i], tangent);
+            
+            delta_s = delta_s/(float)(pow(tangent.x,2)+pow(tangent.y,2)+pow(tangent.z,2));
+            
+            _u = l0c[i].v + delta_s; //importante to chance u and v
+            
+         
+            
+            objMainBSPline.ptsNURBS(d0, w, Uknot, 5, 5, _u, pts);
+            
+            V2[i].x = pts[0];
+            V2[i].y = pts[1];
+            V2[i].z = pts[2];
+            
+            
+            cout << "\ni:" <<i<< ": "<< l0c[i].v << endl;
+            cout << "delta_s: " << delta_s << endl;
+            cout <<"_u: " << _u << endl;
+            
+            cout << "V2.x: " << V2[i].x << endl;
+            cout << "V2.y: " << V2[i].y << endl;
+            cout << "V2.z: " << V2[i].z << endl<< endl;
+            
+            cout << "V1.x: " << vectorLo[i].x << endl;
+            cout << "V1.y: " << vectorLo[i].y << endl;
+            cout << "V1.z: " << vectorLo[i].z << endl;
+            cout<< "--------------"<< endl<<endl;
+             
+             
+
+            vectorLo[i].x = pts[0];
+            vectorLo[i].y=  pts[1];
+            vectorLo[i].z=  pts[2];
+
+            
+
+        }
+        /**/
+        
+      //  char* file2 = "/Users/Serenity/Dropbox/CMU 2012/V1.txt";
+      //  objUtil.printVectPoints(V1, numBubbles, file2);
+        
+      //  char* file3 = "/Users/Serenity/Dropbox/CMU 2012/V2.txt";
+      //  objUtil.printVectPoints(V2, numBubbles, file3);
+        
+    }
+    
+    //vector
+    
+   //delete [] V1;
+   // delete [] V2;
+   // delete [] DeltaVector;
+    
+    //if(k%50==250)  objUtil.printMatrix(PointMat2,  k); //prints the matrix to a txt file
+    
+   // delete [] DeltaVector;
+    
+    //k++;
+
+
+}
 
 void simulation()
 {
@@ -996,7 +1523,7 @@ void simulation2()
     
 }
 
-//simulation2 makes the sim in the 2d real not the nurb surface in other words no deformation
+//simulation3 makes the sim in the 2d real not the nurb surface in other words no deformation
 void simulation3()
 {
     
@@ -1288,72 +1815,67 @@ void maindisplay(void)
      if(sSimulationInBSplinePatch)
      {
          //simulation();
-         simulation2();
+         //simulation2(); //working
          //simulation3();
+         if(k<10)
+         {
+             simulationVector( l0c, numberOfBubblesl0, 5, l0_curve_definition, 15, l0c, d0, 0);// (l0c, numberOfBubblesl0, 5,);
+             simulationVector( l1c, numberOfBubblesl1, 5, l0_curve_definition, 50, l1c, d0, 0);// (l0c, numberOfBubblesl0, 5,);
+
+             //simulationVector(l1c, numberOfBubblesl1, 5);
+             //simulationVector(l2c, numberOfBubblesl2, 5);
+             //simulationVector(l3c, numberOfBubblesl3, 5);
+         }
+
          
          if (k==250) sSimulationInBSplinePatch = false;
+         
+         k++;
               
      }
     
     
     #pragma mark <F> Boundaries
-
-    //Draw boundaries
-    //TOP AND BOTTOM
-    for (int i=0;i<IMAX;i++)
-    {
-        createBubbleXYZNoDeformation(PointMat2[0][i].x, PointMat2[0][i].y, PointMat2[0][i].z, PointMat2[0][i].radius);
-        createBubbleXYZNoDeformation(PointMat2[IMAX-1][i].x, PointMat2[IMAX-1][i].y, PointMat2[IMAX-1][i].z, PointMat2[IMAX-1][i].radius);
-        
-        // just now
-       // createBubbleSplineNoDeformation(PointMat2[0][i].u, PointMat2[0][i].v, nodeformationRadius);
-       // createBubbleSplineNoDeformation(PointMat2[IMAX-1][i].u,PointMat2[IMAX-1][i].v, nodeformationRadius);
-
-        
-       // createBubbleSplineT(PointMat[0][i].u,PointMat[0][i].v, initialBubbleRadius);
-       // createBubbleSplineT(PointMat[IMAX-1][i].u,PointMat[IMAX-1][i].v, initialBubbleRadius);
-        
-        
-    }
-    
-    //SIDES    
-    for (int i=0;i<IMAX;i++)
-    {
-        
-        createBubbleXYZNoDeformation(PointMat2[i][0].x, PointMat2[i][0].y, PointMat2[i][0].z, PointMat2[i][0].radius);
-        createBubbleXYZNoDeformation(PointMat2[i][IMAX-1].x, PointMat2[i][IMAX-1].y, PointMat2[i][IMAX-1].z, PointMat2[i][IMAX-1].radius);
-        
-        //just now
-        // createBubbleSplineNoDeformation(PointMat2[i][0].u,PointMat2[i][0].v, nodeformationRadius);
-       // createBubbleSplineNoDeformation(PointMat2[i][IMAX-1].u,PointMat2[i][IMAX-1].v, nodeformationRadius);
-
-        
-       // createBubbleSplineT(PointMat[i][0].u,PointMat[i][0].v, initialBubbleRadius);
-       // createBubbleSplineT(PointMat[i][IMAX-1].u,PointMat[i][IMAX-1].v, initialBubbleRadius);
+    //boundariesDisplay();
        
-        
-        
-    }
 
-    //INTERNAL POINTS
-    for(int m=1;m<IMAX-1;m++){
-        for(int n=1;n<IMAX-1;n++){
-            
-            
-            createBubbleXYZNoDeformation(PointMat2[m][n].x, PointMat2[m][n].y, PointMat2[m][n].z, PointMat2[m][n].radius);
-            
-            //just now
-            //createBubbleSplineNoDeformation(PointMat2[m][n].u, PointMat2[m][n].v, nodeformationRadius);
-            
-            
-            //createBubbleSplineT(PointMat[m][n].u,PointMat[m][n].v, initialBubbleRadius);
-            
-        }
+    //----------------
+    // Vector defined simulation
+    //----------------
+    //TOP AND BOTTOM
+    for (int i=0;i<numberOfBubblesl0;i++)
+    {
+        createBubbleXYZNoDeformationBoundary(l0c[i].x, l0c[i].y, l0c[i].z, l0c[i].radius);
+
+
     }
     
-  //  if (k==250) printMatrix(PointMat2);
-     
+    for (int i=0;i<numberOfBubblesl1;i++)
+    {
+       
+        createBubbleXYZNoDeformationBoundary(l1c[i].x, l1c[i].y, l1c[i].z, l1c[i].radius);
 
+        
+    }
+    
+    for (int i=0;i<numberOfBubblesl2;i++)
+    {
+
+        createBubbleXYZNoDeformationBoundary(l2c[i].x, l2c[i].y, l2c[i].z, l2c[i].radius);
+
+        
+    }
+    
+    for (int i=0;i<numberOfBubblesl3;i++)
+    {
+
+        createBubbleXYZNoDeformationBoundary(l3c[i].x, l3c[i].y, l3c[i].z, l3c[i].radius);
+        
+    }
+
+    
+
+    
     glutSwapBuffers();
     
     

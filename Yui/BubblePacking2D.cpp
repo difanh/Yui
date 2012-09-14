@@ -634,7 +634,7 @@ int BubblePacking2D::AproxSearch(float val, point_t *curve,int numberOfPointsInC
                 index = i;
             }
         }
-        if(mode==1) //Y values
+        if(mode==1) //Z values
         {
             float diff = abs(curve[i].z - val);
             if(diff<min_val)
@@ -677,6 +677,8 @@ point_t BubblePacking2D::Tangent(point_t *V, int numberOfPoints, float x, int st
     _id = AproxSearch(x, V,numberOfPoints, state);
     
     point_t Curve;
+    
+    //cout <<"\n" << _id << endl;
     
     //unit vector
     Curve.x = (V[_id+1].x-V[_id].x);

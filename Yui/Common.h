@@ -13,9 +13,9 @@
 #define PI 4*atan(1)
 
 #define MASS 1.0
-#define SPRING_RATE 0.001
+#define SPRING_RATE 0.0001
 #define DAMPING_FORCE 0.7*sqrt(SPRING_RATE*MASS)
-#define NUM_ITERATIONS 45
+#define NUM_ITERATIONS 50
 
 typedef struct {
 	float x, y, z;

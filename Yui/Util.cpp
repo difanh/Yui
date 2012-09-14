@@ -62,7 +62,7 @@ void Util::printVect (bubble* Vect, int numBubble)
     
     for(int m=0;m<numBubble;m++){
         
-        outfile  << Vect[m].x << "\t" << Vect[m].y << "\t" << Vect[m].z <<endl;
+        outfile  << Vect[m].x << "\t" << Vect[m].y << "\t" << Vect[m].z << "\t" << Vect[m].u<< "\t" << Vect[m].v<<endl;
         
     }
     

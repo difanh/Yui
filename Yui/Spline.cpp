@@ -244,9 +244,6 @@ void Spline::draw_bezier()
            
             
 		}
-  
-    
-    
 
 	//glVertex3fv( Points[NUM_POINTS-1] );
     
@@ -596,7 +593,7 @@ void Spline::createBubble(float locationx, float locationy, float radius, float 
 float Spline::curve_length( vector<Point2D> & spline_)
 {
     
-    float length;
+    float length = 0;
     
     for (int i=1;i<spline_.size();i++)
     {

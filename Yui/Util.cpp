@@ -62,7 +62,24 @@ void Util::printVect (bubble* Vect, int numBubble)
     
     for(int m=0;m<numBubble;m++){
         
-        outfile  << Vect[m].x << "\t" << Vect[m].y << "\t" << Vect[m].z << "\t" << Vect[m].u<< "\t" << Vect[m].v<<endl;
+        outfile  << Vect[m].x << "\t\t" << Vect[m].y << "\t\t" << Vect[m].z << "\t\t" << Vect[m].u<< "\t\t" << Vect[m].v<<endl;
+        
+    }
+    
+    
+    outfile.close();
+    
+    
+}
+
+void Util::printVect (bubble* Vect, int numBubble, char* file)
+{
+    ofstream outfile (file); //Check is there is a file functionlaity does not exist
+    
+    for(int m=0;m<numBubble;m++){
+        
+        outfile  << "\t\t" << Vect[m].idx <<  "\t\t" << Vect[m].x << "\t\t" << Vect[m].y      << "\t\t"   << Vect[m].z
+                 << "\t\t" << Vect[m].u   << "\t\t"  << Vect[m].v << "\t\t" << Vect[m].radius << endl;
         
     }
     

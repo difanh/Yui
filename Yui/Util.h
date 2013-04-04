@@ -29,6 +29,8 @@ public:
     
     void printVectPoints (point_t* Vect, int numberOfPoints, char* file);
     
+    void printVect (bubble* Vect, int numBubble, char* file);
+    
 };  // class creates the boundaries for the given geometry
 
 

@@ -198,7 +198,7 @@ point_t BubblePacking2D::SimulationXYZ(bubble B1, bubble B2)
     
     float distanceIDirection = findDistanceBetweenBubblesXYZ(B1, B2);
     w = wParameter(distanceIDirection, stableDistance);
-    interbubbleForces =  interBubbleForces( _spring_rate, stableDistance, w);
+    interbubbleForces =  interBubbleForces( SPRING_RATE_SURFACE, stableDistance, w);
     
     
     

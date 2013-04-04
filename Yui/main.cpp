@@ -1,3 +1,49 @@
+// ----------------------------------------------------------------------------
+/**
+ File: main.cpp
+ 
+ System:         YUI
+ Component Name: Carnegie Mellon University
+ Status:         Version 1.0 Release 1
+ Language: C++
+ 
+ License: GNU Public License
+ Licensed Material - Property of CERLAB (Carnegie Mellon Univerisity)
+ 
+ (c) Copyright Carnegie Mellon Univerisity 2012
+ 
+ Address:
+ Carnegie Mellon University
+ 5000 Forbes Avenue Pittsburgh, PA 15213
+ 
+ Author: Diego F Andrade    
+ E-Mail: diegoandrade@gmail.com
+ 
+ Description: Header file for Project X
+ This file contains the defined types for Project X
+ This is sometimes called the "Abstract" and may be
+ followed by a section called "Notes".
+ 
+ Limitations: bla bla bla
+ 
+ Function: 1) bla bla bla
+ 2) bla bla bla
+ 3) bla bla bla
+ 
+ Thread Safe: No
+ 
+ Extendable: No
+ 
+ Platform Dependencies: OSX
+ 
+ Compiler Options: No
+
+ */
+// ----------------------------------------------------------------------------
+
+
+
+
 //
 //  main.cpp
 //  Yui
@@ -5,6 +51,8 @@
 //  Created by Diego Andrade on 6/13/12.
 //  Copyright (c) 2012 Carnegie Mellon University. All rights reserved.
 //
+
+
 
 //Includes for system classes
 #include <OpenGL/gl.h>
@@ -76,6 +124,7 @@ GLboolean gShowInfo = GL_TRUE;
 GLboolean gShowSplineControlPoints = GL_TRUE;
 GLboolean gTrackBall = GL_FALSE;
 GLboolean gVectorSimulation = GL_FALSE; //shows the vector simulation
+GLboolean GgShowBoundariers = GL_FALSE; //shows the vector simulation
 
 GLboolean sSimulationInBSplinePatch= GL_FALSE;
 GLboolean sSimulationInternalBSplinePatch= GL_FALSE;
@@ -86,14 +135,15 @@ static GLboolean WIRE=0;		// draw mesh in wireframe?
 int gLastKey = ' ';
 int gMainWindow = 0;
 int k_loop=0;
+int kinternal_loop=0;
 int IMAX = 6;
 int JMAX = 6;
 int number_of_bubbles = IMAX; //(int) (distance_geometry)/(int) IMAX *2;
 
-int numberOfBubblesl0 = 8; //bottom boundary
-int numberOfBubblesl1 = 8; //bottom boundary
-int numberOfBubblesl2 = 8; //bottom boundary
-int numberOfBubblesl3 = 8; //bottom boundary
+int numberOfBubblesl0 = NUMBER_OF_BUBBLES_L0; //bottom boundary
+int numberOfBubblesl1 = NUMBER_OF_BUBBLES_L1; //bottom boundary
+int numberOfBubblesl2 = NUMBER_OF_BUBBLES_L2; //bottom boundary
+int numberOfBubblesl3 = NUMBER_OF_BUBBLES_L3; //bottom boundary
 
 
 
@@ -189,6 +239,24 @@ vector<myPoint3D> pointsBSpline;
 
 #pragma mark ---- gCamera control ----
 
+
+// ----------------------------------------------------------------------------
+/**
+ Routine: gCameraReset()
+ Inputs: none
+ Arguments: void
+ Externals: gCamera struct
+ Others: none
+ 
+ Outputs: gCamera struct
+ Arguments: 
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ */
+// ----------------------------------------------------------------------------
 void gCameraReset(void)
 {
     gCamera.aperture = 25;
@@ -212,7 +280,23 @@ void gCameraReset(void)
 
 #pragma mark ---- Geometries  ----
 
-
+// ----------------------------------------------------------------------------
+/**
+ Routine: drawBubble()
+ Inputs: none
+ Arguments: none
+ Externals:none
+ Others: none
+ 
+ Outputs: gCamera struct
+ Arguments:
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ */
+// ----------------------------------------------------------------------------
 void drawBubble ()
 {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -252,6 +336,7 @@ void drawBubble ()
     
 }
 
+
 GLuint createDL() {
 	GLuint snowManDL;
     
@@ -267,6 +352,23 @@ GLuint createDL() {
 
 #pragma mark ---- Utilities ----
 
+// ----------------------------------------------------------------------------
+/**
+ Routine: drawGLString()
+ Inputs: GLfloat x, GLfloat y, char* string
+ Arguments: none
+ Externals: glRasterPos2f(x, y), glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10, string[i])
+ Others: strlen(len)
+ 
+ Outputs: 
+ Arguments:
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ */
+// ----------------------------------------------------------------------------
 void
 drawGLString(GLfloat x, GLfloat y, char *string)
 {
@@ -327,6 +429,23 @@ void SetLighting(unsigned int mode)
 	glEnable(GL_LIGHT0);
 }
 
+// ----------------------------------------------------------------------------
+/**
+ Routine: drawGLText ()
+ Inputs: GLint window_width, GLint window_height
+ Arguments: none
+ Externals: drawGLString()
+ Others:
+ 
+ Outputs:
+ Arguments:
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ */
+// ----------------------------------------------------------------------------
 void drawGLText (GLint window_width, GLint window_height)
 {
 	char outString [256] = "";
@@ -349,6 +468,8 @@ void drawGLText (GLint window_width, GLint window_height)
 	glLoadIdentity();
 	glScalef(2.0f / window_width, -2.0f / window_height, 1.0f);
 	glTranslatef(-window_width / 2.0f, -window_height / 2.0f, 0.0f);
+    
+    int temp3 = NUMBER_OF_BUBBLES_IN_SIMULATION - NUMBER_OF_BUBBLES_L0 - NUMBER_OF_BUBBLES_L1 - NUMBER_OF_BUBBLES_L2 - NUMBER_OF_BUBBLES_L3 -3; //MAL
 	
 	// draw
 	glDisable(GL_LIGHTING);
@@ -366,7 +487,13 @@ void drawGLText (GLint window_width, GLint window_height)
 		sprintf (outString, "Focus Distance: %0.1f", gCamera.focalLength);
 		drawGLString (10, window_height - (lineSpacing * line++) - startOffest, outString);
         
-        sprintf (outString, "Animation Current Iteration: %0.1d",k_loop);
+        sprintf (outString, "Number in the surface: %0.1d",temp3);
+		drawGLString (10, window_height - (lineSpacing * line++) - startOffest, outString);
+        
+        sprintf (outString, "Animation Current Iteration Boundary: %0.1d",k_loop);
+		drawGLString (10, window_height - (lineSpacing * line++) - startOffest, outString);
+        
+        sprintf (outString, "Animation Current Iteration Surface: %0.1d",kinternal_loop);
 		drawGLString (10, window_height - (lineSpacing * line++) - startOffest, outString);
         
         sprintf (outString, "Max Number of Iterations for Runge Kutta: %0.1d", NUM_ITERATIONS);
@@ -413,6 +540,23 @@ void drawGLText (GLint window_width, GLint window_height)
 
 #pragma mark ---- GLUT callbacks ----
 
+// ----------------------------------------------------------------------------
+/**
+ Routine: MatPointInitial()
+ Inputs: bubble** PMat
+ Arguments: none
+ Externals: objMainBSPline.ptsNURBS()
+ Others:
+ 
+ Outputs:  PMat (x,y,z)
+ Arguments:
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ */
+// ----------------------------------------------------------------------------
 void MatPointInitial (bubble** PMat)
 {
     
@@ -457,7 +601,24 @@ void MatPointInitial (bubble** PMat)
     
 }
 
-void VectPointInitial (bubble* lcb, int numBubles)
+// ----------------------------------------------------------------------------
+/**
+ Routine: VectPointInitial()
+ Inputs: bubble* lcb, int numBubles, int iniBubble, int lastBubble
+ Arguments: none
+ Externals: objMainBSPline.ptsNURBS()
+ Others:
+ 
+ Outputs:  bubble* lcb
+ Arguments:
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ */
+// ----------------------------------------------------------------------------
+void VectPointInitial (bubble* lcb, int numBubles, int iniBubble, int lastBubble)
 {
     
     float* Uknot = new float [9];
@@ -487,12 +648,39 @@ void VectPointInitial (bubble* lcb, int numBubles)
         lcb[i].y = objMainBSPline.pts[1];
         lcb[i].z = objMainBSPline.pts[2];
         
+       
+        
+        
+    }
+    
+    for(int j=0;j<numBubles;j++)
+    {
+        lcb[iniBubble+j].idx = iniBubble+j;
+        //cout << "index: " << lcb[iniBubble+j].idx << endl;
+        
     }
     
     
     
 }
 
+// ----------------------------------------------------------------------------
+/**
+ Routine: radiusFind()
+ Inputs: int nOfBubbles, float len
+ Arguments: none
+ Externals: none
+ Others:
+ 
+ Outputs:  radius
+ Arguments:
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ */
+// ----------------------------------------------------------------------------
 float radiusFind(int nOfBubbles, float len)
 {
     float radius = len/(float)(nOfBubbles-2)*0.5;
@@ -501,6 +689,23 @@ float radiusFind(int nOfBubbles, float len)
     
 }
 
+// ----------------------------------------------------------------------------
+/**
+ Routine: findBoundariesLengths()
+ Inputs: myPoint3D **controlPoints, int numberOfControlPoints
+ Arguments: none
+ Externals: none
+ Others:
+ 
+ Outputs:  lxx_bd, lxx_curve_definition,  lxx_uv_curve_definition
+ Arguments:
+ Externals: objMainBSPline.findLengthCurve()
+ Returns: 
+ Errors:
+ 
+ Routines Called:
+ */
+// ----------------------------------------------------------------------------
 void findBoundariesLengths ( myPoint3D **controlPoints, int numberOfControlPoints)
 {
     
@@ -607,8 +812,29 @@ void findBoundariesLengths ( myPoint3D **controlPoints, int numberOfControlPoint
     
 }
 
-//this function is used to calculate the average of the bubbles in the extremes of the geometry
-//maybe there is a better way of doing this, aslo HOW put same number of bubbles requested and making smooth transistions
+
+// ----------------------------------------------------------------------------
+/**
+ Routine: functionRadius()
+ Inputs: bubble * l0, bubble * l1, bubble* l2, bubble* l3
+ Arguments: none
+ Externals: none
+ Others:
+ 
+ Outputs:  rad_new
+ Arguments:
+ Externals: 
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ 
+ Summary:
+ This function is used to calculate the average of the bubbles in the extremes of 
+ the geometry  maybe there is a better way of doing this, aslo HOW put same number 
+ of bubbles requested and making smooth transistions
+ */
+// ----------------------------------------------------------------------------
 float functionRadius ( bubble * l0, bubble * l1, bubble* l2, bubble* l3)
 {
     
@@ -629,6 +855,27 @@ float functionRadius ( bubble * l0, bubble * l1, bubble* l2, bubble* l3)
     
 }
 
+
+// ----------------------------------------------------------------------------
+/**
+ Routine: changeRadius()
+ Inputs: bubble * l0, float newradius, int numBubbles
+ Arguments: none
+ Externals: none
+ Others:
+ 
+ Outputs:  rad_new
+ Arguments:
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ 
+ Summary:
+ This function changes the radius in all the bubbles in a vector definition 
+ */
+// ----------------------------------------------------------------------------
 void changeRadius(bubble * l0, float newradius, int numBubbles)
 {
     
@@ -639,6 +886,31 @@ void changeRadius(bubble * l0, float newradius, int numBubbles)
     
 }
 
+
+// ----------------------------------------------------------------------------
+/**
+ Routine: init()
+ Inputs: bubble * l0, float newradius, int numBubbles
+ Arguments: none
+ Externals: objBB.createPoints() , objMainBSPline.InitializeControlPoints() , 
+            subdivisionHardCode() , findBoundariesLengths() , MatPointInitial(), 
+            objBP2D.bubbleBoundaries() ,  VectPointInitial();
+            
+ Others:
+ 
+ Outputs:  many
+ Arguments:
+ Externals: 
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ 
+ Summary:
+ This function initializes all the properties and the needed data for the YUI
+ to work needs to be run before any other.
+ */
+// ----------------------------------------------------------------------------
 void init (void)
 {
 	glEnable(GL_DEPTH_TEST);
@@ -743,39 +1015,39 @@ void init (void)
     l2c = objBP2D.bubbleBoundaries(numberOfBubblesl2, l2_bd, 2); //l1 curve getting the values of the boundary
     l3c = objBP2D.bubbleBoundaries(numberOfBubblesl3, l3_bd, 3); //l1 curve getting the values of the boundary
     
-        
+    
     
     /* USE THIS FUNCTION FOR A WELL DISTRIBUTED BOUNDARY, BASED ON NUMBER OF BUBBLES PER SIDE */
     
-     float rad = functionRadius(l0c,l1c,l2c,l3c);
-     
-     float new_len = l0_bd - 2*rad;
-     float rad0 = radiusFind(numberOfBubblesl0, new_len);
-     l0c = objBP2D.bubbleBoundaries(numberOfBubblesl0, new_len, 0); //l0 curve getting the values of the boundary
-     changeRadius(l0c, rad0, numberOfBubblesl0);
+    float rad = functionRadius(l0c,l1c,l2c,l3c);
+    
+    float new_len = l0_bd - 2*rad;
+    float rad0 = radiusFind(numberOfBubblesl0, new_len);
+    l0c = objBP2D.bubbleBoundaries(numberOfBubblesl0, new_len, 0); //l0 curve getting the values of the boundary
+    changeRadius(l0c, rad0, numberOfBubblesl0);
     l0c[0].radius = rad; l0c[numberOfBubblesl0-1].radius = rad;
-     
-     new_len = l1_bd - 2*rad;
-     float rad1 = radiusFind(numberOfBubblesl1, new_len);
-     l1c = objBP2D.bubbleBoundaries(numberOfBubblesl1, new_len, 1); //l0 curve getting the values of the boundary
-     changeRadius(l1c, rad1, numberOfBubblesl1);
+    
+    new_len = l1_bd - 2*rad;
+    float rad1 = radiusFind(numberOfBubblesl1, new_len);
+    l1c = objBP2D.bubbleBoundaries(numberOfBubblesl1, new_len, 1); //l0 curve getting the values of the boundary
+    changeRadius(l1c, rad1, numberOfBubblesl1);
     l1c[0].radius = rad; l1c[numberOfBubblesl1-1].radius = rad;
-     
-     new_len = l2_bd - 2*rad;
-     float rad2 = radiusFind(numberOfBubblesl2, new_len);
-     l2c = objBP2D.bubbleBoundaries(numberOfBubblesl2, new_len, 2); //l0 curve getting the values of the boundary
-     changeRadius(l2c, rad2, numberOfBubblesl2);
+    
+    new_len = l2_bd - 2*rad;
+    float rad2 = radiusFind(numberOfBubblesl2, new_len);
+    l2c = objBP2D.bubbleBoundaries(numberOfBubblesl2, new_len, 2); //l0 curve getting the values of the boundary
+    changeRadius(l2c, rad2, numberOfBubblesl2);
     l2c[0].radius = rad; l2c[numberOfBubblesl2-1].radius = rad;
-     
-     new_len = l3_bd - 2*rad;
-     float rad3 = radiusFind(numberOfBubblesl3, new_len);
-     l3c = objBP2D.bubbleBoundaries(numberOfBubblesl3, new_len, 3); //l0 curve getting the values of the boundary
-     changeRadius(l3c, rad3, numberOfBubblesl3);
-     l3c[0].radius = rad; l3c[numberOfBubblesl3-1].radius = rad;
-     
-     
-     /* USE THIS FOR EQUAL DISTRIBUTION OF BALL OF THE SAME SIZE
-     /* INDEPENDENT OF THE NUMBER OF BUBBLES
+    
+    new_len = l3_bd - 2*rad;
+    float rad3 = radiusFind(numberOfBubblesl3, new_len);
+    l3c = objBP2D.bubbleBoundaries(numberOfBubblesl3, new_len, 3); //l0 curve getting the values of the boundary
+    changeRadius(l3c, rad3, numberOfBubblesl3);
+    l3c[0].radius = rad; l3c[numberOfBubblesl3-1].radius = rad;
+    
+    
+    /* USE THIS FOR EQUAL DISTRIBUTION OF BALL OF THE SAME SIZE
+      INDEPENDENT OF THE NUMBER OF BUBBLES
      
      float rad0 = functionRadius(l0c,l1c,l3c,l0_bd,numberOfBubblesl0);
      
@@ -809,14 +1081,14 @@ void init (void)
      */
     
     
-    VectPointInitial(l0c, numberOfBubblesl0);
-    VectPointInitial(l1c, numberOfBubblesl1);
-    VectPointInitial(l2c, numberOfBubblesl2);
-    VectPointInitial(l3c, numberOfBubblesl3);
+    VectPointInitial(l0c, numberOfBubblesl0, 0, 7);
+    VectPointInitial(l1c, numberOfBubblesl1, 7, 14);
+    VectPointInitial(l2c, numberOfBubblesl2, 14, 21);
+    VectPointInitial(l3c, numberOfBubblesl3, 21,28);
     
     
     /* INITIALIZES THE VECTOR AND ALL THE POINTS
-    /*  */
+      */
     for (int i=0; i<1000; i++)
     {
         vectorSimulationAllPoints[i].radius = 0;
@@ -838,7 +1110,85 @@ void reshape (int w, int h)
 	glutPostRedisplay();
 }
 
-//This function creates bubbles in a BSPline surface
+
+// ----------------------------------------------------------------------------
+/**
+ Routine: functionRadius()
+ Inputs: bubble * l0, bubble * l1, bubble* l2, bubble* l3
+ Arguments: none
+ Externals: none
+ Others:
+ 
+ Outputs:  rad_new
+ Arguments:
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ 
+ Summary:
+ Finds the span of the geometry 
+**/
+// ----------------------------------------------------------------------------
+float findspan(float v1, float v2, float v3, float v4, int state)
+{
+        
+    float * vect = new float [4];
+    
+    vect[0] = abs(v3-v1);
+    vect[1] = abs(v3-v2);
+    vect[2] = abs(v4-v1);
+    vect[3] = abs(v4-v2);
+    
+    float val = 0.0;
+    
+    if (state==0) //find the smallest in the vector 
+    {
+        float small = vect[0];
+        for (int i=1 ; i<4 ; i++)
+        {
+            if(vect[i]<small)
+                small = vect[i];
+        }
+        val=small;
+    }
+    
+    if (state==1) // find the largest in the vector
+    {
+        float big = vect[0];
+        for (int i=1 ; i<4 ; i++)
+        {
+            if(vect[i]>big)
+                big = vect[i];
+        }
+        val = big;
+    }
+
+    return val;
+    
+}
+
+// ----------------------------------------------------------------------------
+/**
+ Routine: createBubbleSplineT()
+ Inputs: float dx, float dy, float radius
+ Arguments: none
+ Externals: none
+ Others:
+ 
+ Outputs:  objMainBSPline.ptsNURBS()
+ Arguments:
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ 
+ Summary:
+ This function creates bubbles in a BSPline surface
+ **/
+// ----------------------------------------------------------------------------
 void createBubbleSplineT(float dx, float dy, float radius)
 {
     float* Uknot = new float [9];
@@ -891,13 +1241,45 @@ void createBubbleSplineT(float dx, float dy, float radius)
 }
 
 #pragma mark <F> creates the vector for simulation
+
+// ----------------------------------------------------------------------------
+/**
+ Routine: vectorForSimulation()
+ Inputs: bubble* l0, int numl0,
+         bubble* l1, int numl1,
+         bubble* l2, int numl2,
+         bubble* l3, int numl3,
+         int numBX, int numBY, float spanX, int spanY
+ Arguments: none
+ Externals: none
+ Others:
+ 
+ Outputs:  objMainBSPline.ptsNURBS()
+ Arguments:
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ 
+ Summary:
+ Initializes the data in the simulation
+ **/
+// ----------------------------------------------------------------------------
 void vectorForSimulation (bubble* l0, int numl0,
                              bubble* l1, int numl1,
                              bubble* l2, int numl2,
-                             bubble* l3, int numl3)
+                             bubble* l3, int numl3,
+                           int numBX, int numBY, float spanX, int spanY)
 {
    
     int temp = 0;
+    
+    float s1,s2,s3,s4;
+    s1=s2=s3=s4=0.0;
+    
+    float t1,t2,t3,t4;
+    t1=t2=t3=t4=0.0;
     
     for(int i=0; i<numl0 ; i++)
     {
@@ -907,8 +1289,14 @@ void vectorForSimulation (bubble* l0, int numl0,
         vectorSimulationAllPoints[i].z = l0[i].z;
         vectorSimulationAllPoints[i].u = l0[i].u;
         vectorSimulationAllPoints[i].v = l0[i].v;
-        vectorSimulationAllPoints[i].idx = l0[i].idx;
+       // vectorSimulationAllPoints[i].idx = l0[i].idx;
+        if (l0[i].x < s1) s1 = l0[i].x;
+        else s1=s1;
+    
+        if (l0[i].x > s2) s2 = l0[i].x;
+        else s2=s2;
         
+                
         
     }
 
@@ -921,7 +1309,14 @@ void vectorForSimulation (bubble* l0, int numl0,
         vectorSimulationAllPoints[numl0-1+i].z = l1[i].z;
         vectorSimulationAllPoints[numl0-1+i].u = l1[i].u;
         vectorSimulationAllPoints[numl0-1+i].v = l1[i].v;
-        vectorSimulationAllPoints[numl0-1+i].idx = l1[i].idx;
+      //  vectorSimulationAllPoints[numl0-1+i].idx = l1[i].idx;
+        
+        
+        if (l1[i].z < t1) t1 = l1[i].z;
+        else t1=t1;
+        
+        if (l1[i].z > t2) t2 = l1[i].z;
+        else t2=t2;
         
     }
     
@@ -934,32 +1329,159 @@ void vectorForSimulation (bubble* l0, int numl0,
         vectorSimulationAllPoints[numl0+numl1-2+i].z = l2[i].z;
         vectorSimulationAllPoints[numl0+numl1-2+i].u = l2[i].u;
         vectorSimulationAllPoints[numl0+numl1-2+i].v = l2[i].v;
-        vectorSimulationAllPoints[numl0+numl1-2+i].idx = l2[i].idx;
+       // vectorSimulationAllPoints[numl0+numl1-2+i].idx = l2[i].idx;
+        
+        if (l2[i].x < s3) s3 = l2[i].x;
+        else s3=s3;
+        
+        if (l2[i].x > s4) s4 = l2[i].x;
+        else s4=s4;
         
     }
     
     
     for(int i=0; i<numl3 ; i++)
     {
-        vectorSimulationAllPoints[numl0+numl1+numl2+3+i].radius = l3[i].radius;
-        vectorSimulationAllPoints[numl0+numl1+numl2+3+i].x = l3[i].x;
-        vectorSimulationAllPoints[numl0+numl1+numl2+3+i].y = l3[i].y;
-        vectorSimulationAllPoints[numl0+numl1+numl2+3+i].z = l3[i].z;
-        vectorSimulationAllPoints[numl0+numl1+numl2+3+i].u = l3[i].u;
-        vectorSimulationAllPoints[numl0+numl1+numl2+3+i].v = l3[i].v;
-        vectorSimulationAllPoints[numl0+numl1+numl2+3+i].idx = l3[i].idx;
+        vectorSimulationAllPoints[numl0+numl1+numl2-3+i].radius = l3[i].radius;
+        vectorSimulationAllPoints[numl0+numl1+numl2-3+i].x = l3[i].x;
+        vectorSimulationAllPoints[numl0+numl1+numl2-3+i].y = l3[i].y;
+        vectorSimulationAllPoints[numl0+numl1+numl2-3+i].z = l3[i].z;
+        vectorSimulationAllPoints[numl0+numl1+numl2-3+i].u = l3[i].u;
+        vectorSimulationAllPoints[numl0+numl1+numl2-3+i].v = l3[i].v;
+        //vectorSimulationAllPoints[numl0+numl1+numl2-3+i].idx = l3[i].idx;
+        
+        if (l3[i].z < t3) t3 = l3[i].z;
+        else t2=t2;
+        
+        if (l3[i].z> t4) t4 = l3[i].z;
+        else t3=t3;
+
         
     }
     
+    /*float minvalX = findspan(s1,s2,s3,s4, 0);
+    float maxvalX = findspan(s1,s2,s3,s4, 1);
+    
+    float minvalY = findspan(t1,t2,t3,t4, 0);
+    float maxvalY = findspan(t1,t2,t3,t4, 1);*/
+    
+    
+    
     temp = numl0+numl1+numl2-3+numl3;
     
-    cout << vectorSimulationAllPoints[temp].idx ;
+    float rad = (l0c[1].radius + l1c[1].radius + l2c[1].radius + l3c[1].radius)/(float)4.0; //average size for internal bubbles change 4 fro average
+    
+    
+    for(int i=numl0+numl1+numl2+numl3-3; i<300 ; i++) //100 maximum number of bubbles
+    {
+        vectorSimulationAllPoints[i].radius = rad;
+        vectorSimulationAllPoints[i].x = 0.0;
+        vectorSimulationAllPoints[i].y = 0.0;
+        vectorSimulationAllPoints[i].z = 0.0;
+        vectorSimulationAllPoints[i].u = 0.0;
+        vectorSimulationAllPoints[i].v = 0.0;
+        vectorSimulationAllPoints[i].idx = i;
+        
+        
+        
+    }
+    
+    
+    
+    
+    spanX = 2;//abs(maxvalX-minvalX); //change here
+    spanY = 2;//abs(maxvalY-minvalY);
+    
+    int m=0;
+    int n=0;
+    
+    float* Uknot = new float [9];
+    float* Vknot = new float [9];
+    
+    Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
+    Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.0; //here how to strech space
+    
+    
+    Vknot[0]= Vknot[1] = Vknot[2]= Vknot[3]= Vknot[4] =  0.0;
+    Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.0;
+    
+    float lastv, lastu;
+    
+    lastu = lastv=0.1;
+    
+    cout << "startcount:" << numl0+numl1+numl2+numl3-3<< endl;
+    
+    int temp1 = NUMBER_OF_BUBBLES_IN_SIMULATION+(numl0+numl1+numl2+numl3-3);
+    
+    if (MAX_NUMBER_OF_BUBBLES_INITILIAZED<NUMBER_OF_BUBBLES_IN_SIMULATION) cout << \
+        "ERROR: MAX_NUMBER_OF_BUBBLES_INITILIAZED (" <<MAX_NUMBER_OF_BUBBLES_INITILIAZED <<" ) < NUMBER_OF_BUBBLES_IN_SIMULATION (" \
+        <<NUMBER_OF_BUBBLES_IN_SIMULATION <<" ) " << endl;
+    
+    cout << "endcount:" << temp1 << endl;
+    
+    for(int k =0 ; k<temp1; k++)
+    {
+        
+        
+        //vectorSimulationAllPoints[k].x = spanX/(150-1)*m + 1.0;
+        //vectorSimulationAllPoints[k].z = 0.3*n+0.5;
+        
+        m++;
+        if(k%10 == 0)
+        {
+            n++; m=0;
+            
+            if(n%10==0) n=0;
+        }
+
+        
+        lastu =  0.1+m/(float)(temp1-1)*15; //17
+        lastv =  0.1+n/(float)(temp1-1)*15; //19
+
+      
+        
+        objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray, Uknot, Vknot, 5, 5, 5, 5, lastu,lastv, objMainBSPline.pts);
+        
+               
+        
+        vectorSimulationAllPoints[k+(numl0+numl1+numl2+numl3-3)].x = objMainBSPline.pts[0];
+        vectorSimulationAllPoints[k+(numl0+numl1+numl2+numl3-3)].y = objMainBSPline.pts[1];
+        vectorSimulationAllPoints[k+(numl0+numl1+numl2+numl3-3)].z = objMainBSPline.pts[2];
+            
+        //spanX/(float)(numBX-1)*i+(-0.0); //AQUI ESTA MAL i*numBX+j
+        //        vectorSimulationAllPoints[k].z = spanY/(float)(numBY-1)*i+(-0.0);
+        
+    }
+    
+   // objUtil.printVect(vectorSimulationAllPoints, 100, "/Users/Serenity/Dropbox/CMU 2012/bubbleVectAllPoints.txt");
+    
+    // cout << vectorSimulationAllPoints[temp].idx ;
     
 }
 
 
 #pragma mark <F> create bubbles no deformation
-//This function creates bubbles in a BSPline surface
+
+// ----------------------------------------------------------------------------
+/**
+ Routine: createBubbleSplineNoDeformation()
+ Inputs: float dx, float dy, float radius
+ Arguments: none
+ Externals: none
+ Others:
+ 
+ Outputs:  objMainBSPline.ptsNURBS()
+ Arguments:
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ 
+ Summary:
+ This function creates bubbles in a BSPline surface
+ **/
+// ----------------------------------------------------------------------------
 void createBubbleSplineNoDeformation(float dx, float dy, float radius)
 {
     glPushMatrix(); //Copies the matrix on the top of the stack, this would be like save the funcion
@@ -1036,6 +1558,27 @@ void createBubbleSplineNoDeformation(float dx, float dy, float radius)
     
 }
 
+
+// ----------------------------------------------------------------------------
+/**
+ Routine: createBubbleXYZNoDeformation()
+ Inputs: float dx, float dy, float dz, float radius
+ Arguments: none
+ Externals: none
+ Others:
+ 
+ Outputs:  
+ Arguments:
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ 
+ Summary:
+ This function draws the bubbles on the screen
+ **/
+// ----------------------------------------------------------------------------
 void createBubbleXYZNoDeformation(float dx, float dy, float dz, float radius)
 {
     
@@ -1099,6 +1642,26 @@ void createBubbleXYZNoDeformation(float dx, float dy, float dz, float radius)
     
 }
 
+// ----------------------------------------------------------------------------
+/**
+ Routine: createBubbleXYZNoDeformationBoundary()
+ Inputs: float dx, float dy, float dz, float radius
+ Arguments: none
+ Externals: none
+ Others:
+ 
+ Outputs:
+ Arguments:
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ 
+ Summary:
+ This function draws the bubbles on the screen
+ **/
+// ----------------------------------------------------------------------------
 void createBubbleXYZNoDeformationBoundary(float dx, float dy, float dz, float radius)
 {
     
@@ -1162,6 +1725,27 @@ void createBubbleXYZNoDeformationBoundary(float dx, float dy, float dz, float ra
     
 }
 
+
+// ----------------------------------------------------------------------------
+/**
+ Routine: createBubbleXYZVector()
+ Inputs: float dx, float dy, float dz, float radius, float* color
+ Arguments: none
+ Externals: none
+ Others:
+ 
+ Outputs:
+ Arguments:
+ Externals:
+ Returns:
+ Errors:
+ 
+ Routines Called:
+ 
+ Summary:
+ This function draws the bubbles on the screen
+ **/
+// ----------------------------------------------------------------------------
 void createBubbleXYZVector(float dx, float dy, float dz, float radius, float* color)
 {
     glPushMatrix(); //Copies the matrix on the top of the stack, this would be like save the funcion basically does not move
@@ -1300,7 +1884,7 @@ void simulationVector( bubble* vectorLo, int numBubbles, int iter, point_t * l_c
     
     float delta_s = 0.0;
     float _u = 0.0;
-    point_t delta_point;
+   // point_t delta_point;
     float* pts = new float [3];
     
     float* Uknot = new float [9];
@@ -1557,7 +2141,7 @@ void simulationVector( bubble* vectorLo, int numBubbles, int iter, point_t * l_c
          cout<< "--------------"<< endl<<endl;
          
          
-         /**/
+         */
         
         
     }
@@ -1683,8 +2267,8 @@ void simulation2()
     
     
     
-    float prevx, prevy, prevz;
-    float lastx, lasty, lastz;
+    //float prevx, prevy, prevz;
+   // float lastx, lasty, lastz;
     //float lastx, lasty, lastz;
     bool mtrue = false;
     
@@ -1861,19 +2445,26 @@ void simulation3()
     
 }
 
-//simulation3 makes the sim in the 2d real not the nurb surface in other words no deformation
+//simulation vector makes the sim in the 2d real not the nurb surface in other words no deformation
 void simulationVector2( bubble* vectorLo, int numBubblesBoundary, int numBubblesTotal)
 {
-    for(int i=0;i<numBubblesTotal;i++){
-        for(int j=numBubblesBoundary;j<numBubblesTotal;j++){
-            
-            while(i!=j)
+    for(int i=numBubblesBoundary ;i<numBubblesTotal;i++){
+        for(int j=0;j<numBubblesTotal;j++){
+            if(i==j)
             {
                 
-                currentPoint = objBP2D.Simulation(vectorLo[i], vectorLo[j]); //j changes faster always second position
+            }
+            
+            else
+            {
                 
-                vectorLo[j].u = currentPoint.u;
-                vectorLo[j].v = currentPoint.v;
+                currentPointXYZ = objBP2D.SimulationXYZ(vectorLo[j], vectorLo[i]); //j changes faster always second position
+                
+                vectorLo[i].x = currentPointXYZ.x;
+                vectorLo[i].y = currentPointXYZ.y;
+                vectorLo[i].z = currentPointXYZ.z;
+                
+               // cout << currentPointXYZ.x << endl;
                 
                 
             }
@@ -1885,7 +2476,7 @@ void simulationVector2( bubble* vectorLo, int numBubblesBoundary, int numBubbles
     }
     
     
-    k_loop++;
+    kinternal_loop++;
     
 }
 
@@ -2136,14 +2727,15 @@ void maindisplay(void)
         }
         
         
-        if (k_loop%100==0)
+        if (k_loop% MAX_NUMBER_OF_ITERATIONS_K_BOUND-1 == 0)
         {
             sSimulationInBSplinePatch = false;
             
             vectorForSimulation(l0c, numberOfBubblesl0,
                                 l1c, numberOfBubblesl1,
                                 l2c, numberOfBubblesl2,
-                                l3c, numberOfBubblesl3);
+                                l3c, numberOfBubblesl3,
+                                7,5,6,6);
             
         }
         
@@ -2154,75 +2746,102 @@ void maindisplay(void)
         
     }
     
+    
+    ////////---------------------- VECTOR SIM START
+
+    
+    int totalNum = numberOfBubblesl0 + numberOfBubblesl1 + numberOfBubblesl2 +numberOfBubblesl3 -3;
+    
+    if (sSimulationInternalBSplinePatch == true && k_loop > 300)
+    {
+       // if (k_loop < 700)
+     //   {
+      //      cout<< "\n Boundaries need more iterations" << endl;
+            //sSimulationInBSplinePatch = true;
+
+       // }
+     
+        simulationVector2(vectorSimulationAllPoints, totalNum, NUMBER_OF_BUBBLES_IN_SIMULATION);
+        
+        if (kinternal_loop==MAX_NUMBER_OF_ITERATIONS_K_SURF) sSimulationInternalBSplinePatch = sSimulationInternalBSplinePatch-1;
+        
+        
+    }
+    
+    
+    
+    //shows the boundaris in the vector
     if(gVectorSimulation)
     {
         
-        cout << "hola" << endl;
+        float	colorUSER[3]	=	{0.23, 0.866667, 0.5898654654};
         
-        float	colorUSER[3]	=	{0.23, 0.866667, 0.66};
         
-
-        
-        for(int i=0;i<34;i++) //34
+              
+        for(int i=0;i<NUMBER_OF_BUBBLES_IN_SIMULATION;i++) //34
         {
+            
+            colorUSER[0]	=	i/(float)NUMBER_OF_BUBBLES_IN_SIMULATION;
+            colorUSER[1]	=	1-i/(float)NUMBER_OF_BUBBLES_IN_SIMULATION;
+            colorUSER[2]	=	i/(float)NUMBER_OF_BUBBLES_IN_SIMULATION;
+
+
             
             createBubbleXYZVector(vectorSimulationAllPoints[i].x, vectorSimulationAllPoints[i].y, vectorSimulationAllPoints[i].z, vectorSimulationAllPoints[i].radius, colorUSER);
             
         }
         
-    }
-    
-    if (sSimulationInternalBSplinePatch == true)
-    {
-        
-        
+        if(kinternal_loop==600) objUtil.printVect(vectorSimulationAllPoints, NUMBER_OF_BUBBLES_IN_SIMULATION, "/Users/Serenity/Dropbox/CMU 2012/export_coor.txt");
+      
         
     }
     
-   
+    ////////---------------------- VECTOR SIM END
+
     
     
     
 #pragma mark <F> Boundaries
     //boundariesDisplay();
     
-    
-    //----------------
-    // Vector defined simulation
-    //----------------
-    //TOP AND BOTTOM
-    for (int i=0;i<numberOfBubblesl0;i++)
+    if(GgShowBoundariers)
     {
-        createBubbleXYZNoDeformationBoundary(l0c[i].x, l0c[i].y, l0c[i].z, l0c[i].radius);
+        //----------------
+        // Vector defined simulation
+        //----------------
+        //TOP AND BOTTOM
+        for (int i=0;i<numberOfBubblesl0;i++)
+        {
+            createBubbleXYZNoDeformationBoundary(l0c[i].x, l0c[i].y, l0c[i].z, l0c[i].radius);
+            
+            
+        }
+        
+        for (int i=0;i<numberOfBubblesl1;i++)
+        {
+            
+            createBubbleXYZNoDeformationBoundary(l1c[i].x, l1c[i].y, l1c[i].z, l1c[i].radius);
+            
+            
+        }
+        
+        for (int i=0;i<numberOfBubblesl2;i++)
+        {
+            
+            createBubbleXYZNoDeformationBoundary(l2c[i].x, l2c[i].y, l2c[i].z, l2c[i].radius);
+            
+            
+        }
+        
+        for (int i=0;i<numberOfBubblesl3;i++)
+        {
+            
+            createBubbleXYZNoDeformationBoundary(l3c[i].x, l3c[i].y, l3c[i].z, l3c[i].radius);
+            
+        }
         
         
     }
-    
-    for (int i=0;i<numberOfBubblesl1;i++)
-    {
-        
-        createBubbleXYZNoDeformationBoundary(l1c[i].x, l1c[i].y, l1c[i].z, l1c[i].radius);
-        
-        
-    }
-    
-    for (int i=0;i<numberOfBubblesl2;i++)
-    {
-        
-        createBubbleXYZNoDeformationBoundary(l2c[i].x, l2c[i].y, l2c[i].z, l2c[i].radius);
-        
-        
-    }
-    
-    for (int i=0;i<numberOfBubblesl3;i++)
-    {
-        
-        createBubbleXYZNoDeformationBoundary(l3c[i].x, l3c[i].y, l3c[i].z, l3c[i].radius);
-        
-    }
-    
-    
-    
     
     glutSwapBuffers();
     
@@ -2425,7 +3044,12 @@ void key(unsigned char inkey, int px, int py)
             sSimulationInternalBSplinePatch =  1 - sSimulationInternalBSplinePatch;
             glutPostRedisplay();
             break; // print point spline
-            
+        case 'b':
+        case 'B':
+            GgShowBoundariers =  1 - GgShowBoundariers;
+            glutPostRedisplay();
+            break; // print point spline
+
             
             
             

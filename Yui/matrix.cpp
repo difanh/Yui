@@ -131,6 +131,20 @@ void Matrix::print (double** A, int imax)
 	}
 }
 
+//Imprime los valores del vector b en un archivo file
+void Matrix::printVector (double* b, int imax, char* file)
+{
+	ofstream sol_01 (file);
+	
+    sol_01 << "\n Vector b";
+	sol_01 << "\n -------------------------" << endl << endl;
+	for(int i=0;i<imax;i++){
+		sol_01 << b[i]<<endl;
+	}
+    
+	sol_01.close();
+}
+
 
 
 /*** Compute Ap ***/

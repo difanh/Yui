@@ -55,6 +55,7 @@ public:
 	void print(double** A, double* b, int imax);
 	void print(double** A, int imax);
 	void print(double** A, double* b, double* temp, int imax, char* file);
+    void printVector (double* b, int imax, char* file);
 
 	double norm (double* V, double* V1, int imax);
 

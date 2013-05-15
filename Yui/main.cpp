@@ -20,13 +20,16 @@
  E-Mail: diegoandrade@gmail.com
  
  Description: Header file for Project X
+ Bubblepacking For Aesthetic Design in Manufacturing
+ 
  This file contains the defined types for Project X
  This is sometimes called the "Abstract" and may be
  followed by a section called "Notes".
  
  Limitations: bla bla bla
  
- Function: 1) bla bla bla
+ Function: 
+ 1) bla bla bla
  2) bla bla bla
  3) bla bla bla
  
@@ -40,9 +43,6 @@
 
  */
 // ----------------------------------------------------------------------------
-
-
-
 
 //
 //  main.cpp
@@ -77,6 +77,7 @@
 #include "Subdivision.h"
 #include "BubblePacking2D.h"
 #include "Util.h"
+//#include "grid.h" //Creates a Transfinite Interpolation to place the BBpacking on top
 
 //#include "AllColor.h"
 
@@ -253,7 +254,7 @@ vector<myPoint3D> pointsBSpline;
  Errors:
  
  Routines Called:
- */
+ **/
 // ----------------------------------------------------------------------------
 void gCameraReset(void)
 {
@@ -938,19 +939,11 @@ void init (void)
     objBB.createPoints(); //Creates location // IMPORTANT
     
     
-    
-    //----------------
+    //-------------------------------------------------------
     // bubble packing 2d
-    //----------------
-    
-    
-    
+    //-------------------------------------------------------
     
     objMainBSPline.InitializeControlPoints();
-    
-    
-    
-    
     
     //Initializes U, V and P matrices
     
@@ -997,9 +990,9 @@ void init (void)
     objBP2D.subdivisionHardCode2( PointMat2 , IMAX, JMAX, distance_geometry);
     
     
-    //----------------
+    //-------------------------------------------------------
     // Vector defined simulation
-    //----------------
+    //-------------------------------------------------------
     
     //lengths in the boundaries
     findBoundariesLengths(objMainBSPline.controlPointsArray, 5);
@@ -1008,10 +1001,14 @@ void init (void)
     
     
     
-    l0c = objBP2D.bubbleBoundaries(numberOfBubblesl0, l0_bd, 0); //l0 curve getting the values of the boundary
-    l1c = objBP2D.bubbleBoundaries(numberOfBubblesl1, l1_bd, 1); //l1 curve getting the values of the boundary
-    l2c = objBP2D.bubbleBoundaries(numberOfBubblesl2, l2_bd, 2); //l1 curve getting the values of the boundary
-    l3c = objBP2D.bubbleBoundaries(numberOfBubblesl3, l3_bd, 3); //l1 curve getting the values of the boundary
+    l0c = objBP2D.bubbleBoundaries(numberOfBubblesl0, l0_bd, 0);
+    //l0 curve getting the values of the boundary
+    l1c = objBP2D.bubbleBoundaries(numberOfBubblesl1, l1_bd, 1);
+    //l1 curve getting the values of the boundary
+    l2c = objBP2D.bubbleBoundaries(numberOfBubblesl2, l2_bd, 2);
+    //l1 curve getting the values of the boundary
+    l3c = objBP2D.bubbleBoundaries(numberOfBubblesl3, l3_bd, 3);
+    //l1 curve getting the values of the boundary
     
     
     
@@ -1044,8 +1041,7 @@ void init (void)
     l3c[0].radius = rad; l3c[numberOfBubblesl3-1].radius = rad;
     
     
-    /* USE THIS FOR EQUAL DISTRIBUTION OF BALL OF THE SAME SIZE
-      INDEPENDENT OF THE NUMBER OF BUBBLES
+    /* USE THIS FOR EQUAL DISTRIBUTION OF BALL OF THE SAME SIZE INDEPENDENT OF THE NUMBER OF BUBBLES
      
      float rad0 = functionRadius(l0c,l1c,l3c,l0_bd,numberOfBubblesl0);
      
@@ -1085,8 +1081,7 @@ void init (void)
     VectPointInitial(l3c, numberOfBubblesl3, 21,28);
     
     
-    /* INITIALIZES THE VECTOR AND ALL THE POINTS
-      */
+    /* INITIALIZES THE VECTOR AND ALL THE POINTS */
     for (int i=0; i<1000; i++)
     {
         vectorSimulationAllPoints[i].radius = 0;
@@ -1357,14 +1352,6 @@ void vectorForSimulation (bubble* l0, int numl0,
         
     }
     
-    /*float minvalX = findspan(s1,s2,s3,s4, 0);
-    float maxvalX = findspan(s1,s2,s3,s4, 1);
-    
-    float minvalY = findspan(t1,t2,t3,t4, 0);
-    float maxvalY = findspan(t1,t2,t3,t4, 1);*/
-    
-    
-    
     temp = numl0+numl1+numl2-3+numl3;
     
     float rad = (l0c[1].radius + l1c[1].radius + l2c[1].radius + l3c[1].radius)/(float)4.0; //average size for internal bubbles change 4 fro average
@@ -1380,13 +1367,8 @@ void vectorForSimulation (bubble* l0, int numl0,
         vectorSimulationAllPoints[i].v = 0.0;
         vectorSimulationAllPoints[i].idx = i;
         
-        
-        
     }
-    
-    
-    
-    
+
     spanX = 2;//abs(maxvalX-minvalX); //change here
     spanY = 2;//abs(maxvalY-minvalY);
     
@@ -1419,11 +1401,7 @@ void vectorForSimulation (bubble* l0, int numl0,
     
     for(int k =0 ; k<temp1; k++)
     {
-        
-        
-        //vectorSimulationAllPoints[k].x = spanX/(150-1)*m + 1.0;
-        //vectorSimulationAllPoints[k].z = 0.3*n+0.5;
-        
+          
         m++;
         if(k%10 == 0)
         {
@@ -1436,24 +1414,17 @@ void vectorForSimulation (bubble* l0, int numl0,
         lastu =  0.1+m/(float)(temp1-1)*15; //17
         lastv =  0.1+n/(float)(temp1-1)*15; //19
 
-      
-        
+
         objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray, Uknot, Vknot, 5, 5, 5, 5, lastu,lastv, objMainBSPline.pts);
-        
-               
-        
+  
         vectorSimulationAllPoints[k+(numl0+numl1+numl2+numl3-3)].x = objMainBSPline.pts[0];
         vectorSimulationAllPoints[k+(numl0+numl1+numl2+numl3-3)].y = objMainBSPline.pts[1];
         vectorSimulationAllPoints[k+(numl0+numl1+numl2+numl3-3)].z = objMainBSPline.pts[2];
-            
-        //spanX/(float)(numBX-1)*i+(-0.0); //AQUI ESTA MAL i*numBX+j
-        //        vectorSimulationAllPoints[k].z = spanY/(float)(numBY-1)*i+(-0.0);
+
         
     }
     
    // objUtil.printVect(vectorSimulationAllPoints, 100, "/Users/Serenity/Dropbox/CMU 2012/bubbleVectAllPoints.txt");
-    
-    // cout << vectorSimulationAllPoints[temp].idx ;
     
 }
 
@@ -1508,9 +1479,6 @@ void createBubbleSplineNoDeformation(float dx, float dy, float radius)
     objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray,
                             Uknot, Vknot, 5, 5, 4, 4, dx, dy, objMainBSPline.pts); //gives the location of a point in the NURB patch
     
-    //glVertex3f(objMainBSPline.pts[0], objMainBSPline.pts[1] , objMainBSPline.pts[2]); //location of the point in a NURB patch
-    
-    //glPushMatrix(); //Copies the matrix on the top of the stack, this would be like save the funcion
     glColor3f(1,0,1);  //set colour ball
     glTranslatef(0.0, 0.0 , 0.0); // back to origin
     glTranslatef(objMainBSPline.pts[0], objMainBSPline.pts[1] , objMainBSPline.pts[2]);
@@ -1533,16 +1501,8 @@ void createBubbleSplineNoDeformation(float dx, float dy, float radius)
         glVertex3f(x, y, z);
     }
     
-    //cout << "PI Value = " << PI << endl;
-    
     glEnd();
     
-    
-    //glPopMatrix(); // Would be equivalent like load the function
-    
-    
-    
-    // glutSolidSphere(radius, 5, 5);
     
     delete [] Uknot;
     delete [] Vknot;
@@ -1588,13 +1548,7 @@ void createBubbleXYZNoDeformation(float dx, float dy, float dz, float radius)
     
     float	colorUSER[3]	=	{255, 245, 190};
     
-    
-    //  objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray,
-    //                        Uknot, Vknot, 5, 5, 4, 4, dx, dy, objMainBSPline.pts); //gives the location of a point in the NURB patch
-    
-    //glVertex3f(objMainBSPline.pts[0], objMainBSPline.pts[1] , objMainBSPline.pts[2]); //location of the point in a NURB patch
-    
-    //glPushMatrix(); //Copies the matrix on the top of the stack, this would be like save the funcion
+
     glColor3f(1,0,1);  //set colour ball
     glTranslatef(0.0, 0.0 , 0.0); // back to origin
     glTranslatef(dx, dy , dz);
@@ -1617,21 +1571,7 @@ void createBubbleXYZNoDeformation(float dx, float dy, float dz, float radius)
         glVertex3f(x, y, z);
     }
     
-    //cout << "PI Value = " << PI << endl;
-    
     glEnd();
-    
-    
-    //glPopMatrix(); // Would be equivalent like load the function
-    
-    
-    
-    // glutSolidSphere(radius, 5, 5);
-    
-    //  delete [] Uknot;
-    //  delete [] Vknot;
-    
-    
     
     
     glPopMatrix(); // Would be equivalent like load the function
@@ -1671,14 +1611,6 @@ void createBubbleXYZNoDeformationBoundary(float dx, float dy, float dz, float ra
     
     float	colorUSER[3]	=	{0.933333, 0.866667, 0.509804};
     
-    
-    //  objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray,
-    //                        Uknot, Vknot, 5, 5, 4, 4, dx, dy, objMainBSPline.pts); //gives the location of a point in the NURB patch
-    
-    //glVertex3f(objMainBSPline.pts[0], objMainBSPline.pts[1] , objMainBSPline.pts[2]); //location of the point in a NURB patch
-    
-    //glPushMatrix(); //Copies the matrix on the top of the stack, this would be like save the funcion
-    //glColor3f(1,0,1);  //set colour ball
     glTranslatef(0.0, 0.0 , 0.0); // back to origin
     glTranslatef(dx, dy , dz);
     
@@ -1700,26 +1632,11 @@ void createBubbleXYZNoDeformationBoundary(float dx, float dy, float dz, float ra
         glVertex3f(x, y, z);
     }
     
-    //cout << "PI Value = " << PI << endl;
     
     glEnd();
-    
-    
-    //glPopMatrix(); // Would be equivalent like load the function
-    
-    
-    
-    // glutSolidSphere(radius, 5, 5);
-    
-    //  delete [] Uknot;
-    //  delete [] Vknot;
-    
-    
-    
+
     
     glPopMatrix(); // Would be equivalent like load the function
-    
-    
     
 }
 
@@ -1752,14 +1669,6 @@ void createBubbleXYZVector(float dx, float dy, float dz, float radius, float* co
     
     y=0;
     
-    
-    //  objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray,
-    //                        Uknot, Vknot, 5, 5, 4, 4, dx, dy, objMainBSPline.pts); //gives the location of a point in the NURB patch
-    
-    //glVertex3f(objMainBSPline.pts[0], objMainBSPline.pts[1] , objMainBSPline.pts[2]); //location of the point in a NURB patch
-    
-    //glPushMatrix(); //Copies the matrix on the top of the stack, this would be like save the funcion
-    //glColor3f(1,0,1);  //set colour ball
     glTranslatef(0.0, 0.0 , 0.0); // back to origin
     glTranslatef(dx, dy , dz);
     
@@ -1780,23 +1689,8 @@ void createBubbleXYZVector(float dx, float dy, float dz, float radius, float* co
         
         glVertex3f(x, y, z);
     }
-    
-    //cout << "PI Value = " << PI << endl;
-    
+        
     glEnd();
-    
-    
-    //glPopMatrix(); // Would be equivalent like load the function
-    
-    
-    
-    // glutSolidSphere(radius, 5, 5);
-    
-    //  delete [] Uknot;
-    //  delete [] Vknot;
-    
-    
-    
     
     glPopMatrix(); // Would be equivalent like load the function
     
@@ -1982,7 +1876,6 @@ void simulationVector( bubble* vectorLo, int numBubbles, int iter, point_t * l_c
         }
         
         //     objUtil.printVectPoints(DeltaVector, numBubbles, "/Users/Serenity/Dropbox/CMU 2012/DeltaVector.txt");
-        
         //    objUtil.printVectPoints(l0_curve_definition, 15, "/Users/Serenity/Dropbox/CMU 2012/lo_curve_def.txt");
         
         
@@ -2044,112 +1937,14 @@ void simulationVector( bubble* vectorLo, int numBubbles, int iter, point_t * l_c
                 m++;
             }
             
-            //  cout << "V1.x: " << V1[i].x << endl;
-            //  cout << "V1.y: " << V1[i].y << endl;
-            // cout << "V1.z: " << V1[i].z << endl<< endl;
-            
-            //   cout << "vectorLo.x: " << vectorLo[i].x << endl;
-            //   cout << "vectorLo.y: " << vectorLo[i].y << endl;
-            //   cout << "vectorLo.z: " << vectorLo[i].z << endl;
-            //   cout<< "--------------"<< endl<<endl;
-            
-            
             
             
         }
         
-        /*
-         for (int i=0;i<numBubbles;i++)
-         {
-         cout << "vectorLo.x: " << vectorLo[i].x << endl;
-         cout << "vectorLo.y: " << vectorLo[i].y << endl;
-         cout << "vectorLo.z: " << vectorLo[i].z << endl;
-         
-         tangent = objBP2D.Tangent(l0_curve_definition, 15, V1[i].x,0);
-         
-         delta_point.x = V2[i].x-V1[i].x;
-         delta_point.y = V2[i].y-V1[i].y;
-         delta_point.z = V2[i].z-V1[i].z;
-         
-         delta_s = objBP2D.DotProduct(delta_point, tangent);
-         
-         delta_s = delta_s/(float)(pow(tangent.x,2)+pow(tangent.y,2)+pow(tangent.z,2));
-         _u =  vectorLo[i].v + delta_s; //importante to chance u and v
-         
-         objMainBSPline.ptsNURBS(d0, w, Uknot, 5, 5, _u, pts);
-         
-         vectorLo[i].x = pts[0];
-         vectorLo[i].y = pts[1];
-         vectorLo[i].z = pts[2];
-         
-         m++;
-         
-         cout << "\ni:" <<i<< ": "<< l0c[i].v << endl;
-         cout << "delta_s: " << delta_s << endl;
-         cout << "tangent: " << tangent.x << endl;
-         cout <<"_u: " << _u << endl;
-         
-         cout << "V1.x: " << V1[i].x << endl;
-         cout << "V1.y: " << V1[i].y << endl;
-         cout << "V1.z: " << V1[i].z << endl<< endl;
-         
-         cout << "vectorLo.x: " << vectorLo[i].x << endl;
-         cout << "vectorLo.y: " << vectorLo[i].y << endl;
-         cout << "vectorLo.z: " << vectorLo[i].z << endl;
-         cout<< "--------------"<< endl<<endl;
-         
-         
-         
-         
-         }
-         */
-        
-        /*/
-         tangent = objBP2D.Tangent(l0_curve_definition, 15, V1[i].x,0);
-         delta_point.x = vectorLo[i].x-V1[i].x;
-         delta_point.y = vectorLo[i].y-V1[i].y;
-         delta_point.z = vectorLo[i].z-V1[i].z;
-         
-         delta_s = objBP2D.DotProduct(delta_point, tangent);
-         
-         delta_s = delta_s/(float)(pow(tangent.x,2)+pow(tangent.y,2)+pow(tangent.z,2));
-         _u =  vectorLo[i].u + delta_s; //importante to chance u and v
-         
-         objMainBSPline.ptsNURBS(d0, w, Uknot, 5, 5, _u, pts);
-         
-         vectorLo[i].x = pts[0];
-         vectorLo[i].y = pts[1];
-         vectorLo[i].z = pts[2];
-         
-         m++;
-         
-         
-         cout << "\ni:" <<i<< ": "<< l0c[i].v << endl;
-         cout << "delta_s: " << delta_s << endl;
-         cout << "tangent: " << tangent.x << endl;
-         cout <<"_u: " << _u << endl;
-         
-         cout << "V1.x: " << V1[i].x << endl;
-         cout << "V1.y: " << V1[i].y << endl;
-         cout << "V1.z: " << V1[i].z << endl<< endl;
-         
-         cout << "vectorLo.x: " << vectorLo[i].x << endl;
-         cout << "vectorLo.y: " << vectorLo[i].y << endl;
-         cout << "vectorLo.z: l0cu" << vectorLo[i].z << endl;
-         cout<< "--------------"<< endl<<endl;
-         
-         
-         */
-        
+              
         
     }
-    
-    
-    //if(k%50==250)  objUtil.printMatrix(PointMat2,  k); //prints the matrix to a txt file
-    
-    // delete [] DeltaVector;
-    
-    //k_loop++;
+
     
     
 }
@@ -2160,34 +1955,6 @@ void simulation()
     
     
     float lastu, lastv;
-    // int deti = 5;
-    // int detj = 1;
-    
-    /*currentPoint = objBP2D.Simulation(PointMat[6][0], PointMat[deti][detj]);
-     
-     PointMat[deti][detj].u = currentPoint.u;
-     PointMat[deti][detj].v = currentPoint.v;
-     
-     lastu= currentPoint.u;
-     lastv= currentPoint.v;
-     
-     
-     createBubbleSplineT(PointMat[deti][detj].u,PointMat[deti][detj].v, initialBubbleRadius);
-     
-     
-     
-     float	Diegol[3]=	{255, 245, 195};
-     
-     
-     glColor3fv(Diegol);
-     glPointSize(2);
-     //  glBegin(GL_POINTS);
-     
-     
-     
-     createBubbleSplineT(PointMat[deti][detj].u,PointMat[deti][detj].v, initialBubbleRadius);
-     */
-    
     
     
     for(int m=1;m<IMAX-1;m++){
@@ -2233,12 +2000,7 @@ void simulation()
                 
             }
             
-            // createBubbleSplineT(PointMat[m][n].u,PointMat[m][n].v, initialBubbleRadius);
-            
-           
-            
-            
-            
+                
         }
     }
     
@@ -2252,37 +2014,10 @@ void simulation()
 void simulation2()
 {
     
-    
-    //  float* Uknot = new float [9];
-    //  float* Vknot = new float [9];
-    
-    //  Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
-    //  Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.0; //here how to strech space
-    
-    
-    ///  Vknot[0]= Vknot[1] = Vknot[2]= Vknot[3]= Vknot[4] =  0.0;
-    //  Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.0;
-    
-    
-    
-    //float prevx, prevy, prevz;
-   // float lastx, lasty, lastz;
-    //float lastx, lasty, lastz;
-    bool mtrue = false;
+        bool mtrue = false;
     
     for(int m=1;m<IMAX-1;m++){
         for(int n=1;n<IMAX-1;n++){
-            
-            // prevx = PointMat2[m][n].x; //
-            //  prevy = PointMat2[m][n].y;
-            //  prevz = PointMat2[m][n].z;
-            
-            
-            //  objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray, Uknot, Vknot, 5, 5, 5, 5, prevu,prevv, objMainBSPline.pts);
-            
-            //  PointMat2[m][n].x = objMainBSPline.pts[0];
-            //  PointMat2[m][n].y = objMainBSPline.pts[1];
-            //  PointMat2[m][n].z = objMainBSPline.pts[2];
             
             mtrue = true;
             
@@ -2302,28 +2037,7 @@ void simulation2()
                     
                     else{
                         
-                        
-                        // lastx = PointMat2[i][j].x;
-                        // lasty = PointMat2[i][j].y;
-                        // lastz = PointMat2[i][j].z;
-                        
-                        //cout << "\nU:" << lastu << endl;
-                        // cout << "V:" << lastv << endl;
-                        
-                        
-                        // objMainBSPline.ptsNURBS(objMainBSPline.controlPointsArray, objMainBSPline.controlPointsWeightsArray, Uknot, Vknot, 5, 5, 5, 5, lastu,lastv, objMainBSPline.pts);
-                        
-                        //PointMat2[i][j].x = objMainBSPline.pts[0];
-                        //PointMat2[i][j].y = objMainBSPline.pts[1];
-                        //PointMat2[i][j].z = objMainBSPline.pts[2];
-                        
-                        
-                        // lastx = PointMat2[i][j].x;
-                        //  lasty = PointMat2[i][j].y;
-                        //  lastz = PointMat2[i][j].z;
-                        
-                        //currentPoint = objBP2D.Simulation(PointMat2[i][j], PointMat2[m][n]);
-                        
+                                            
                         currentPointXYZ = objBP2D.SimulationXYZ(PointMat2[i][j], PointMat2[m][n]);
                         
                         PointMat2[m][n].x = currentPointXYZ.x;
@@ -2333,22 +2047,9 @@ void simulation2()
                         
                         if(mtrue == true)
                         {
-                            
-                            //   cout <<"i:" << i <<"\t j: " << j << endl;
-                            //  cout << "\nX:" << PointMat2[m][n].x  << endl;
-                            //  cout << "Y:" << PointMat2[m][n].y  << endl;
-                            //   cout << "Z:" << PointMat2[m][n].z  << endl;
-                            
-                            //  mtrue = false;
+                        
                         }
                         
-                        
-                        
-                        // if(PointMat2[m][n].x>=5.0) PointMat2[m][n].x = lastx; ////IMPORTANT TO CHANGE
-                        // if(PointMat2[m][n].z>=5.0) PointMat2[m][n].z = lastz;
-                        
-                        /// if(PointMat2[m][n].x<=-1.0) PointMat2[m][n].x = lastx; ////IMPORTANT TO CHANGE
-                        //if(PointMat2[m][n].z<=-1.0) PointMat2[m][n].z = lastz;
                         
                         
                         
@@ -2362,8 +2063,7 @@ void simulation2()
             
             
             
-            // createBubbleSplineT(PointMat[m][n].u,PointMat[m][n].v, initialBubbleRadius);
-            
+                 
           
             
             
@@ -2372,8 +2072,7 @@ void simulation2()
     }
     
     
-    //if(k%50==250)  printMatrix(PointMat2,  k); //prints the matrix to a txt file
-    
+      
     k_loop++;
     
     
@@ -2533,21 +2232,16 @@ void maindisplay(void)
     {
         objMainBSPline.InitializeControlPoints();
         
-        
         float* Uknot = new float [9];
         float* Vknot = new float [9];
         
         Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
         Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.0; //here how to strech space
         
-        
         Vknot[0]= Vknot[1] = Vknot[2]= Vknot[3]= Vknot[4] =  0.0;
         Vknot[5]= Vknot[6] = Vknot[7]= Vknot[8]= Vknot[9] =  1.0;
         
-        
-        
         float	LightGoldenrod1[3]=	{0.5, 0.92549, 0.545098/5};
-        
         
         glColor3fv(LightGoldenrod1);
         
@@ -2555,9 +2249,12 @@ void maindisplay(void)
         for(int i=0;i<5;i++) {
             for(int j=0;j<5;j++) {
                 
-                float Points[3] = {objMainBSPline.controlPointsArray[i][j].x,
+                float Points[3] =
+                {
+                    objMainBSPline.controlPointsArray[i][j].x,
                     objMainBSPline.controlPointsArray[i][j].y,
-                    objMainBSPline.controlPointsArray[i][j].z };
+                    objMainBSPline.controlPointsArray[i][j].z
+                };
                 
                 glVertex3fv(Points);
                 
@@ -2950,32 +2647,7 @@ void mouse (int button, int state, int x, int y)
 			addToRotationTrackball (gTrackBallRotation, gWorldRotation);
 		gTrackBallRotation [0] = gTrackBallRotation [1] = gTrackBallRotation [2] = gTrackBallRotation [3] = 0.0f;
 	}
-	/*else if ((button == GLUT_RIGHT_BUTTON) && (state == GLUT_DOWN)) { //GLUT_MIDDLE_BUTTON
-     if (gTrackBall) {// if we are currently trackballing, end trackball
-     gTrackBall = GL_FALSE;
-     glutMotionFunc (NULL);
-     rollToTrackball (x, y, gTrackBallRotation);
-     if (gTrackBallRotation[0] != 0.0)
-     addToRotationTrackball (gTrackBallRotation, gWorldRotation);
-     gTrackBallRotation [0] = gTrackBallRotation [1] = gTrackBallRotation [2] = gTrackBallRotation [3] = 0.0f;
-     } else if (gPan) {
-     mousePan (x, y);
-     gPan = GL_FALSE;
-     glutMotionFunc (NULL);
-     gTrackBallRotation [0] = gTrackBallRotation [1] = gTrackBallRotation [2] = gTrackBallRotation [3] = 0.0f;
-     glutMotionFunc (NULL);
-     }
-     gDollyPanStartPoint[0] = x;
-     gDollyPanStartPoint[1] = y;
-     glutMotionFunc (mouseDolly);
-     gDolly = GL_TRUE;
-     } else if ((button == GLUT_RIGHT_BUTTON) && (state == GLUT_UP)) { //GLUT_MIDDLE_BUTTON
-     mouseDolly (x, y);
-     gDolly = GL_FALSE;
-     glutMotionFunc (NULL);
-     gTrackBallRotation [0] = gTrackBallRotation [1] = gTrackBallRotation [2] = gTrackBallRotation [3] = 0.0f;
-     glutMotionFunc (NULL);
-     }*/
+	
     
 	else if ((button == GLUT_RIGHT_BUTTON) && (state == GLUT_DOWN)) {
 		if (gTrackBall) {// if we are currently trackballing, end trackball
@@ -3022,12 +2694,12 @@ void key(unsigned char inkey, int px, int py)
             gShowInfo =  1 - gShowInfo;
             glutPostRedisplay();
             break;
-        case 'c':
+        case 'c': // Control points
         case 'C':
             gShowSplineControlPoints =  1 - gShowSplineControlPoints;
             glutPostRedisplay();
-            break; // print point spline
-        case 'y':
+            break; 
+        case 'y': //starts simulation
         case 'Y':
             sSimulationInBSplinePatch =  1 - sSimulationInBSplinePatch;
             glutPostRedisplay();
@@ -3043,7 +2715,7 @@ void key(unsigned char inkey, int px, int py)
             glutPostRedisplay();
             break; // print point spline
         case 'b':
-        case 'B':
+        case 'B': //Shows the boundaries
             GgShowBoundariers =  1 - GgShowBoundariers;
             glutPostRedisplay();
             break; // print point spline

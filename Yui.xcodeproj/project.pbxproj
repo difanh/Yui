@@ -11,6 +11,7 @@
 		104D9EC815FE8A500060E0F0 /* Util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 104D9EC615FE8A500060E0F0 /* Util.cpp */; };
 		10A30B83170D9788002295F8 /* NSFD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10A30B82170D9788002295F8 /* NSFD.cpp */; };
 		10A30B86170D9A90002295F8 /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10A30B84170D9A8F002295F8 /* matrix.cpp */; };
+		10D5143E174403EB004C803F /* grid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10D5143C174403EB004C803F /* grid.cpp */; };
 		B55CA48915C1B33900097BEB /* BubblePacking2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B55CA48815C1B33900097BEB /* BubblePacking2D.cpp */; };
 		B5C6888C15BEEC1400EE9E8F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C6888B15BEEC1400EE9E8F /* main.cpp */; };
 		B5C6888E15BEEC1400EE9E8F /* Yui.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5C6888D15BEEC1400EE9E8F /* Yui.1 */; };
@@ -54,6 +55,8 @@
 		10A30B82170D9788002295F8 /* NSFD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NSFD.cpp; sourceTree = "<group>"; };
 		10A30B84170D9A8F002295F8 /* matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = matrix.cpp; sourceTree = "<group>"; };
 		10A30B85170D9A90002295F8 /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
+		10D5143C174403EB004C803F /* grid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = grid.cpp; sourceTree = "<group>"; };
+		10D5143D174403EB004C803F /* grid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = grid.h; sourceTree = "<group>"; };
 		B55CA48615C1B32400097BEB /* BubblePacking2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BubblePacking2D.h; sourceTree = "<group>"; };
 		B55CA48815C1B33900097BEB /* BubblePacking2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BubblePacking2D.cpp; sourceTree = "<group>"; };
 		B5C6888715BEEC1400EE9E8F /* Yui */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Yui; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +128,8 @@
 		B5C6888A15BEEC1400EE9E8F /* Yui */ = {
 			isa = PBXGroup;
 			children = (
+				10D5143C174403EB004C803F /* grid.cpp */,
+				10D5143D174403EB004C803F /* grid.h */,
 				B5C6889815BEEF3100EE9E8F /* Subdivision.cpp */,
 				B5C6889915BEEF3100EE9E8F /* Subdivision.h */,
 				10A30B84170D9A8F002295F8 /* matrix.cpp */,
@@ -240,6 +245,7 @@
 				104D9EC815FE8A500060E0F0 /* Util.cpp in Sources */,
 				10A30B83170D9788002295F8 /* NSFD.cpp in Sources */,
 				10A30B86170D9A90002295F8 /* matrix.cpp in Sources */,
+				10D5143E174403EB004C803F /* grid.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

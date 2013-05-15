@@ -14,7 +14,6 @@ class myPoint3D{
 public:
     float x, y,z;
     
-
     myPoint3D();
     ~myPoint3D();
     myPoint3D(float a, float b, float c);   

@@ -235,8 +235,6 @@ point_t * d3 ;
 vector<myPoint3D> pointsBSpline;
 
 
-
-
 #pragma mark ---- gCamera control ----
 
 
@@ -621,8 +619,8 @@ void MatPointInitial (bubble** PMat)
 void VectPointInitial (bubble* lcb, int numBubles, int iniBubble, int lastBubble)
 {
     
-    float* Uknot = new float [9];
-    float* Vknot = new float [9];
+    float* Uknot = new float [10];
+    float* Vknot = new float [10];
     
     Uknot[0]= Uknot[1] = Uknot[2]= Uknot[3]= Uknot[4] =  0.0;
     Uknot[5]= Uknot[6] = Uknot[7]= Uknot[8]= Uknot[9] =  1.0; //here how to strech space
